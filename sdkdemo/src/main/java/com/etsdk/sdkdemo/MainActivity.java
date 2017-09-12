@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         sdkManager = HuosdkManager.getInstance();
         //设置是否使用直接登陆,true为使用：第一次调用登陆时自动生成一个账号登陆
         sdkManager.setDirectLogin(false);
-        sdkManager.setFloatInitXY(500,200);
+        sdkManager.setFloatInitXY(500, 200);
         //sdk初始化
         sdkManager.initSdk(this, new OnInitSdkListener() {
             @Override
@@ -73,13 +73,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //添加sdk登陆监听,包含正常登陆，切换账号登陆，登陆过期后重新登陆
         sdkManager.addLoginListener(new OnLoginListener() {
             @Override
-            public void loginSuccess( LogincallBack logincBack) {
-                Log.e(TAG,"登陆成功 memId=" +
+            public void loginSuccess(LogincallBack logincBack) {
+                Log.e(TAG, "登陆成功 memId=" +
                         logincBack.mem_id + "  token=" + logincBack.user_token);
                 T.s(MainActivity.this, "登陆成功");
                 //一般登陆成功后需要显示浮点
                 sdkManager.showFloatView();
             }
+
             @Override
             public void loginError(LoginErrorMsg loginErrorMsg) {
                 Log.e(TAG, " code=" + loginErrorMsg.code + "  msg=" + loginErrorMsg.msg);
@@ -88,16 +89,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         sdkManager.addLogoutListener(new OnLogoutListener() {
             @Override
             public void logoutSuccess(int type, String code, String msg) {
-                Log.e(TAG,"登出成功，类型type="+type+" code="+code+" msg="+msg);
-                if(type==OnLogoutListener.TYPE_NORMAL_LOGOUT){//正常退出成功
-                    Toast.makeText(MainActivity.this,"退出成功",Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "登出成功，类型type=" + type + " code=" + code + " msg=" + msg);
+                if (type == OnLogoutListener.TYPE_NORMAL_LOGOUT) {//正常退出成功
+                    Toast.makeText(MainActivity.this, "退出成功", Toast.LENGTH_SHORT).show();
                 }
-                if(type==OnLogoutListener.TYPE_SWITCH_ACCOUNT){//切换账号退出成功
+                if (type == OnLogoutListener.TYPE_SWITCH_ACCOUNT) {//切换账号退出成功
                     //游戏此时可跳转到登陆页面，让用户进行切换账号
 //                    Toast.makeText(MainActivity.this,"退出登陆",Toast.LENGTH_SHORT).show();
 
                 }
-                if(type==OnLogoutListener.TYPE_TOKEN_INVALID){//登陆过期退出成功
+                if (type == OnLogoutListener.TYPE_TOKEN_INVALID) {//登陆过期退出成功
                     //游戏此时可跳转到登陆页面，让用户进行重新登陆
                     sdkManager.showLogin(true);
                 }
@@ -105,14 +106,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void logoutError(int type, String code, String msg) {
-                Log.e(TAG,"登出失败，类型type="+type+" code="+code+" msg="+msg);
-                if(type==OnLogoutListener.TYPE_NORMAL_LOGOUT){//正常退出失败
+                Log.e(TAG, "登出失败，类型type=" + type + " code=" + code + " msg=" + msg);
+                if (type == OnLogoutListener.TYPE_NORMAL_LOGOUT) {//正常退出失败
 
                 }
-                if(type==OnLogoutListener.TYPE_SWITCH_ACCOUNT){//切换账号退出失败
+                if (type == OnLogoutListener.TYPE_SWITCH_ACCOUNT) {//切换账号退出失败
 
                 }
-                if(type==OnLogoutListener.TYPE_TOKEN_INVALID){//登陆过期退出失败
+                if (type == OnLogoutListener.TYPE_TOKEN_INVALID) {//登陆过期退出失败
 
                 }
             }
@@ -175,8 +176,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 });
                 break;
             case R.id.btn_test_logout:
-                    //调用此方法前请先设置登出监听
-                    sdkManager.logout();
+                //调用此方法前请先设置登出监听
+                sdkManager.logout();
                 break;
             case R.id.btn_test_switchAccount:
                 //切换账号会退出登陆，请在登出监听中接收切换退出结果

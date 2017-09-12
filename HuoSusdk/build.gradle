@@ -58,6 +58,12 @@ android {
 }
 dependencies {
     provided fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('libs/alipaySdk-20170309.jar')
+    compile files('libs/android-support-v4.jar')
+    compile files('libs/gson-2.7.jar')
+    compile files('libs/ipaynow_base_v2.0.1.jar')
+    compile files('libs/ipaynow_wechatwp_v2.0.0.jar')
+    compile files('libs/okvolly_1.1.5.jar')
 }
 
 
