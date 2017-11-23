@@ -49,6 +49,10 @@ import com.game.sdk.util.MiuiDeviceUtil;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
+import com.umeng.analytics.MobclickAgent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * author janecer 2014年7月22日上午9:45:18
@@ -150,6 +154,10 @@ public class HuosdkInnerManager {
      * @param onInitSdkListener 回调监听
      */
     public void initSdk(Context context,OnInitSdkListener onInitSdkListener){
+        MobclickAgent.setDebugMode(true);
+        MobclickAgent.openActivityDurationTrack(false);
+        MobclickAgent.setScenarioType(context, MobclickAgent.EScenarioType.E_UM_NORMAL);
+
         this.onInitSdkListener=onInitSdkListener;
         this.mContext=context;
         if(!checkCallOk(false)){
@@ -315,11 +323,15 @@ public class HuosdkInnerManager {
             LoginControl.clearLogin();
             return;
         }
-        BaseRequestBean baseRequestBean=new BaseRequestBean();
+        final BaseRequestBean baseRequestBean=new BaseRequestBean();
         HttpParamsBuild httpParamsBuild=new HttpParamsBuild(GsonUtil.getGson().toJson(baseRequestBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<NoticeResultBean>(mContext, httpParamsBuild.getAuthkey()) {
             @Override
             public void onDataSuccess(NoticeResultBean data) {
+                Map<String, String> map_ekv = new HashMap<String, String>();
+                map_ekv.put("deviceid", baseRequestBean.getDevice().getDevice_id());
+                MobclickAgent.onEventValue(mContext, "logoutSuccess", map_ekv,101);
+
                 removeFloatView();
                 if(onLogoutListener!=null){
                     onLogoutListener.logoutSuccess(type,SdkConstant.CODE_SUCCESS,"退出成功");

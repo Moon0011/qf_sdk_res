@@ -28,12 +28,16 @@ import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.view.HuoFastLoginView;
-import com.game.sdk.view.HuoLoginView;
-import com.game.sdk.view.HuoRegisterView;
-import com.game.sdk.view.HuoUserNameRegisterView;
+import com.game.sdk.view.HuoLoginViewNew;
+import com.game.sdk.view.HuoRegisterViewNew;
+import com.game.sdk.view.HuoUserNameRegisterViewNew;
 import com.game.sdk.view.SelectAccountView;
 import com.game.sdk.view.ViewStackManager;
 import com.kymjs.rxvolley.RxVolley;
+import com.umeng.analytics.MobclickAgent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class HuoLoginActivity extends BaseActivity {
     private static final String TAG = HuoLoginActivity.class.getSimpleName();
@@ -42,10 +46,10 @@ public class HuoLoginActivity extends BaseActivity {
 //    public final static int TYPE_REGISTER_LOGIN=2;
     private final static int CODE_LOGIN_FAIL=-1;//登陆失败
     private final static int CODE_LOGIN_CANCEL=-2;//用户取消登陆
-    HuoLoginView huoLoginView;
-    HuoRegisterView huoRegisterView;
+    HuoLoginViewNew huoLoginView;
+    HuoRegisterViewNew huoRegisterView;
     private HuoFastLoginView huoFastLoginView;
-    private HuoUserNameRegisterView huoUserNameRegisterView;
+    private HuoUserNameRegisterViewNew huoUserNameRegisterView;
     private ViewStackManager viewStackManager;
     private boolean callBacked;//是否已经回调过了
     private SelectAccountView huoSdkSelectAccountView;
@@ -53,7 +57,7 @@ public class HuoLoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(MResource.getIdByName(this,"R.layout.huo_sdk_activity_huo_login"));
+        setContentView(MResource.getIdByName(this,"R.layout.huo_sdk_activity_huo_login_new"));
         setupUI();
     }
 
@@ -61,10 +65,10 @@ public class HuoLoginActivity extends BaseActivity {
         callBacked=false;
         viewStackManager=ViewStackManager.getInstance(this);
         int type = getIntent().getIntExtra("type", 1);
-        huoLoginView = (HuoLoginView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_loginView"));
+        huoLoginView = (HuoLoginViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_loginView_new"));
         huoFastLoginView = (HuoFastLoginView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_fastLoginView"));
-        huoRegisterView = (HuoRegisterView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_registerView"));
-        huoUserNameRegisterView = (HuoUserNameRegisterView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_userNameRegisterView"));
+        huoRegisterView = (HuoRegisterViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_registerView"));
+        huoUserNameRegisterView = (HuoUserNameRegisterViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_userNameRegisterView"));
         huoSdkSelectAccountView = (SelectAccountView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_selectAccountView"));
         viewStackManager.addBackupView(huoLoginView);
         viewStackManager.addBackupView(huoFastLoginView);
@@ -104,7 +108,7 @@ public class HuoLoginActivity extends BaseActivity {
         }
     }
 
-    public HuoUserNameRegisterView getHuoUserNameRegisterView() {
+    public HuoUserNameRegisterViewNew getHuoUserNameRegisterView() {
         return huoUserNameRegisterView;
     }
 
@@ -114,11 +118,11 @@ public class HuoLoginActivity extends BaseActivity {
     }
 
 
-    public HuoRegisterView getHuoRegisterView() {
+    public HuoRegisterViewNew getHuoRegisterView() {
         return huoRegisterView;
     }
 
-    public HuoLoginView getHuoLoginView() {
+    public HuoLoginViewNew getHuoLoginView() {
         return huoLoginView;
     }
 
@@ -164,6 +168,10 @@ public class HuoLoginActivity extends BaseActivity {
             public void onDataSuccess(RegisterResultBean data) {
                 if(data!=null){
 //                    T.s(loginActivity,"登陆成功："+data.getCp_user_token());
+                    Map<String, String> map_ekv = new HashMap<String, String>();
+                    map_ekv.put("uid", data.getMem_id());
+                    MobclickAgent.onEventValue(HuoLoginActivity.this, "loginSuccess", map_ekv,100);
+
                     //接口回调通知
                     LoginControl.saveUserToken(data.getCp_user_token());
                     HuosdkInnerManager.notice = data.getNotice(); //发送通知内容
@@ -221,9 +229,19 @@ public class HuoLoginActivity extends BaseActivity {
         this.callBacked=true;
         finish();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("HuoLoginActivity");
+        MobclickAgent.onResume(this);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPageEnd("HuoLoginActivity");
+        MobclickAgent.onPause(this);
         overridePendingTransition(0,0);
     }
     public static void start(Context context, int type) {

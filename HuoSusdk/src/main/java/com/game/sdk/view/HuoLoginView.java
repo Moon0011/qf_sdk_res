@@ -49,9 +49,12 @@ import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.kymjs.rxvolley.RxVolley;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Liuhongliangsdk on 2016/11/11.
@@ -82,16 +85,20 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
     private View huo_sdk_ll_loginByThird;
     private View huo_sdk_tv_loginByThird;
     IHuoLogin iHuoLogin;
+    private Context mContext;
     public HuoLoginView(Context context) {
         super(context);
+        mContext = context;
         setupUI();
     }
     public HuoLoginView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         setupUI();
     }
     public HuoLoginView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext = context;
         setupUI();
     }
     private Handler mHandler=new Handler(){
@@ -306,6 +313,10 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
             public void onDataSuccess(LoginResultBean data) {
                 if(data!=null){
 //                    T.s(loginActivity,"登陆成功："+data.getCp_user_token());
+                    Map<String, String> map_ekv = new HashMap<String, String>();
+                    map_ekv.put("uid", data.getMem_id());
+                    MobclickAgent.onEventValue(mContext, "loginSuccess", map_ekv,100);
+
                     //接口回调通知
 //                    data.setUserlist(getTestList());
                     if(data.getUserlist()!=null&&data.getUserlist().size()>1){

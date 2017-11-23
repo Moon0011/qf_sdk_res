@@ -127,7 +127,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.btn_test_charger:
                 String money_str = etTestMoney.getText().toString().trim();
-                String money = "1";
+                String money = "0.01";
                 if (!TextUtils.isEmpty(money_str) && !"".equals(money_str)) {
                     money = money_str;
                 }

@@ -38,9 +38,12 @@ import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.kymjs.rxvolley.RxVolley;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WebPayActivity extends BaseActivity implements View.OnClickListener, IPayListener {
     private final static int CODE_PAY_FAIL = -1;//支付失败
@@ -64,8 +67,6 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
         setContentView(MResource.getIdByName(this, "R.layout.huo_sdk_activity_web_pay"));
         setupUI();
     }
-
-
 
     @Override
     public void changeTitleStatus(boolean show) {
@@ -114,15 +115,16 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
                 if (!DialogUtil.isShowing()) {
                     DialogUtil.showDialog(WebPayActivity.this, "正在加载...");
                 }
-                if(SdkApi.getWebSdkPay().equals(url)){
+                if (SdkApi.getWebSdkPay().equals(url)) {
                     requestCount++;
-                    if(requestCount>1){
+                    if (requestCount > 1) {
                         finish();
                     }
-                    L.e("testWebview onPageStarted", "url=" + url+"  count="+requestCount);
+                    L.e("testWebview onPageStarted", "url=" + url + "  count=" + requestCount);
                 }
                 L.e("testWebview onPageStarted", "url=" + url);
             }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 L.e("WebPayActivity1", "url=" + url);
@@ -145,6 +147,7 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                MobclickAgent.onPageStart("PayWebView Loading finish");
                 try {
                     DialogUtil.dismissDialog();
                 } catch (Exception e) {
@@ -231,15 +234,22 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPageEnd("WebPayActivity");
+        MobclickAgent.onPause(this);
         overridePendingTransition(0, 0);
+
     }
+
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onPageStart("WebPayActivity");
+        MobclickAgent.onResume(this);
         if (checkPayJsForPay != null) {
             checkPayJsForPay.onResume();
         }
     }
+
     /**
      * 关闭的时候，将支付信息回调回去
      */
@@ -283,11 +293,20 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void paySuccess(String orderId, final float money) {
+        Map<String, String> map_ekv = new HashMap<String, String>();
+        map_ekv.put("orderId", orderId);
+        map_ekv.put("money", money+"");
+        MobclickAgent.onEventValue(this, "paySuccess", map_ekv,300);
         queryOrder(orderId, money, "支付成功，等待处理");
     }
 
     @Override
     public void payFail(String orderId, float money, boolean queryOrder, String msg) {
+        Map<String, String> map_ekv = new HashMap<String, String>();
+        map_ekv.put("orderId", orderId);
+        map_ekv.put("money", money+"");
+        MobclickAgent.onEventValue(this, "payFail", map_ekv,301);
+
         if (queryOrder) {
             queryOrder(orderId, money, msg);
         } else {

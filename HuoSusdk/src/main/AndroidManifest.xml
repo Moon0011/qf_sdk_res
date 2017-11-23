@@ -73,6 +73,12 @@
     <activity android:name="com.ipaynow.plugin.inner_plugin.wechatwp.activity.WeChatNotifyActivity" android:configChanges="orientation|keyboardHidden|keyboard|smallestScreenSize|locale|screenLayout" android:exported="false" android:launchMode="singleTop" android:screenOrientation="portrait" android:label="noChangeScreenOrientation" android:theme="@android:style/Theme.Dialog"/>  
     <meta-data android:name="HS_APPID" android:value="1"/>  
     <meta-data android:name="HS_CLIENTID" android:value="1"/>  
-    <meta-data android:name="HS_CLIENTKEY" android:value="7a30c0a64b90ddb412f6f252db136e11"/> 
+    <meta-data android:name="HS_CLIENTKEY" android:value="7a30c0a64b90ddb412f6f252db136e11"/>
+    <meta-data
+        android:name="UMENG_APPKEY"
+        android:value="5a152785f43e4852de0000ac"></meta-data>
+    <meta-data
+        android:name="UMENG_CHANNEL"
+        android:value="Umeng"></meta-data>
   </application> 
 </manifest>
