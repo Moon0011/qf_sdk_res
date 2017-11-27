@@ -70,8 +70,8 @@
     <activity android:name="com.game.applicaionid.wxapi.WXEntryActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" android:configChanges="keyboardHidden|orientation|screenSize" android:exported="true" android:screenOrientation="portrait" android:label="noChangeScreenOrientation"/>  
     <activity android:name="com.alipay.sdk.app.H5PayActivity" android:configChanges="orientation|keyboardHidden|navigation" android:exported="false" android:screenOrientation="behind" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:windowSoftInputMode="adjustResize|stateHidden"/>  
     <activity android:name="com.ipaynow.plugin.presenter.PayMethodActivity" android:configChanges="keyboardHidden|navigation|orientation|screenSize" android:exported="false" android:screenOrientation="portrait" android:label="noChangeScreenOrientation" android:theme="@android:style/Theme.Dialog"/>  
-    <activity android:name="com.ipaynow.plugin.inner_plugin.wechatwp.activity.WeChatNotifyActivity" android:configChanges="orientation|keyboardHidden|keyboard|smallestScreenSize|locale|screenLayout" android:exported="false" android:launchMode="singleTop" android:screenOrientation="portrait" android:label="noChangeScreenOrientation" android:theme="@android:style/Theme.Dialog"/>  
-    <meta-data android:name="HS_APPID" android:value="1"/>  
+    <activity android:name="com.ipaynow.plugin.inner_plugin.wechatwp.activity.WeChatNotifyActivity" android:configChanges="orientation|keyboardHidden|keyboard|smallestScreenSize|locale|screenLayout" android:exported="false" android:launchMode="singleTop" android:screenOrientation="portrait" android:label="noChangeScreenOrientation" android:theme="@android:style/Theme.Dialog"/>
+    <meta-data android:name="HS_APPID" android:value="1"/>
     <meta-data android:name="HS_CLIENTID" android:value="1"/>  
     <meta-data android:name="HS_CLIENTKEY" android:value="7a30c0a64b90ddb412f6f252db136e11"/>
     <meta-data

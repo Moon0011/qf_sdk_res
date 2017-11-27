@@ -1,8 +1,12 @@
 package com.game.sdk.view;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -14,10 +18,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
-import com.game.sdk.R;
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
@@ -59,10 +63,11 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
     private EditText huo_sdk_et_uRegisterPwd;
     private boolean isShiWan = false;
     private ImageView huo_sdk_img_show_pwd;
-    private ImageView huo_sdk_iv_logo, huo_login_regist_Logo;
+    private ImageView huo_sdk_iv_logo;
+    private TextView huo_tv_regist_Logo;
     private Context mContext;
-
     private boolean showPwd = false;
+    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     public HuoUserNameRegisterViewNew(Context context) {
         super(context);
@@ -97,7 +102,7 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
         huo_sdk_btn_uRegisterSubmit = (Button) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_btn_uRegisterSubmit"));
         huo_sdk_img_show_pwd = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_img_show_pwd"));
         huo_sdk_iv_logo = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_iv_uRegisterLogo"));
-        huo_login_regist_Logo = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.img_login_regist"));
+        huo_tv_regist_Logo = (TextView) findViewById(MResource.getIdByName(getContext(), "R.id.tv_login_regist"));
 
         huo_sdk_rl_gotoregist.setOnClickListener(this);
         huo_sdk_rl_uRegisterBackLogin.setOnClickListener(this);
@@ -128,8 +133,8 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
         if (isShiWan) {
             huo_sdk_et_uRegisterAccount.setEnabled(false);
 //            huo_sdk_ll_uRegisterAccount.setBackgroundColor(Color.parseColor("#e8ecf3"));
-//            huo_sdk_tv_uRegisterTitle.setText("一键注册");
-            huo_login_regist_Logo.setImageResource(R.drawable.one_key_login);
+            huo_tv_regist_Logo.setText("一键注册");
+//            huo_login_regist_Logo.setImageResource(R.drawable.one_key_login);
             //一键注册显示密码
             huo_sdk_et_uRegisterPwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             showPwd = true;
@@ -138,7 +143,8 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
             huo_sdk_et_uRegisterAccount.setEnabled(true);
 //            huo_sdk_ll_uRegisterAccount.setBackgroundColor(loginActivity.getResources().getColor(android.R.color.transparent));
             huo_sdk_et_uRegisterAccount.setBackgroundColor(loginActivity.getResources().getColor(android.R.color.transparent));
-            huo_login_regist_Logo.setImageResource(R.drawable.user_regist);
+//            huo_login_regist_Logo.setImageResource(R.drawable.user_regist);
+            huo_tv_regist_Logo.setText("用户注册");
             huo_sdk_et_uRegisterAccount.setText("");
             huo_sdk_et_uRegisterPwd.setText("");
             huo_sdk_et_uRegisterPwd.setInputType(InputType.TYPE_CLASS_TEXT
@@ -164,8 +170,13 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
         if (v.getId() == huo_sdk_rl_uRegisterBackLogin.getId()) {//返回登陆
             viewStackManager.showView(viewStackManager.getViewByClass(HuoLoginViewNew.class));
         } else if (v.getId() == huo_sdk_btn_uRegisterSubmit.getId()) {//提交注册
-            Toast.makeText(mContext,"已截屏保存!",Toast.LENGTH_SHORT).show();
-            ScreenShot.shoot((Activity) mContext, "screenshot_" + huo_sdk_et_uRegisterAccount.getText().toString().trim() + ".png");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                int i = ContextCompat.checkSelfPermission(mContext, permissions[0]);
+                if (i == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(mContext, "已截屏保存", Toast.LENGTH_SHORT).show();
+                    ScreenShot.shoot((Activity) mContext, "screenshot_" + huo_sdk_et_uRegisterAccount.getText().toString().trim() + ".png");
+                }
+            }
             submitRegister();
         } else if (v.getId() == huo_sdk_rl_gotoregist.getId()) {//快速注册
             viewStackManager.addView(loginActivity.getHuoRegisterView());
