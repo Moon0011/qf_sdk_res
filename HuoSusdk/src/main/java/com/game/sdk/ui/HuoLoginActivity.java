@@ -38,6 +38,7 @@ import com.game.sdk.view.HuoUserNameRegisterViewNew;
 import com.game.sdk.view.SelectAccountView;
 import com.game.sdk.view.ViewStackManager;
 import com.kymjs.rxvolley.RxVolley;
+import com.tendcloud.tenddata.TCAgent;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -194,6 +195,8 @@ public class HuoLoginActivity extends BaseActivity {
                     Map<String, String> map_ekv = new HashMap<String, String>();
                     map_ekv.put("uid", data.getMem_id());
                     MobclickAgent.onEventValue(HuoLoginActivity.this, "loginSuccess", map_ekv, 100);
+                    //tokendata事件
+                    TCAgent.onEvent(HuoLoginActivity.this, "loginSuccess", "登陆成功" , map_ekv);
 
                     //接口回调通知
                     LoginControl.saveUserToken(data.getCp_user_token());
@@ -258,6 +261,7 @@ public class HuoLoginActivity extends BaseActivity {
         super.onResume();
         MobclickAgent.onPageStart("HuoLoginActivity");
         MobclickAgent.onResume(this);
+        TCAgent.onPageStart(this,"HuoLoginActivity");
     }
 
     @Override
@@ -265,6 +269,7 @@ public class HuoLoginActivity extends BaseActivity {
         super.onPause();
         MobclickAgent.onPageEnd("HuoLoginActivity");
         MobclickAgent.onPause(this);
+        TCAgent.onPageEnd(this,"HuoLoginActivity");
         overridePendingTransition(0, 0);
     }
 

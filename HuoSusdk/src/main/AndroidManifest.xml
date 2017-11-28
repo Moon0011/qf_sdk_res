@@ -76,9 +76,13 @@
     <meta-data android:name="HS_CLIENTKEY" android:value="7a30c0a64b90ddb412f6f252db136e11"/>
     <meta-data
         android:name="UMENG_APPKEY"
-        android:value="5a152785f43e4852de0000ac"></meta-data>
+        android:value="5a152785f43e4852de0000ac"/>
     <meta-data
         android:name="UMENG_CHANNEL"
         android:value="Umeng"></meta-data>
+
+    <meta-data
+        android:name="TD_APP_ID"
+        android:value="F1AAB6FD1A724EAC810D3DC001A5E78D" />
   </application> 
 </manifest>

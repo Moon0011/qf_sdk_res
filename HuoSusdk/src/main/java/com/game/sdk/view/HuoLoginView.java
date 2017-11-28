@@ -28,9 +28,11 @@ import com.game.sdk.HuosdkInnerManager;
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
+import com.game.sdk.domain.BaseRequestBean;
 import com.game.sdk.domain.LoginRequestBean;
 import com.game.sdk.domain.LoginResultBean;
 import com.game.sdk.domain.LogincallBack;
+import com.game.sdk.domain.Notice;
 import com.game.sdk.domain.ThirdLoginInfo;
 import com.game.sdk.domain.ThirdLoginRequestBean;
 import com.game.sdk.domain.UserInfo;
@@ -49,6 +51,7 @@ import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.kymjs.rxvolley.RxVolley;
+import com.tendcloud.tenddata.TCAgent;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -86,6 +89,7 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
     private View huo_sdk_tv_loginByThird;
     IHuoLogin iHuoLogin;
     private Context mContext;
+
     public HuoLoginView(Context context) {
         super(context);
         mContext = context;
@@ -274,7 +278,7 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
                     if(onLoginListener!=null){
                         onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(),data.getCp_user_token()));
                         //登录成功后统一弹出弹框
-                        DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), HuosdkInnerManager.notice);
+                        getNotice();
                     }
                     loginActivity.callBackFinish();
                 }
@@ -286,6 +290,30 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
         httpCallbackDecode.setLoadMsg("正在登录...");
         RxVolley.post(SdkApi.getLoginoauth(), httpParamsBuild.getHttpParams(),httpCallbackDecode);
     }
+
+    private void getNotice() {
+        BaseRequestBean baseRequestBean = new BaseRequestBean();
+        baseRequestBean.setApp_id("1");
+        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(baseRequestBean));
+        HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<Notice>(mContext, httpParamsBuild.getAuthkey()) {
+            @Override
+            public void onDataSuccess(Notice data) {
+                L.e(TAG, "content =" + data.getContent() + ", title =" + data.getTitle());
+                //登录成功后统一弹出弹框
+                DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), data);
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                L.e(TAG, "code =" + code + ", msg =" + msg);
+            }
+        };
+        httpCallbackDecode.setShowTs(false);
+        httpCallbackDecode.setLoadingCancel(false);
+        httpCallbackDecode.setShowLoading(false);//对话框继续使用install接口，在startup联网结束后，自动结束等待loading
+        RxVolley.post(SdkApi.getNotice(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
+    }
+
     private List<LoginResultBean.UserName> getTestList(){
         List<LoginResultBean.UserName> userNameList=new ArrayList<>();
         userNameList.add(new LoginResultBean.UserName("aaaa123"));
@@ -316,6 +344,8 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
                     Map<String, String> map_ekv = new HashMap<String, String>();
                     map_ekv.put("uid", data.getMem_id());
                     MobclickAgent.onEventValue(mContext, "loginSuccess", map_ekv,100);
+                    //tokendata事件
+                    TCAgent.onEvent(mContext ,"loginSuccess", "登陆成功" , map_ekv);
 
                     //接口回调通知
 //                    data.setUserlist(getTestList());
@@ -332,7 +362,7 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
                     if(onLoginListener!=null){
                         onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(),data.getCp_user_token()));
                         //登录成功后统一弹出弹框
-                        DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), HuosdkInnerManager.notice);
+                        getNotice();
                     }
                     loginActivity.callBackFinish();
                     //保存账号到数据库

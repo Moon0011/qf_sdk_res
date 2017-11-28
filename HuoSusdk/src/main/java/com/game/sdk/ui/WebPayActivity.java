@@ -38,6 +38,7 @@ import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.kymjs.rxvolley.RxVolley;
+import com.tendcloud.tenddata.TCAgent;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
@@ -236,6 +237,7 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
         super.onPause();
         MobclickAgent.onPageEnd("WebPayActivity");
         MobclickAgent.onPause(this);
+        TCAgent.onPageEnd(this,"WebPayActivity");
         overridePendingTransition(0, 0);
 
     }
@@ -245,6 +247,7 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
         super.onResume();
         MobclickAgent.onPageStart("WebPayActivity");
         MobclickAgent.onResume(this);
+        TCAgent.onPageStart(this,"WebPayActivity");
         if (checkPayJsForPay != null) {
             checkPayJsForPay.onResume();
         }
@@ -297,6 +300,8 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
         map_ekv.put("orderId", orderId);
         map_ekv.put("money", money+"");
         MobclickAgent.onEventValue(this, "paySuccess", map_ekv,300);
+        //tokendata事件
+        TCAgent.onEvent(this ,"paySuccess", "支付成功" , map_ekv);
         queryOrder(orderId, money, "支付成功，等待处理");
     }
 
@@ -306,7 +311,8 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
         map_ekv.put("orderId", orderId);
         map_ekv.put("money", money+"");
         MobclickAgent.onEventValue(this, "payFail", map_ekv,301);
-
+        //tokendata事件
+        TCAgent.onEvent(this ,"payFail", "支付失败" , map_ekv);
         if (queryOrder) {
             queryOrder(orderId, money, msg);
         } else {

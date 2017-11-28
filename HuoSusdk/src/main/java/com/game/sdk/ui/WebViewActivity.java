@@ -38,6 +38,7 @@ import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.kymjs.rxvolley.client.HttpParams;
+import com.tendcloud.tenddata.TCAgent;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
@@ -330,11 +331,17 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
 	@Override
 	protected void onPause() {
 		super.onPause();
+		MobclickAgent.onPageEnd("WebViewActivity");
+		MobclickAgent.onPause(this);
+		TCAgent.onPageEnd(this,"WebViewActivity");
 		overridePendingTransition(0,0);
 	}
 	@Override
 	protected void onResume() {
 		super.onResume();
+		MobclickAgent.onPageStart("WebViewActivity");
+		MobclickAgent.onResume(this);
+		TCAgent.onPageStart(this,"WebViewActivity");
 		if (commonJsForWeb != null) {
 			commonJsForWeb.onResume();
 		}
@@ -354,6 +361,8 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
 		map_ekv.put("orderId", orderId);
 		map_ekv.put("money", money+"");
 		MobclickAgent.onEventValue(this, "paySuccess", map_ekv,300);
+		//tokendata事件
+		TCAgent.onEvent(this ,"paySuccess", "支付成功" , map_ekv);
 		if(wv!=null){
 			wv.reload();
 		}
@@ -365,7 +374,8 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
 		map_ekv.put("orderId", orderId);
 		map_ekv.put("money", money+"");
 		MobclickAgent.onEventValue(this, "payFail", map_ekv,301);
-
+		//tokendata事件
+		TCAgent.onEvent(this ,"payFail", "支付失败" , map_ekv);
 		if(TextUtils.isEmpty(msg)){
 			Toast.makeText(this,"支付失败",Toast.LENGTH_SHORT);
 		}else{

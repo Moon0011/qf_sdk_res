@@ -49,6 +49,7 @@ import com.game.sdk.util.MiuiDeviceUtil;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
+import com.tendcloud.tenddata.TCAgent;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -62,31 +63,31 @@ public class HuosdkInnerManager {
     private final static int CODE_INIT_SUCCESS = 1;
     private static final String TAG = HuosdkInnerManager.class.getSimpleName();
     private static HuosdkInnerManager instance;
-    private  Context mContext;
+    private Context mContext;
     private OnInitSdkListener onInitSdkListener;
     private OnPaymentListener paymentListener;
     private OnLoginListener onLoginListener;
     private OnLogoutListener onLogoutListener;
-    private int initRequestCount=0;
-    public static Notice notice ; //登录后公告
+    private int initRequestCount = 0;
+    public static Notice notice; //登录后公告
     public static boolean isSwitchLogin = false; //是否切换
-    private boolean directLogin=false;//是否使用直接登陆
-    private boolean initSuccess=false;
+    private boolean directLogin = false;//是否使用直接登陆
+    private boolean initSuccess = false;
     private Handler huosdkHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case CODE_INIT_FAIL:
-                    if(msg.arg2<3){//最多重试3次
-                        initSdk(msg.arg2+1);
-                    }else{
+                    if (msg.arg2 < 3) {//最多重试3次
+                        initSdk(msg.arg2 + 1);
+                    } else {
                         //关闭等待loading
-                        onInitSdkListener.initError(msg.arg1+"",msg.obj+"");
+                        onInitSdkListener.initError(msg.arg1 + "", msg.obj + "");
                         DialogUtil.dismissDialog();
                     }
                     break;
                 case CODE_INIT_SUCCESS:
-                    L.e("hongliangsdk1",SdkConstant.HS_AGENT);
+                    L.e("hongliangsdk1", SdkConstant.HS_AGENT);
                     initRequestCount++;
                     //去初始化
                     gotoStartup(1);
@@ -108,55 +109,68 @@ public class HuosdkInnerManager {
         }
         return instance;
     }
+
     @NotProguard
-    public void setContext(Context context){
-        this.mContext=context;
+    public void setContext(Context context) {
+        this.mContext = context;
     }
-    public Context getContext(){
+
+    public Context getContext() {
         return mContext;
     }
+
     @NotProguard
     private HuosdkInnerManager() {
     }
+
     /**
      * 初始化设置
      */
-    private void initSetting(){
-        boolean isPortrait=BaseAppUtil.isPortraitForActivity(mContext);
-        if(isPortrait){
-            SdkConstant.screen_orientation= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        }else{
-            SdkConstant.screen_orientation= ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+    private void initSetting() {
+        boolean isPortrait = BaseAppUtil.isPortraitForActivity(mContext);
+        if (isPortrait) {
+            SdkConstant.screen_orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        } else {
+            SdkConstant.screen_orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         }
         HTTPSTrustManager.allowAllSSL();//开启https支持
         try {
-            RxVolley.setRequestQueue(RequestQueue.newRequestQueue(BaseAppUtil.getDefaultSaveRootPath(mContext,"huoHttp")));
+            RxVolley.setRequestQueue(RequestQueue.newRequestQueue(BaseAppUtil.getDefaultSaveRootPath(mContext, "huoHttp")));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void setScreenOrientation(boolean isPortrait){
-        if(isPortrait){
-            SdkConstant.customer_screen_orientation= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        }else{
-            SdkConstant.customer_screen_orientation= ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+
+    public void setScreenOrientation(boolean isPortrait) {
+        if (isPortrait) {
+            SdkConstant.customer_screen_orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        } else {
+            SdkConstant.customer_screen_orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         }
     }
-    public int getScreenOrientation(){
-        if(SdkConstant.customer_screen_orientation==null){
+
+    public int getScreenOrientation() {
+        if (SdkConstant.customer_screen_orientation == null) {
             return SdkConstant.screen_orientation;
         }
         return SdkConstant.customer_screen_orientation;
     }
+
     /**
      * 初始化sdk
-     * @param context 上下文对象
+     *
+     * @param context           上下文对象
      * @param onInitSdkListener 回调监听
      */
     public void initSdk(Context context,OnInitSdkListener onInitSdkListener){
+        //===友盟初始化===
         MobclickAgent.setDebugMode(true);
         MobclickAgent.openActivityDurationTrack(false);
         MobclickAgent.setScenarioType(context, MobclickAgent.EScenarioType.E_UM_NORMAL);
+        //===tokendata初始化===
+        TCAgent.LOG_ON=true;
+        TCAgent.init(context);// 如果在AndroidManifest.xml配置了App ID和渠道ID，调用TCAgent.init(this)即可
+        TCAgent.setReportUncaughtExceptions(true);
 
         this.onInitSdkListener=onInitSdkListener;
         this.mContext=context;
@@ -172,7 +186,7 @@ public class HuosdkInnerManager {
         SdkNative.soInit(context);
         //初始化sp
         SP.init(mContext);
-        initRequestCount=0;
+        initRequestCount = 0;
         initSdk(1);
     }
 
@@ -180,13 +194,14 @@ public class HuosdkInnerManager {
     public boolean isDirectLogin() {
         return directLogin;
     }
+
     public void setDirectLogin(boolean directLogin) {
         this.directLogin = directLogin;
     }
 
-    public void setFloatInitXY(int x,int y){
-        SdkConstant.floatInitX=x;
-        SdkConstant.floatInitY=y;
+    public void setFloatInitXY(int x, int y) {
+        SdkConstant.floatInitX = x;
+        SdkConstant.floatInitY = y;
     }
 
     /**
@@ -194,13 +209,13 @@ public class HuosdkInnerManager {
      * count=1标示正常请求，2表示在初始化时发现rsakey错误后的重试流程
      */
     private void initSdk(final int count) {
-        Log.e(TAG,"isSLogin:"+isSwitchLogin);
-        isSwitchLogin = mContext.getSharedPreferences("huo_sdk_sp", Context.MODE_PRIVATE).getBoolean("switch_login",false);
+        Log.e(TAG, "isSLogin:" + isSwitchLogin);
+        isSwitchLogin = mContext.getSharedPreferences("huo_sdk_sp", Context.MODE_PRIVATE).getBoolean("switch_login", false);
         //TODO 如果判断有切换账号逻辑，则不执行nativeInit，将使用net获取的值,此时直接返回init_success
-        if (isSwitchLogin){
+        if (isSwitchLogin) {
             Message message = Message.obtain();
             message.what = CODE_INIT_SUCCESS;
-            message.arg2=count;
+            message.arg2 = count;
             huosdkHandler.sendMessage(message);
             return;
         }
@@ -212,18 +227,20 @@ public class HuosdkInnerManager {
                 //弹出等待loading在，installer和startup都完成后或者出现异常时关闭
                 DialogUtil.showDialog(mContext, false, "初始化中，请稍后……");
             }
+
             @Override
             protected String doInBackground(String... params) {
                 //初始化本地c配置
-                if(SdkNative.initLocalConfig(mContext,SdkNative.TYPE_SDK)){
+                if (SdkNative.initLocalConfig(mContext, SdkNative.TYPE_SDK)) {
                     SdkNative.initNetConfig(mContext, new NativeListener() {
                         @Override
                         public void onSuccess() {
                             Message message = Message.obtain();
                             message.what = CODE_INIT_SUCCESS;
-                            message.arg2=count;
+                            message.arg2 = count;
                             huosdkHandler.sendMessage(message);
                         }
+
                         @Override
                         public void onFail(int code, final String msg) {
                             L.e("hongliangsdk", "native 失败code=" + code);
@@ -232,14 +249,14 @@ public class HuosdkInnerManager {
                             message.what = CODE_INIT_FAIL;
                             message.arg1 = code;
                             message.obj = msg;
-                            message.arg2=count;
+                            message.arg2 = count;
                             huosdkHandler.sendMessage(message);
                         }
                     });
-                }else{
+                } else {
                     Message message = Message.obtain();
                     message.what = CODE_INIT_SUCCESS;
-                    message.arg2=count;
+                    message.arg2 = count;
                     huosdkHandler.sendMessage(message);
                 }
                 return null;
@@ -251,8 +268,10 @@ public class HuosdkInnerManager {
         }
         nativeAsyncTask.execute();
     }
+
     /**
      * count=1标示正常请求，2表示在初始化时发现rsakey错误后的重试流程
+     *
      * @param count 当前是第几次请求
      */
     private void gotoStartup(final int count) {
@@ -305,36 +324,39 @@ public class HuosdkInnerManager {
 
     /**
      * 执行退出登陆
+     *
      * @param type
      */
-    public void logoutExecute(final int type){
-        if(!LoginControl.isLogin()){
-            if(onLogoutListener!=null){
-                onLogoutListener.logoutSuccess(type,SdkConstant.CODE_NOLOGIN,"尚未登陆");
+    public void logoutExecute(final int type) {
+        if (!LoginControl.isLogin()) {
+            if (onLogoutListener != null) {
+                onLogoutListener.logoutSuccess(type, SdkConstant.CODE_NOLOGIN, "尚未登陆");
             }
             return;
         }
-        if(type==OnLogoutListener.TYPE_TOKEN_INVALID){//账号过期的，直接通知cp过期
+        if (type == OnLogoutListener.TYPE_TOKEN_INVALID) {//账号过期的，直接通知cp过期
             removeFloatView();
             removeFloatView();
-            if(onLogoutListener!=null){
-                onLogoutListener.logoutSuccess(type,SdkConstant.CODE_SUCCESS,"退出成功");
+            if (onLogoutListener != null) {
+                onLogoutListener.logoutSuccess(type, SdkConstant.CODE_SUCCESS, "退出成功");
             }
             LoginControl.clearLogin();
             return;
         }
-        final BaseRequestBean baseRequestBean=new BaseRequestBean();
-        HttpParamsBuild httpParamsBuild=new HttpParamsBuild(GsonUtil.getGson().toJson(baseRequestBean));
+        final BaseRequestBean baseRequestBean = new BaseRequestBean();
+        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(baseRequestBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<NoticeResultBean>(mContext, httpParamsBuild.getAuthkey()) {
             @Override
             public void onDataSuccess(NoticeResultBean data) {
                 Map<String, String> map_ekv = new HashMap<String, String>();
                 map_ekv.put("deviceid", baseRequestBean.getDevice().getDevice_id());
                 MobclickAgent.onEventValue(mContext, "logoutSuccess", map_ekv,101);
+                //tokendata事件
+                TCAgent.onEvent(mContext ,"logoutSuccess", "登出成功" , map_ekv);
 
                 removeFloatView();
-                if(onLogoutListener!=null){
-                    onLogoutListener.logoutSuccess(type,SdkConstant.CODE_SUCCESS,"退出成功");
+                if (onLogoutListener != null) {
+                    onLogoutListener.logoutSuccess(type, SdkConstant.CODE_SUCCESS, "退出成功");
                 }
                 LoginControl.clearLogin();
             }
@@ -342,37 +364,39 @@ public class HuosdkInnerManager {
             @Override
             public void onFailure(String code, String msg) {
                 super.onFailure(code, msg);
-                if(onLogoutListener!=null){
-                    onLogoutListener.logoutError(type,code,msg);
+                if (onLogoutListener != null) {
+                    onLogoutListener.logoutError(type, code, msg);
                 }
             }
         };
         httpCallbackDecode.setShowTs(false);
         httpCallbackDecode.setLoadingCancel(false);
         httpCallbackDecode.setShowLoading(false);
-        RxVolley.post(SdkApi.getLogout(), httpParamsBuild.getHttpParams(),httpCallbackDecode);
+        RxVolley.post(SdkApi.getLogout(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
     }
 
     /**
      * 退出登陆
      */
-    public void logout(){
-        if(!checkCallOk(true)){
+    public void logout() {
+        if (!checkCallOk(true)) {
             return;
         }
         logoutExecute(OnLogoutListener.TYPE_NORMAL_LOGOUT);
     }
+
     /**
      * 退出登录
      */
     public void addLogoutListener(final OnLogoutListener onLogoutListener) {
-        this.onLogoutListener=onLogoutListener;
+        this.onLogoutListener = onLogoutListener;
     }
+
     /**
      * 打开用户中心
      */
     public void openUcenter() {
-        if(!checkCallOk(true)){
+        if (!checkCallOk(true)) {
             return;
         }
         if (!LoginControl.isLogin()) {
@@ -386,47 +410,53 @@ public class HuosdkInnerManager {
      * 显示登录
      */
     public void showLogin(boolean isShowQuikLogin) {
-        if(!checkCallOk(true)){
+        if (!checkCallOk(true)) {
             return;
         }
         LoginControl.clearLogin();
         //普通登陆类型
         removeFloatView();
-        if(isShowQuikLogin){
+        if (isShowQuikLogin) {
             HuoLoginActivity.start(mContext, HuoLoginActivity.TYPE_FAST_LOGIN);
-        }else{
+        } else {
             HuoLoginActivity.start(mContext, HuoLoginActivity.TYPE_LOGIN);
         }
     }
+
     /**
      * 切换账号
      */
-    public void switchAccount(){
-        if(!checkCallOk(true)){
+    public void switchAccount() {
+        if (!checkCallOk(true)) {
             return;
         }
         logoutExecute(OnLogoutListener.TYPE_SWITCH_ACCOUNT);
     }
+
     /**
      * 注册一个登录监听，需要在不使用的时候解除监听，例如onDestory方法中解除
-     * @param  onLoginListener 登陆监听
+     *
+     * @param onLoginListener 登陆监听
      */
     public void addLoginListener(OnLoginListener onLoginListener) {
-       this.onLoginListener =onLoginListener;
+        this.onLoginListener = onLoginListener;
     }
+
     /**
      * 解除登陆监听
      */
     public void removeLoginListener(OnLoginListener onLoginListener) {
-        this.onLoginListener =null;
+        this.onLoginListener = null;
     }
+
     /**
      * 启动支付
+     *
      * @param payParam        支付参数
      * @param paymentListener 支付回调监听
      */
     public void showPay(CustomPayParam payParam, OnPaymentListener paymentListener) {
-        if(!checkCallOk(true)){
+        if (!checkCallOk(true)) {
             return;
         }
         if (!checkPayParams(payParam)) {
@@ -438,7 +468,7 @@ public class HuosdkInnerManager {
         HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(sdkPayRequestBean));
         StringBuilder urlParams = httpParamsBuild.getHttpParams().getUrlParams();
         this.paymentListener = paymentListener;
-        WebPayActivity.start(mContext, urlParams.toString(),payParam.getProduct_price(),payParam.getProduct_name(),httpParamsBuild.getAuthkey());
+        WebPayActivity.start(mContext, urlParams.toString(), payParam.getProduct_price(), payParam.getProduct_name(), httpParamsBuild.getAuthkey());
     }
 
     private boolean checkPayParams(CustomPayParam payParam) {
@@ -450,7 +480,7 @@ public class HuosdkInnerManager {
             Toast.makeText(mContext, "请先登录！", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (payParam.getCp_order_id()==null) {
+        if (payParam.getCp_order_id() == null) {
             Toast.makeText(mContext, "订单号不能为空！", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -464,16 +494,16 @@ public class HuosdkInnerManager {
             Log.d("checkPayParams", "价格不合理，多于两位小数,已经去掉");
             payParam.setProduct_price((Float.valueOf((int) tempPrice)) / 100);
         }
-        if (payParam.getProduct_id()==null) {
+        if (payParam.getProduct_id() == null) {
             Toast.makeText(mContext, "商品id不能为空！", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (payParam.getProduct_name()==null) {
+        if (payParam.getProduct_name() == null) {
             Toast.makeText(mContext, "商品名称不能为空！", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (payParam.getExt()==null) {
+        if (payParam.getExt() == null) {
             Toast.makeText(mContext, "cp扩展参数不能为空！", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -485,7 +515,7 @@ public class HuosdkInnerManager {
     }
 
     public void setRoleInfo(RoleInfo roleInfo, final SubmitRoleInfoCallBack submitRoleInfoCallBack) {
-        if(!checkCallOk(true)){
+        if (!checkCallOk(true)) {
             return;
         }
         if (!BaseAppUtil.isNetWorkConneted(mContext)) {
@@ -496,7 +526,7 @@ public class HuosdkInnerManager {
             Toast.makeText(mContext, "请先登录！", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(!checkRoleInfoParam(roleInfo)){
+        if (!checkRoleInfoParam(roleInfo)) {
             return;
         }
         UproleinfoRequestBean uproleinfoRequestBean = new UproleinfoRequestBean();
@@ -525,8 +555,9 @@ public class HuosdkInnerManager {
         httpCallbackDecode.setShowLoading(false);
         RxVolley.post(SdkApi.getUproleinfo(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
     }
-    private boolean checkRoleInfoParam(RoleInfo roleInfo){
-        if(roleInfo==null){
+
+    private boolean checkRoleInfoParam(RoleInfo roleInfo) {
+        if (roleInfo == null) {
             Toast.makeText(mContext, "角色信息不能为空！", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -534,20 +565,20 @@ public class HuosdkInnerManager {
             Toast.makeText(mContext, "数据类型不能为空！", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (roleInfo.getServer_id()==null) {
+        if (roleInfo.getServer_id() == null) {
             Toast.makeText(mContext, "服务器id不能为空！", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (roleInfo.getServer_name()==null) {
+        if (roleInfo.getServer_name() == null) {
             Toast.makeText(mContext, "所在服务器名称不能为空！", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (roleInfo.getRole_id()==null) {
+        if (roleInfo.getRole_id() == null) {
             Toast.makeText(mContext, "角色id不能为空！", Toast.LENGTH_SHORT).show();
             return false;
 
         }
-        if (roleInfo.getRole_name()==null) {
+        if (roleInfo.getRole_name() == null) {
             Toast.makeText(mContext, "角色名称不能为空！", Toast.LENGTH_SHORT).show();
             return false;
 
@@ -558,12 +589,12 @@ public class HuosdkInnerManager {
 
         }
 
-        if (roleInfo.getRole_level()==null) {
+        if (roleInfo.getRole_level() == null) {
             Toast.makeText(mContext, "角色等级不能为空！", Toast.LENGTH_SHORT).show();
             return false;
 
         }
-        if (roleInfo.getRole_vip()==null) {
+        if (roleInfo.getRole_vip() == null) {
             Toast.makeText(mContext, "vip等级不能为空！", Toast.LENGTH_SHORT).show();
             return false;
 
@@ -573,31 +604,32 @@ public class HuosdkInnerManager {
             return false;
 
         }
-        if (roleInfo.getRolelevel_ctime()==null) {
+        if (roleInfo.getRolelevel_ctime() == null) {
             Toast.makeText(mContext, "创建角色的时间不能为空！", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (roleInfo.getRolelevel_mtime()==null) {
+        if (roleInfo.getRolelevel_mtime() == null) {
             Toast.makeText(mContext, "角色等级变化时间不能为空！", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
+
     /**
      * 显示浮标
      */
     public void showFloatView() {
-        if(!checkCallOk(false)){
+        if (!checkCallOk(false)) {
             return;
         }
         if (!LoginControl.isLogin()) {
             return;
         }
-        L.e(TAG,"准备显示浮点："+SdkConstant.isShowFloat);
-        if(SdkConstant.isShowFloat){//没有设置隐藏显示
+        L.e(TAG, "准备显示浮点：" + SdkConstant.isShowFloat);
+        if (SdkConstant.isShowFloat) {//没有设置隐藏显示
             FloatViewManager.getInstance(mContext).showFloat();
             boolean floatWindowOpAllowed = HLAppUtil.isFloatWindowOpAllowed(mContext);
-            if (!floatWindowOpAllowed&&(MiuiDeviceUtil.isMiui()|| DeviceUtil.isMeizuFlymeOS())) {
+            if (!floatWindowOpAllowed && (MiuiDeviceUtil.isMiui() || DeviceUtil.isMeizuFlymeOS())) {
                 new OpenFloatPermissionDialog().showDialog(mContext, true, null, new OpenFloatPermissionDialog.ConfirmDialogListener() {
                     @Override
                     public void ok() {
@@ -611,29 +643,31 @@ public class HuosdkInnerManager {
             }
         }
     }
+
     /**
      * 隐藏浮标
      */
     public void removeFloatView() {
         try {
-            if(!checkCallOk(false)){
+            if (!checkCallOk(false)) {
                 return;
             }
             FloatViewManager.getInstance(mContext).hidFloat();
-            L.e(TAG,"浮点隐藏了");
+            L.e(TAG, "浮点隐藏了");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     /**
      * 资源回收
      */
     public void recycle() {
         try {
-            if(!checkCallOk(false)){
+            if (!checkCallOk(false)) {
                 return;
             }
-            onLogoutListener=null;//登出监听置null
+            onLogoutListener = null;//登出监听置null
             //消耗重力感应监听
             OrientationSensorManager.getInstance(mContext).onDestroy();
             logoutExecute(OnLogoutListener.TYPE_NORMAL_LOGOUT);
@@ -652,6 +686,7 @@ public class HuosdkInnerManager {
 
     /**
      * 获取用户注册的登陆监听
+     *
      * @return
      */
     public OnLoginListener getOnLoginListener() {
@@ -660,18 +695,19 @@ public class HuosdkInnerManager {
 
     /**
      * 检查调用是否正常，是否在主线程调用，是否进行初始化
+     *
      * @param requestInitSuccess
      * @return true 调用ok  false 调用不正常
      */
-    private boolean checkCallOk(boolean requestInitSuccess){
+    private boolean checkCallOk(boolean requestInitSuccess) {
         if (Looper.myLooper() != Looper.getMainLooper()) {
             throw new RuntimeException("未在主线程调用此方法！！！！");
         }
-        if(mContext==null){
+        if (mContext == null) {
             throw new RuntimeException("请在调用initSdk方法后调用此方法！！！！");
         }
-        if(requestInitSuccess&&!initSuccess){
-            T.s(mContext,"初始化失败，请重新打开应用");
+        if (requestInitSuccess && !initSuccess) {
+            T.s(mContext, "初始化失败，请重新打开应用");
             return false;
         }
         return true;
