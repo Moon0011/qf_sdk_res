@@ -31,7 +31,7 @@ import com.game.sdk.util.Base64Util;
 import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
-import com.game.sdk.view.HuoFastLoginView;
+import com.game.sdk.view.HuoFastLoginViewNew;
 import com.game.sdk.view.HuoLoginViewNew;
 import com.game.sdk.view.HuoRegisterViewNew;
 import com.game.sdk.view.HuoUserNameRegisterViewNew;
@@ -43,17 +43,16 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 import java.util.Map;
-
 public class HuoLoginActivity extends BaseActivity {
     private static final String TAG = HuoLoginActivity.class.getSimpleName();
-    public final static int TYPE_FAST_LOGIN = 0;
-    public final static int TYPE_LOGIN = 1;
-    //    public final static int TYPE_REGISTER_LOGIN=2;
-    private final static int CODE_LOGIN_FAIL = -1;//登陆失败
-    private final static int CODE_LOGIN_CANCEL = -2;//用户取消登陆
+    public final static int TYPE_FAST_LOGIN=0;
+    public final static int TYPE_LOGIN=1;
+//    public final static int TYPE_REGISTER_LOGIN=2;
+    private final static int CODE_LOGIN_FAIL=-1;//登陆失败
+    private final static int CODE_LOGIN_CANCEL=-2;//用户取消登陆
     HuoLoginViewNew huoLoginView;
     HuoRegisterViewNew huoRegisterView;
-    private HuoFastLoginView huoFastLoginView;
+    private HuoFastLoginViewNew huoFastLoginView;
     private HuoUserNameRegisterViewNew huoUserNameRegisterView;
     private ViewStackManager viewStackManager;
     private boolean callBacked;//是否已经回调过了
@@ -87,7 +86,7 @@ public class HuoLoginActivity extends BaseActivity {
         viewStackManager = ViewStackManager.getInstance(this);
         int type = getIntent().getIntExtra("type", 1);
         huoLoginView = (HuoLoginViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_loginView_new"));
-        huoFastLoginView = (HuoFastLoginView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_fastLoginView"));
+        huoFastLoginView = (HuoFastLoginViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_fastLoginView_new"));
         huoRegisterView = (HuoRegisterViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_registerView"));
         huoUserNameRegisterView = (HuoUserNameRegisterViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_userNameRegisterView"));
         huoSdkSelectAccountView = (SelectAccountView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_selectAccountView"));
@@ -136,7 +135,7 @@ public class HuoLoginActivity extends BaseActivity {
     }
 
 
-    public HuoFastLoginView getHuoFastLoginView() {
+    public HuoFastLoginViewNew getHuoFastLoginView() {
         return huoFastLoginView;
     }
 
@@ -186,11 +185,11 @@ public class HuoLoginActivity extends BaseActivity {
         userNameRegisterRequestBean.setUsername(account);
         userNameRegisterRequestBean.setPassword(password);
         userNameRegisterRequestBean.setIntroducer("");
-        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(userNameRegisterRequestBean));
+        HttpParamsBuild httpParamsBuild=new HttpParamsBuild(GsonUtil.getGson().toJson(userNameRegisterRequestBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<RegisterResultBean>(this, httpParamsBuild.getAuthkey()) {
             @Override
             public void onDataSuccess(RegisterResultBean data) {
-                if (data != null) {
+                if(data!=null){
 //                    T.s(loginActivity,"登陆成功："+data.getCp_user_token());
                     Map<String, String> map_ekv = new HashMap<String, String>();
                     map_ekv.put("uid", data.getMem_id());
@@ -202,11 +201,11 @@ public class HuoLoginActivity extends BaseActivity {
                     LoginControl.saveUserToken(data.getCp_user_token());
                     HuosdkInnerManager.notice = data.getNotice(); //发送通知内容
                     OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();
-                    if (onLoginListener != null) {
-                        onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(), data.getCp_user_token()));
+                    if(onLoginListener!=null){
+                        onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(),data.getCp_user_token()));
                         //登录成功后统一弹出弹框
                         DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), HuosdkInnerManager.notice);
-                        if (true) {
+                        if(true) {
                             Toast.makeText(HuoLoginActivity.this, "试玩/一键注册无法进行实名信息认证，账号会存在安全隐患。", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -232,17 +231,17 @@ public class HuoLoginActivity extends BaseActivity {
         httpCallbackDecode.setLoadingCancel(false);
         httpCallbackDecode.setShowLoading(true);
         httpCallbackDecode.setLoadMsg("登陆中...");
-        RxVolley.post(SdkApi.getRegister(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
+        RxVolley.post(SdkApi.getRegister(), httpParamsBuild.getHttpParams(),httpCallbackDecode);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         viewStackManager.clear();
-        if (!callBacked) {//还没有回调过，是用户取消登陆
-            LoginErrorMsg loginErrorMsg = new LoginErrorMsg(CODE_LOGIN_CANCEL, "用户取消登陆");
+        if(!callBacked){//还没有回调过，是用户取消登陆
+            LoginErrorMsg loginErrorMsg=new LoginErrorMsg(CODE_LOGIN_CANCEL,"用户取消登陆");
             OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();
-            if (onLoginListener != null) {
+            if(onLoginListener!=null){
                 onLoginListener.loginError(loginErrorMsg);
             }
         }
@@ -255,7 +254,6 @@ public class HuoLoginActivity extends BaseActivity {
         this.callBacked = true;
         finish();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -272,14 +270,13 @@ public class HuoLoginActivity extends BaseActivity {
         TCAgent.onPageEnd(this,"HuoLoginActivity");
         overridePendingTransition(0, 0);
     }
-
     public static void start(Context context, int type) {
         Intent starter = new Intent(context, HuoLoginActivity.class);
         starter.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        if (context instanceof Activity) {
-            ((Activity) context).overridePendingTransition(0, 0);
+        if(context instanceof Activity){
+            ((Activity)context).overridePendingTransition(0, 0);
         }
-        starter.putExtra("type", type);
+        starter.putExtra("type",type);
         context.startActivity(starter);
     }
 }

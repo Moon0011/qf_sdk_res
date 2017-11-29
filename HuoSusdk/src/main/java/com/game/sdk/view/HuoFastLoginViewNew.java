@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,44 +32,39 @@ import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.kymjs.rxvolley.RxVolley;
-import com.tendcloud.tenddata.TCAgent;
-import com.umeng.analytics.MobclickAgent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by liu hong liang on 2016/11/12.
  */
 
-public class HuoFastLoginView extends FrameLayout implements View.OnClickListener {
-    private static final String TAG = HuoFastLoginView.class.getSimpleName();
+public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickListener {
+    private static final String TAG = HuoFastLoginViewNew.class.getSimpleName();
     //快速登陆
     ImageView huoIvFastLoading;
 
-    TextView huoTvFastUserName;
+    TextView huoTvFastUserName,tvloginStatus;
 
-    TextView huoTvFastChangeCount;
-
+//    TextView huoTvFastChangeCount;
+    Button btnFastChangeCount;
     LinearLayout huoLlFastLogin;
     private HuoLoginActivity loginActivity;
     private ViewStackManager viewStackManager;
     Handler handler = new Handler();
     private Context mContext;
 
-    public HuoFastLoginView(Context context) {
+    public HuoFastLoginViewNew(Context context) {
         super(context);
         mContext = context;
         setupUI();
     }
 
-    public HuoFastLoginView(Context context, AttributeSet attrs) {
+    public HuoFastLoginViewNew(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         setupUI();
     }
 
-    public HuoFastLoginView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public HuoFastLoginViewNew(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
         setupUI();
@@ -77,12 +73,14 @@ public class HuoFastLoginView extends FrameLayout implements View.OnClickListene
     private void setupUI() {
         loginActivity = (HuoLoginActivity) getContext();
         viewStackManager = ViewStackManager.getInstance(loginActivity);
-        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), MResource.LAYOUT, "huo_sdk_include_fast_login"), this);
+        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), MResource.LAYOUT, "huo_sdk_include_fast_login_new"), this);
         huoIvFastLoading = (ImageView) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_iv_fastLoading"));
         huoTvFastUserName = (TextView) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_tv_fastUserName"));
-        huoTvFastChangeCount = (TextView) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_tv_fastChangeCount"));
+        tvloginStatus = (TextView) findViewById(MResource.getIdByName(getContext(), "id", "tv_login_status"));
+//        huoTvFastChangeCount = (TextView) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_tv_fastChangeCount"));
+        btnFastChangeCount = (Button) findViewById(MResource.getIdByName(getContext(), "id", "btn_change_account"));
         huoLlFastLogin = (LinearLayout) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_ll_fast_login"));
-        huoTvFastChangeCount.setOnClickListener(this);
+        btnFastChangeCount.setOnClickListener(this);
 
         huoIvFastLoading.setAnimation(DialogUtil.rotaAnimation());
     }
@@ -93,7 +91,7 @@ public class HuoFastLoginView extends FrameLayout implements View.OnClickListene
         //自动设置相应的布局尺寸
         if (getChildCount() > 0) {
             View childAt = getChildAt(0);
-            HuoFastLoginView.LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
+            LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
             layoutParams.leftMargin = (int) (getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
             layoutParams.rightMargin = layoutParams.leftMargin;
         }
@@ -125,7 +123,7 @@ public class HuoFastLoginView extends FrameLayout implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == huoTvFastChangeCount.getId()) {
+        if (view.getId() == btnFastChangeCount.getId()) {
             viewStackManager.addView(loginActivity.getHuoLoginView());
             viewStackManager.removeView(this);
         }
@@ -145,13 +143,6 @@ public class HuoFastLoginView extends FrameLayout implements View.OnClickListene
                     public void run() {
                         if (data != null && getVisibility() == VISIBLE) {//当前界面还在显示状态才执行
 //                    T.s(loginActivity,"登陆成功："+data.getCp_user_token());
-                            Map<String, String> map_ekv = new HashMap<String, String>();
-                            map_ekv.put("uid", data.getMem_id());
-                            //友盟事件
-                            MobclickAgent.onEventValue(mContext, "loginSuccess", map_ekv,100);
-                            //tokendata事件
-                            TCAgent.onEvent(mContext, "loginSuccess", "登陆成功" , map_ekv);
-
                             //接口回调通知
                             LoginControl.saveUserToken(data.getCp_user_token());
                             HuosdkInnerManager.notice = data.getNotice(); //发送通知内容
@@ -179,7 +170,7 @@ public class HuoFastLoginView extends FrameLayout implements View.OnClickListene
                 super.onFailure(code, msg);
                 //快速登陆出错，直接去登陆页面
                 viewStackManager.addView(loginActivity.getHuoLoginView());
-                viewStackManager.removeView(HuoFastLoginView.this);
+                viewStackManager.removeView(HuoFastLoginViewNew.this);
             }
         };
         httpCallbackDecode.setShowTs(true);

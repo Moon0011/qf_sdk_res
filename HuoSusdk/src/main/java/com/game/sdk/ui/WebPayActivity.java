@@ -69,6 +69,8 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
         setupUI();
     }
 
+
+
     @Override
     public void changeTitleStatus(boolean show) {
         super.changeTitleStatus(show);
@@ -116,16 +118,15 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
                 if (!DialogUtil.isShowing()) {
                     DialogUtil.showDialog(WebPayActivity.this, "正在加载...");
                 }
-                if (SdkApi.getWebSdkPay().equals(url)) {
+                if(SdkApi.getWebSdkPay().equals(url)){
                     requestCount++;
-                    if (requestCount > 1) {
+                    if(requestCount>1){
                         finish();
                     }
-                    L.e("testWebview onPageStarted", "url=" + url + "  count=" + requestCount);
+                    L.e("testWebview onPageStarted", "url=" + url+"  count="+requestCount);
                 }
                 L.e("testWebview onPageStarted", "url=" + url);
             }
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 L.e("WebPayActivity1", "url=" + url);

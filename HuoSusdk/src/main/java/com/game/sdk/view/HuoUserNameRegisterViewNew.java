@@ -65,7 +65,7 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
     private boolean isShiWan = false;
     private ImageView huo_sdk_img_show_pwd;
     private ImageView huo_sdk_iv_logo;
-    private TextView huo_tv_regist_Logo;
+    private TextView  huo_tv_regist_Logo;
     private Context mContext;
     private boolean showPwd = false;
     private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
