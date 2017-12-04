@@ -53,8 +53,6 @@ import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
 import com.tendcloud.tenddata.TDGAAccount;
 import com.tendcloud.tenddata.TalkingDataGA;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.analytics.game.UMGameAgent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,15 +91,6 @@ public class HuosdkInnerManager {
                 case CODE_INIT_SUCCESS:
                     L.e("hongliangsdk1", SdkConstant.HS_AGENT);
                     initRequestCount++;
-
-                    //===友盟初始化===
-//                    MobclickAgent.setDebugMode(true);
-//                    MobclickAgent.openActivityDurationTrack(false);
-////                    MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
-//                    MobclickAgent.startWithConfigure(
-//                            new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, "qfsdk_bbb",
-//                                    MobclickAgent.EScenarioType.E_UM_NORMAL));
-
 //                    ===talkingdata初始化===
 //                    TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, SdkConstant.HS_AGENT);
                     TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, "qfsdk_bbb");
@@ -196,16 +185,6 @@ public class HuosdkInnerManager {
         SP.init(mContext);
         initRequestCount = 0;
         initSdk(1);
-
-//        //                    TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, SdkConstant.HS_AGENT);
-//        TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID,"qfsdk_aaa");
-//
-//        MobclickAgent.setDebugMode(true);
-//        MobclickAgent.openActivityDurationTrack(false);
-////        MobclickAgent.setScenarioType(context, MobclickAgent.EScenarioType.E_UM_NORMAL);
-//        MobclickAgent.startWithConfigure(
-//                new MobclickAgent.UMAnalyticsConfig(context, SdkConstant.UMENG_APP_KEY, "qfsdk_aaa",
-//                        MobclickAgent.EScenarioType.E_UM_NORMAL));
     }
 
 
@@ -371,10 +350,7 @@ public class HuosdkInnerManager {
                 UserInfo userInfoLast = UserLoginInfodao.getInstance(mContext).getUserInfoLast();
                 if (userInfoLast != null && userInfoLast.username != null) {
                     map_ekv.put("username", userInfoLast.username);
-//                    map_ekv.put("uid", userInfoLast.mem_id);
 
-                    MobclickAgent.onEventValue(mContext, "logoutSuccess", map_ekv, 101);
-                    MobclickAgent.onProfileSignOff();
                     //tokendata事件
                     TalkingDataGA.onEvent("logoutSuccess", map_ekv);
                     TDGAAccount.setAccount(userInfoLast.mem_id);
@@ -540,8 +516,6 @@ public class HuosdkInnerManager {
     }
 
     public void setRoleInfo(RoleInfo roleInfo, final SubmitRoleInfoCallBack submitRoleInfoCallBack) {
-        UMGameAgent.setPlayerLevel(roleInfo.getRole_level());
-
         TDGAAccount.setAccount(roleInfo.getRole_id());
         TDGAAccount.getTDGAccount(mContext).setAccountName(roleInfo.getRole_name());
         TDGAAccount.getTDGAccount(mContext).setAccountType(TDGAAccount.AccountType.REGISTERED);

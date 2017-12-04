@@ -33,7 +33,6 @@ import com.game.sdk.util.MResource;
 import com.kymjs.rxvolley.RxVolley;
 import com.tendcloud.tenddata.TDGAAccount;
 import com.tendcloud.tenddata.TalkingDataGA;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -150,8 +149,6 @@ public class HuoFastLoginView extends FrameLayout implements View.OnClickListene
                             map_ekv.put("username", userName);
                             map_ekv.put("uid", data.getMem_id());
                             //友盟事件
-                            MobclickAgent.onEventValue(mContext, "loginSuccess", map_ekv, 100);
-                            MobclickAgent.onProfileSignIn(userName);
                             //tokendata事件
                             TalkingDataGA.onEvent("loginSuccess", map_ekv);
                             TDGAAccount.setAccount(data.getMem_id());

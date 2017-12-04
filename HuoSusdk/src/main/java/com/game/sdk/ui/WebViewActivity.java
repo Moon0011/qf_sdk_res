@@ -39,7 +39,6 @@ import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.kymjs.rxvolley.client.HttpParams;
 import com.tendcloud.tenddata.TalkingDataGA;
-import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -342,8 +341,6 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPageEnd("WebViewActivity");
-        MobclickAgent.onPause(this);
         TalkingDataGA.onPause(this);
         overridePendingTransition(0, 0);
     }
@@ -351,8 +348,6 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onPageStart("WebViewActivity");
-        MobclickAgent.onResume(this);
         TalkingDataGA.onResume(this);
         if (commonJsForWeb != null) {
             commonJsForWeb.onResume();
@@ -373,7 +368,6 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
         Map<String, String> map_ekv = new HashMap<String, String>();
         map_ekv.put("orderId", orderId);
         map_ekv.put("money", money + "");
-        MobclickAgent.onEventValue(this, "paySuccess", map_ekv, 300);
         //tokendata事件
         TalkingDataGA.onEvent("paySuccess", map_ekv);
         if (wv != null) {
@@ -386,7 +380,6 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
         Map<String, String> map_ekv = new HashMap<String, String>();
         map_ekv.put("orderId", orderId);
         map_ekv.put("money", money + "");
-        MobclickAgent.onEventValue(this, "payFail", map_ekv, 301);
         //tokendata事件
         TalkingDataGA.onEvent("payFail", map_ekv);
         if (TextUtils.isEmpty(msg)) {

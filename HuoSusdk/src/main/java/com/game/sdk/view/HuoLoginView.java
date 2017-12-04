@@ -53,7 +53,6 @@ import com.game.sdk.util.RegExpUtil;
 import com.kymjs.rxvolley.RxVolley;
 import com.tendcloud.tenddata.TDGAAccount;
 import com.tendcloud.tenddata.TalkingDataGA;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -354,8 +353,6 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
                     Map<String, String> map_ekv = new HashMap<String, String>();
                     map_ekv.put("username", account);
                     map_ekv.put("uid", data.getMem_id());
-                    MobclickAgent.onEventValue(mContext, "loginSuccess", map_ekv, 100);
-                    MobclickAgent.onProfileSignIn(account);
                     //tokendata事件
                     TalkingDataGA.onEvent("loginSuccess", map_ekv);
                     TDGAAccount.setAccount(data.getMem_id());
