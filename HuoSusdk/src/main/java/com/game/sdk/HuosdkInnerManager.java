@@ -95,12 +95,12 @@ public class HuosdkInnerManager {
                     initRequestCount++;
 
                     //===友盟初始化===
-                    MobclickAgent.setDebugMode(true);
-                    MobclickAgent.openActivityDurationTrack(false);
-//                    MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
-                    MobclickAgent.startWithConfigure(
-                            new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, "qfsdk_bbb",
-                                    MobclickAgent.EScenarioType.E_UM_NORMAL));
+//                    MobclickAgent.setDebugMode(true);
+//                    MobclickAgent.openActivityDurationTrack(false);
+////                    MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
+//                    MobclickAgent.startWithConfigure(
+//                            new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, "qfsdk_bbb",
+//                                    MobclickAgent.EScenarioType.E_UM_NORMAL));
 
 //                    ===talkingdata初始化===
 //                    TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, SdkConstant.HS_AGENT);
