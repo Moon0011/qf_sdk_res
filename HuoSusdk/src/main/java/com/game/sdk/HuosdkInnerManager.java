@@ -49,6 +49,8 @@ import com.game.sdk.util.MiuiDeviceUtil;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
+import com.yolanda.nohttp.Logger;
+import com.yolanda.nohttp.NoHttp;
 
 /**
  * author janecer 2014年7月22日上午9:45:18
@@ -160,6 +162,11 @@ public class HuosdkInnerManager {
     public void initSdk(Context context, OnInitSdkListener onInitSdkListener) {
         this.onInitSdkListener = onInitSdkListener;
         this.mContext = context;
+        //haibei http
+        NoHttp.initialize(context);
+        Logger.setTag("clock");
+        Logger.setDebug(false);// 开始NoHttp的调试模式, 这样就能看到请求过程和日志
+
         if (!checkCallOk(false)) {
             return;
         }
@@ -174,16 +181,6 @@ public class HuosdkInnerManager {
         SP.init(mContext);
         initRequestCount = 0;
         initSdk(1);
-
-//        //                    TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, SdkConstant.HS_AGENT);
-//        TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID,"qfsdk_aaa");
-//
-//        MobclickAgent.setDebugMode(true);
-//        MobclickAgent.openActivityDurationTrack(false);
-////        MobclickAgent.setScenarioType(context, MobclickAgent.EScenarioType.E_UM_NORMAL);
-//        MobclickAgent.startWithConfigure(
-//                new MobclickAgent.UMAnalyticsConfig(context, SdkConstant.UMENG_APP_KEY, "qfsdk_aaa",
-//                        MobclickAgent.EScenarioType.E_UM_NORMAL));
     }
 
 
@@ -281,35 +278,34 @@ public class HuosdkInnerManager {
                 if (data != null) {
                     SdkConstant.userToken = data.getUser_token();
                     SdkConstant.SERVER_TIME_INTERVAL = data.getTimestamp() - System.currentTimeMillis();
-                    SdkConstant.thirdLoginInfoList = data.getOauth_info();
+                    SdkConstant.thirdLoginInfoList=data.getOauth_info();
                     if ("1".equals(data.getUp_status())) {//版本更新
                         SdkNative.resetInstall(mContext);//有更新重置install数据
                         if (!TextUtils.isEmpty(data.getUp_url())) {
                             HuosdkService.startServiceByUpdate(mContext, data.getUp_url());
                         }
                     }
-                    initSuccess = true;
-                    onInitSdkListener.initSuccess("200", "初始化成功");
+                    initSuccess=true;
+                    onInitSdkListener.initSuccess("200","初始化成功");
                 }
             }
-
             @Override
             public void onFailure(String code, String msg) {
-                if (count < 3) {
+                if(count<3){
                     //1001	请求KEY错误	rsakey	解密错误
-                    if (HttpCallbackDecode.CODE_RSA_KEY_ERROR.equals(code)) {//删除本地公钥，重新请求rsa公钥
+                    if(HttpCallbackDecode.CODE_RSA_KEY_ERROR.equals(code)){//删除本地公钥，重新请求rsa公钥
                         SdkNative.resetInstall(mContext);
-                        L.e(TAG, "rsakey错误，重新请求rsa公钥");
-                        if (initRequestCount < 2) {//initSdk只重试一次rsa请求
+                        L.e(TAG,"rsakey错误，重新请求rsa公钥");
+                        if(initRequestCount<2){//initSdk只重试一次rsa请求
                             initSdk(1000);
                             return;
                         }
                     }
-                    super.onFailure(code, msg);
-                    gotoStartup(count + 1);//重试
-                } else {
-                    super.onFailure(code, msg);
-                    onInitSdkListener.initError(code, msg);
+                    super.onFailure(code,msg);
+                    gotoStartup(count+1);//重试
+                }else{
+                    super.onFailure(code,msg);
+                    onInitSdkListener.initError(code,msg);
                 }
             }
         };
@@ -340,7 +336,7 @@ public class HuosdkInnerManager {
             LoginControl.clearLogin();
             return;
         }
-        final BaseRequestBean baseRequestBean = new BaseRequestBean();
+        BaseRequestBean baseRequestBean = new BaseRequestBean();
         HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(baseRequestBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<NoticeResultBean>(mContext, httpParamsBuild.getAuthkey()) {
             @Override
