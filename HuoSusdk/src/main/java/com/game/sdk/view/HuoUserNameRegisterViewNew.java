@@ -42,7 +42,6 @@ import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.game.sdk.util.ScreenShot;
 import com.kymjs.rxvolley.RxVolley;
-import com.tendcloud.tenddata.TalkingDataGA;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -246,8 +245,6 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
                     map_ekv.put("uid", data.getMem_id());
                     map_ekv.put("regist_type", "user_and_name");
                     MobclickAgent.onEventValue(mContext, "registSuccess", map_ekv, 200);
-                    //tokendata事件
-                    TalkingDataGA.onEvent("registSuccess", map_ekv);
                     //接口回调通知
                     LoginControl.saveUserToken(data.getCp_user_token());
                     HuosdkInnerManager.notice = data.getNotice(); //发送通知内容

@@ -36,7 +36,6 @@ import com.game.sdk.util.BaseAppUtil;
 import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
-import com.tendcloud.tenddata.TalkingDataGA;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
@@ -291,7 +290,6 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
         super.onPause();
         MobclickAgent.onPageEnd("FloatWebActivity");
         MobclickAgent.onPause(this);
-        TalkingDataGA.onPause(this);
         overridePendingTransition(0, 0);
     }
 
@@ -300,7 +298,6 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
         super.onResume();
         MobclickAgent.onPageStart("FloatWebActivity");
         MobclickAgent.onResume(this);
-        TalkingDataGA.onResume(this);
 
         if (commonJsForWeb != null) {
             commonJsForWeb.onResume();
@@ -322,8 +319,6 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
         map_ekv.put("orderId", orderId);
         map_ekv.put("money", money + "");
         MobclickAgent.onEventValue(this, "paySuccess", map_ekv, 300);
-        //tokendata事件
-        TalkingDataGA.onEvent("paySuccess", map_ekv);
 
         if (wv != null) {
             wv.reload();
@@ -336,8 +331,6 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
         map_ekv.put("orderId", orderId);
         map_ekv.put("money", money + "");
         MobclickAgent.onEventValue(this, "payFail", map_ekv, 301);
-        //tokendata事件
-        TalkingDataGA.onEvent("payFail", map_ekv);
         if (TextUtils.isEmpty(msg)) {
             Toast.makeText(this, "支付失败", Toast.LENGTH_SHORT);
         } else {

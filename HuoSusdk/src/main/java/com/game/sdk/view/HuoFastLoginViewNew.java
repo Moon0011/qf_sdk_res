@@ -32,8 +32,6 @@ import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.kymjs.rxvolley.RxVolley;
-import com.tendcloud.tenddata.TDGAAccount;
-import com.tendcloud.tenddata.TalkingDataGA;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -154,9 +152,6 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
                             map_ekv.put("uid", data.getMem_id());
                             MobclickAgent.onEventValue(mContext, "loginSuccess", map_ekv, 100);
                             MobclickAgent.onProfileSignIn(userName);
-                            //tokendata事件
-                            TalkingDataGA.onEvent("loginSuccess", map_ekv);
-                            TDGAAccount.setAccount(data.getMem_id());
                             //接口回调通知
                             LoginControl.saveUserToken(data.getCp_user_token());
                             HuosdkInnerManager.notice = data.getNotice(); //发送通知内容

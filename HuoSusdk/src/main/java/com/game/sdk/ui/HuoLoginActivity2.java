@@ -46,8 +46,6 @@ import com.game.sdk.view.HuoUserNameRegisterViewNew;
 import com.game.sdk.view.SelectAccountView;
 import com.game.sdk.view.ViewStackManager;
 import com.kymjs.rxvolley.RxVolley;
-import com.tendcloud.tenddata.TDGAAccount;
-import com.tendcloud.tenddata.TalkingDataGA;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -283,9 +281,6 @@ public class HuoLoginActivity2 extends BaseActivity {
                             map_ekv.put("uid", data.getMem_id());
                             MobclickAgent.onEventValue(HuoLoginActivity2.this, "loginSuccess", map_ekv, 100);
                             MobclickAgent.onProfileSignIn(userName);
-                            //tokendata事件
-                            TalkingDataGA.onEvent("loginSuccess", map_ekv);
-                            TDGAAccount.setAccount(data.getMem_id());
                             //接口回调通知
                             LoginControl.saveUserToken(data.getCp_user_token());
                             HuosdkInnerManager.notice = data.getNotice(); //发送通知内容
