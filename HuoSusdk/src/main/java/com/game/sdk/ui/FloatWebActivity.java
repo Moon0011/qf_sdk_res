@@ -36,13 +36,9 @@ import com.game.sdk.util.BaseAppUtil;
 import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
-import com.tendcloud.tenddata.TalkingDataGA;
-import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class FloatWebActivity extends BaseActivity implements OnClickListener, IPayListener {
@@ -289,19 +285,12 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPageEnd("FloatWebActivity");
-        MobclickAgent.onPause(this);
-        TalkingDataGA.onPause(this);
         overridePendingTransition(0, 0);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onPageStart("FloatWebActivity");
-        MobclickAgent.onResume(this);
-        TalkingDataGA.onResume(this);
-
         if (commonJsForWeb != null) {
             commonJsForWeb.onResume();
         }
@@ -318,13 +307,6 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
     @Override
     public void paySuccess(String orderId, float money) {
         Toast.makeText(this, "支付成功", Toast.LENGTH_SHORT);
-        Map<String, String> map_ekv = new HashMap<String, String>();
-        map_ekv.put("orderId", orderId);
-        map_ekv.put("money", money + "");
-        MobclickAgent.onEventValue(this, "paySuccess", map_ekv, 300);
-        //tokendata事件
-        TalkingDataGA.onEvent("paySuccess", map_ekv);
-
         if (wv != null) {
             wv.reload();
         }
@@ -332,12 +314,6 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
 
     @Override
     public void payFail(String orderId, float money, boolean queryOrder, String msg) {
-        Map<String, String> map_ekv = new HashMap<String, String>();
-        map_ekv.put("orderId", orderId);
-        map_ekv.put("money", money + "");
-        MobclickAgent.onEventValue(this, "payFail", map_ekv, 301);
-        //tokendata事件
-        TalkingDataGA.onEvent("payFail", map_ekv);
         if (TextUtils.isEmpty(msg)) {
             Toast.makeText(this, "支付失败", Toast.LENGTH_SHORT);
         } else {

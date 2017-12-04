@@ -12,7 +12,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.game.sdk.db.LoginControl;
-import com.game.sdk.db.impl.UserLoginInfodao;
 import com.game.sdk.dialog.OpenFloatPermissionDialog;
 import com.game.sdk.domain.BaseRequestBean;
 import com.game.sdk.domain.CustomPayParam;
@@ -25,7 +24,6 @@ import com.game.sdk.domain.StartUpBean;
 import com.game.sdk.domain.StartupResultBean;
 import com.game.sdk.domain.SubmitRoleInfoCallBack;
 import com.game.sdk.domain.UproleinfoRequestBean;
-import com.game.sdk.domain.UserInfo;
 import com.game.sdk.floatwindow.FloatViewManager;
 import com.game.sdk.floatwindow.OrientationSensorManager;
 import com.game.sdk.http.HttpCallbackDecode;
@@ -51,13 +49,6 @@ import com.game.sdk.util.MiuiDeviceUtil;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
-import com.tendcloud.tenddata.TDGAAccount;
-import com.tendcloud.tenddata.TalkingDataGA;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.analytics.game.UMGameAgent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * author janecer 2014年7月22日上午9:45:18
@@ -93,19 +84,6 @@ public class HuosdkInnerManager {
                 case CODE_INIT_SUCCESS:
                     L.e("hongliangsdk1", SdkConstant.HS_AGENT);
                     initRequestCount++;
-
-                    //===友盟初始化===
-//                    MobclickAgent.setDebugMode(true);
-//                    MobclickAgent.openActivityDurationTrack(false);
-////                    MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
-//                    MobclickAgent.startWithConfigure(
-//                            new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, "qfsdk_bbb",
-//                                    MobclickAgent.EScenarioType.E_UM_NORMAL));
-
-//                    ===talkingdata初始化===
-//                    TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, SdkConstant.HS_AGENT);
-                    TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, "qfsdk_bbb");
-//                    Toast.makeText(mContext, "CODE_INIT_SUCCESS agent =" + SdkConstant.HS_AGENT, Toast.LENGTH_SHORT).show();
                     //去初始化
                     gotoStartup(1);
                     break;
@@ -367,18 +345,6 @@ public class HuosdkInnerManager {
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<NoticeResultBean>(mContext, httpParamsBuild.getAuthkey()) {
             @Override
             public void onDataSuccess(NoticeResultBean data) {
-                Map<String, String> map_ekv = new HashMap<String, String>();
-                UserInfo userInfoLast = UserLoginInfodao.getInstance(mContext).getUserInfoLast();
-                if (userInfoLast != null && userInfoLast.username != null) {
-                    map_ekv.put("username", userInfoLast.username);
-//                    map_ekv.put("uid", userInfoLast.mem_id);
-
-                    MobclickAgent.onEventValue(mContext, "logoutSuccess", map_ekv, 101);
-                    MobclickAgent.onProfileSignOff();
-                    //tokendata事件
-                    TalkingDataGA.onEvent("logoutSuccess", map_ekv);
-                    TDGAAccount.setAccount(userInfoLast.mem_id);
-                }
                 removeFloatView();
                 if (onLogoutListener != null) {
                     onLogoutListener.logoutSuccess(type, SdkConstant.CODE_SUCCESS, "退出成功");
@@ -540,14 +506,6 @@ public class HuosdkInnerManager {
     }
 
     public void setRoleInfo(RoleInfo roleInfo, final SubmitRoleInfoCallBack submitRoleInfoCallBack) {
-        UMGameAgent.setPlayerLevel(roleInfo.getRole_level());
-
-        TDGAAccount.setAccount(roleInfo.getRole_id());
-        TDGAAccount.getTDGAccount(mContext).setAccountName(roleInfo.getRole_name());
-        TDGAAccount.getTDGAccount(mContext).setAccountType(TDGAAccount.AccountType.REGISTERED);
-        TDGAAccount.getTDGAccount(mContext).setLevel(roleInfo.getRole_level());
-        TDGAAccount.getTDGAccount(mContext).setGameServer(roleInfo.getServer_name());
-
         if (!checkCallOk(true)) {
             return;
         }

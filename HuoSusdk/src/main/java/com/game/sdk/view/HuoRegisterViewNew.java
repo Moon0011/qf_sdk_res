@@ -35,11 +35,6 @@ import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.kymjs.rxvolley.RxVolley;
-import com.tendcloud.tenddata.TalkingDataGA;
-import com.umeng.analytics.MobclickAgent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Liuhongliangsdk on 2016/11/11.
@@ -199,12 +194,6 @@ public class HuoRegisterViewNew extends FrameLayout implements View.OnClickListe
             public void onDataSuccess(RegisterResultBean data) {
                 if (data != null) {
 //                    T.s(loginActivity,"登陆成功："+data.getCp_user_token());
-                    Map<String, String> map_ekv = new HashMap<String, String>();
-                    map_ekv.put("uid", data.getMem_id());
-                    map_ekv.put("regist_type", "phone_code");
-                    MobclickAgent.onEventValue(mContext, "registSuccess", map_ekv, 200);
-                    //tokendata事件
-                    TalkingDataGA.onEvent("registSuccess", map_ekv);
                     //接口回调通知
                     LoginControl.saveUserToken(data.getCp_user_token());
                     HuosdkInnerManager.notice = data.getNotice(); //发送通知内容

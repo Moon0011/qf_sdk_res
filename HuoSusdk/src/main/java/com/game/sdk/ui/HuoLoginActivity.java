@@ -38,12 +38,6 @@ import com.game.sdk.view.HuoUserNameRegisterViewNew;
 import com.game.sdk.view.SelectAccountView;
 import com.game.sdk.view.ViewStackManager;
 import com.kymjs.rxvolley.RxVolley;
-import com.tendcloud.tenddata.TDGAAccount;
-import com.tendcloud.tenddata.TalkingDataGA;
-import com.umeng.analytics.MobclickAgent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class HuoLoginActivity extends BaseActivity {
     private static final String TAG = HuoLoginActivity.class.getSimpleName();
@@ -193,12 +187,6 @@ public class HuoLoginActivity extends BaseActivity {
             public void onDataSuccess(RegisterResultBean data) {
                 if (data != null) {
 //                    T.s(loginActivity,"登陆成功："+data.getCp_user_token());
-                    Map<String, String> map_ekv = new HashMap<String, String>();
-                    map_ekv.put("uid", data.getMem_id());
-                    MobclickAgent.onEventValue(HuoLoginActivity.this, "loginSuccess", map_ekv, 100);
-                    //tokendata事件
-                    TalkingDataGA.onEvent("loginSuccess", map_ekv);
-                    TDGAAccount.setAccount(data.getMem_id());
                     //接口回调通知
                     LoginControl.saveUserToken(data.getCp_user_token());
                     HuosdkInnerManager.notice = data.getNotice(); //发送通知内容
@@ -260,17 +248,11 @@ public class HuoLoginActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onPageStart("HuoLoginActivity");
-        MobclickAgent.onResume(this);
-        TalkingDataGA.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPageEnd("HuoLoginActivity");
-        MobclickAgent.onPause(this);
-        TalkingDataGA.onPause(this);
         overridePendingTransition(0, 0);
     }
 

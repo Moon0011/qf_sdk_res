@@ -38,13 +38,9 @@ import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.kymjs.rxvolley.RxVolley;
-import com.tendcloud.tenddata.TalkingDataGA;
-import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class WebPayActivity extends BaseActivity implements View.OnClickListener, IPayListener {
     private final static int CODE_PAY_FAIL = -1;//支付失败
@@ -149,7 +145,6 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                MobclickAgent.onPageStart("PayWebView Loading finish");
                 try {
                     DialogUtil.dismissDialog();
                 } catch (Exception e) {
@@ -236,9 +231,6 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPageEnd("WebPayActivity");
-        MobclickAgent.onPause(this);
-        TalkingDataGA.onPause(this);
         overridePendingTransition(0, 0);
 
     }
@@ -246,9 +238,6 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onPageStart("WebPayActivity");
-        MobclickAgent.onResume(this);
-        TalkingDataGA.onResume(this);
         if (checkPayJsForPay != null) {
             checkPayJsForPay.onResume();
         }
@@ -266,12 +255,6 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
             checkPayJsForPay.onDestory();
         }
         if (!callBacked) {//还没有回调过
-            Map<String, String> map_ekv = new HashMap<String, String>();
-            map_ekv.put("money", charge_money + "");
-            MobclickAgent.onEventValue(this, "payCancle", map_ekv, 302);
-            //tokendata事件
-            TalkingDataGA.onEvent("payCancle", map_ekv);
-
             PaymentErrorMsg paymentErrorMsg = new PaymentErrorMsg();
             paymentErrorMsg.code = CODE_PAY_CANCEL;
             paymentErrorMsg.msg = "用户取消支付";
@@ -303,23 +286,11 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void paySuccess(String orderId, final float money) {
-        Map<String, String> map_ekv = new HashMap<String, String>();
-        map_ekv.put("orderId", orderId);
-        map_ekv.put("money", money + "");
-        MobclickAgent.onEventValue(this, "paySuccess", map_ekv, 300);
-        //tokendata事件
-        TalkingDataGA.onEvent("paySuccess", map_ekv);
         queryOrder(orderId, money, "支付成功，等待处理");
     }
 
     @Override
     public void payFail(String orderId, float money, boolean queryOrder, String msg) {
-        Map<String, String> map_ekv = new HashMap<String, String>();
-        map_ekv.put("orderId", orderId);
-        map_ekv.put("money", money + "");
-        MobclickAgent.onEventValue(this, "payFail", map_ekv, 301);
-        //tokendata事件
-        TalkingDataGA.onEvent("payFail", map_ekv);
         if (queryOrder) {
             queryOrder(orderId, money, msg);
         } else {
