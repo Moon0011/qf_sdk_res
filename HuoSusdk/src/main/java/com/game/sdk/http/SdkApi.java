@@ -19,8 +19,8 @@ public class SdkApi {
         if(!TextUtils.isEmpty(requestUrl)){
             return requestUrl;
         }
-        if(!TextUtils.isEmpty(SdkConstant.BASE_URL)||!TextUtils.isEmpty(SdkConstant.BASE_IP)){
-            requestUrl=SdkConstant.BASE_URL+SdkConstant.BASE_SUFFIX_URL;
+        if(!TextUtils.isEmpty(SdkConstant.BASE_URL2)||!TextUtils.isEmpty(SdkConstant.BASE_IP)){
+            requestUrl=SdkConstant.BASE_URL2+SdkConstant.BASE_SUFFIX_URL;
 //            if("1".equals(SdkConstant.USE_URL_TYPE)){
 //                requestUrl=SdkConstant.BASE_URL+SdkConstant.BASE_SUFFIX_URL;
 //            }else{

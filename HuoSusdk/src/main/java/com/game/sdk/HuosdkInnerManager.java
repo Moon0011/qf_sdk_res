@@ -53,6 +53,8 @@ import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
 import com.tendcloud.tenddata.TDGAAccount;
 import com.tendcloud.tenddata.TalkingDataGA;
+import com.yolanda.nohttp.Logger;
+import com.yolanda.nohttp.NoHttp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -171,6 +173,11 @@ public class HuosdkInnerManager {
     public void initSdk(Context context, OnInitSdkListener onInitSdkListener) {
         this.onInitSdkListener = onInitSdkListener;
         this.mContext = context;
+        //haibei http
+        NoHttp.initialize(context);
+        Logger.setTag("clock");
+        Logger.setDebug(false);// 开始NoHttp的调试模式, 这样就能看到请求过程和日志
+
         if (!checkCallOk(false)) {
             return;
         }
