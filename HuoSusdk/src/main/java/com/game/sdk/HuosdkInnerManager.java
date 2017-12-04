@@ -51,6 +51,8 @@ import com.game.sdk.util.MiuiDeviceUtil;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
+import com.yolanda.nohttp.Logger;
+import com.yolanda.nohttp.NoHttp;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.analytics.game.UMGameAgent;
 
@@ -175,6 +177,11 @@ public class HuosdkInnerManager {
     public void initSdk(Context context, OnInitSdkListener onInitSdkListener) {
         this.onInitSdkListener = onInitSdkListener;
         this.mContext = context;
+        //haibei http
+        NoHttp.initialize(context);
+        Logger.setTag("clock");
+        Logger.setDebug(false);// 开始NoHttp的调试模式, 这样就能看到请求过程和日志
+
         if (!checkCallOk(false)) {
             return;
         }

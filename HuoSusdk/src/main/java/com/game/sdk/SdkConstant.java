@@ -25,6 +25,7 @@ public class SdkConstant {
 
     //地址信息
     public static String BASE_URL="";//域名
+    public static String BASE_URL2="http://aqfsdk.520cai.cn";//域名
     public static String BASE_SUFFIX_URL="";//后缀
     public static String BASE_IP;
     //渠道编号
@@ -83,6 +84,5 @@ public class SdkConstant {
     public static int floatInitX=0;//浮点初始化的x坐标
     public static int floatInitY=0;//浮点初始化的x坐标
 
-    public static String TD_APP_ID="68A97050215B4C7BB2D4F8CAC29BF345";
     public static String UMENG_APP_KEY="5a210a80b27b0a35ee00000d";
 }
