@@ -27,7 +27,6 @@ import com.game.sdk.http.HttpCallbackDecode;
 import com.game.sdk.http.HttpParamsBuild;
 import com.game.sdk.http.SdkApi;
 import com.game.sdk.listener.OnLoginListener;
-import com.game.sdk.log.L;
 import com.game.sdk.log.T;
 import com.game.sdk.ui.HuoLoginActivity;
 import com.game.sdk.util.DialogUtil;
@@ -35,7 +34,8 @@ import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.kymjs.rxvolley.RxVolley;
-import com.tendcloud.tenddata.TCAgent;
+import com.tendcloud.tenddata.TDGAAccount;
+import com.tendcloud.tenddata.TalkingDataGA;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -56,56 +56,59 @@ public class SelectAccountView extends FrameLayout {
     private SelectAccountAdapter selectAccountAdapter;
     private HuoLoginActivity loginActivity;
     private Context mContext;
+
     public SelectAccountView(Context context) {
         super(context);
         mContext = context;
         initUI();
     }
 
-    public SelectAccountView( Context context, AttributeSet attrs) {
+    public SelectAccountView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         initUI();
     }
 
-    public SelectAccountView( Context context,AttributeSet attrs, int defStyleAttr) {
+    public SelectAccountView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
         initUI();
     }
 
     private void initUI() {
-        loginActivity= (HuoLoginActivity) getContext();
+        loginActivity = (HuoLoginActivity) getContext();
         viewStackManager = ViewStackManager.getInstance(loginActivity);
-        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(),"R.layout.huo_sdk_view_select_account"), this);
-        lvAccountList= (ListView) findViewById(MResource.getIdByName(getContext(),"R.id.huo_sdk_lv_account_list"));
-        btnSubmit= (Button) findViewById(MResource.getIdByName(getContext(),"R.id.huo_sdk_btn_submit"));
+        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), "R.layout.huo_sdk_view_select_account"), this);
+        lvAccountList = (ListView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_lv_account_list"));
+        btnSubmit = (Button) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_btn_submit"));
         btnSubmit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selectAccountAdapter==null){
+                if (selectAccountAdapter == null) {
                     ((Activity) getContext()).finish();
                     return;
-                }else{
+                } else {
                     int selectPosition = selectAccountAdapter.getSelectPosition();
                     LoginResultBean.UserName userName = userNameList.get(selectPosition);
-                    submitLogin(userName.getUsername(),password);
+                    submitLogin(userName.getUsername(), password);
                 }
             }
         });
 
     }
+
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         //自动设置相应的布局尺寸
-        if(getChildCount()>0){
+        if (getChildCount() > 0) {
             View childAt = getChildAt(0);
             HuoFastLoginView.LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-            layoutParams.leftMargin=(int)(getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
-            layoutParams.rightMargin=layoutParams.leftMargin;
+            layoutParams.leftMargin = (int) (getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
+            layoutParams.rightMargin = layoutParams.leftMargin;
         }
     }
+
     public void setUserNameList(List<LoginResultBean.UserName> userNameList, String password) {
         this.userNameList = userNameList;
         this.password = password;
@@ -118,31 +121,33 @@ public class SelectAccountView extends FrameLayout {
             T.s(loginActivity, "账号只能由6至16位英文或数字组成");
             return;
         }
-        if ( !RegExpUtil.isMatchPassword(password)) {
+        if (!RegExpUtil.isMatchPassword(password)) {
             T.s(loginActivity, "密码只能由6至16位英文或数字组成");
             return;
         }
-        final LoginRequestBean loginRequestBean=new LoginRequestBean();
+        final LoginRequestBean loginRequestBean = new LoginRequestBean();
         loginRequestBean.setUsername(account);
         loginRequestBean.setPassword(password);
-        HttpParamsBuild httpParamsBuild=new HttpParamsBuild(GsonUtil.getGson().toJson(loginRequestBean));
+        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(loginRequestBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<LoginResultBean>(loginActivity, httpParamsBuild.getAuthkey()) {
             @Override
             public void onDataSuccess(LoginResultBean data) {
-                if(data!=null){
+                if (data != null) {
 //                    T.s(loginActivity,"登陆成功："+data.getCp_user_token());
                     Map<String, String> map_ekv = new HashMap<String, String>();
+                    map_ekv.put("username", account);
                     map_ekv.put("uid", data.getMem_id());
-                    MobclickAgent.onEventValue(mContext, "loginSuccess", map_ekv,100);
+                    MobclickAgent.onEventValue(mContext, "loginSuccess", map_ekv, 100);
+                    MobclickAgent.onProfileSignIn(account);
                     //tokendata事件
-                    TCAgent.onEvent(mContext, "loginSuccess", "登陆成功" , map_ekv);
-
+                    TalkingDataGA.onEvent("loginSuccess", map_ekv);
+                    TDGAAccount.setAccount(data.getMem_id());
                     //接口回调通知
                     LoginControl.saveUserToken(data.getCp_user_token());
                     HuosdkInnerManager.notice = data.getNotice(); //发送通知内容
                     OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();
-                    if(onLoginListener!=null){
-                        onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(),data.getCp_user_token()));
+                    if (onLoginListener != null) {
+                        onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(), data.getCp_user_token()));
                         //登录成功后统一弹出弹框
                         getNotice();
                     }
@@ -161,7 +166,7 @@ public class SelectAccountView extends FrameLayout {
         httpCallbackDecode.setLoadingCancel(false);
         httpCallbackDecode.setShowLoading(true);
         httpCallbackDecode.setLoadMsg("正在登录...");
-        RxVolley.post(SdkApi.getLogin(), httpParamsBuild.getHttpParams(),httpCallbackDecode);
+        RxVolley.post(SdkApi.getLogin(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
     }
 
     private void getNotice() {
@@ -186,7 +191,7 @@ public class SelectAccountView extends FrameLayout {
     }
 
     public class SelectAccountAdapter extends BaseAdapter {
-        private int selectPosition=0;
+        private int selectPosition = 0;
 
         public int getSelectPosition() {
             return selectPosition;
@@ -214,41 +219,42 @@ public class SelectAccountView extends FrameLayout {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
-            if(convertView==null){
-                convertView = LayoutInflater.from(parent.getContext()).inflate(MResource.getIdByName(parent.getContext(),"R.layout.huosdk_item_select_account"), parent, false);
-                viewHolder=new ViewHolder(convertView);
+            if (convertView == null) {
+                convertView = LayoutInflater.from(parent.getContext()).inflate(MResource.getIdByName(parent.getContext(), "R.layout.huosdk_item_select_account"), parent, false);
+                viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
-            }else{
-                viewHolder= (ViewHolder) convertView.getTag();
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
             }
-            viewHolder.tvAccountNumHint.setText("账号"+(position+1)+":");
+            viewHolder.tvAccountNumHint.setText("账号" + (position + 1) + ":");
             viewHolder.tvLoginAccount.setText(userNameList.get(position).getUsername());
-            viewHolder.cbSelectAccount.setChecked(position==selectPosition);
+            viewHolder.cbSelectAccount.setChecked(position == selectPosition);
             viewHolder.cbSelectAccount.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    selectPosition=position;
+                    selectPosition = position;
                     notifyDataSetChanged();
                 }
             });
             convertView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    selectPosition=position;
+                    selectPosition = position;
                     notifyDataSetChanged();
                 }
             });
             return convertView;
         }
 
-        public  class ViewHolder {
+        public class ViewHolder {
             TextView tvAccountNumHint;
             TextView tvLoginAccount;
             CheckBox cbSelectAccount;
+
             ViewHolder(View view) {
-                tvAccountNumHint= (TextView) view.findViewById(MResource.getIdByName(view.getContext(),"R.id.tv_account_num_hint"));
-                tvLoginAccount= (TextView) view.findViewById(MResource.getIdByName(view.getContext(),"R.id.tv_login_account"));
-                cbSelectAccount= (CheckBox) view.findViewById(MResource.getIdByName(view.getContext(),"R.id.cb_select_account"));
+                tvAccountNumHint = (TextView) view.findViewById(MResource.getIdByName(view.getContext(), "R.id.tv_account_num_hint"));
+                tvLoginAccount = (TextView) view.findViewById(MResource.getIdByName(view.getContext(), "R.id.tv_login_account"));
+                cbSelectAccount = (CheckBox) view.findViewById(MResource.getIdByName(view.getContext(), "R.id.cb_select_account"));
             }
         }
     }

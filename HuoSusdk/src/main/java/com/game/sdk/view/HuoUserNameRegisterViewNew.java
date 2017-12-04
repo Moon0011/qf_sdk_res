@@ -42,7 +42,7 @@ import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.game.sdk.util.ScreenShot;
 import com.kymjs.rxvolley.RxVolley;
-import com.tendcloud.tenddata.TCAgent;
+import com.tendcloud.tenddata.TalkingDataGA;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -65,7 +65,7 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
     private boolean isShiWan = false;
     private ImageView huo_sdk_img_show_pwd;
     private ImageView huo_sdk_iv_logo;
-    private TextView  huo_tv_regist_Logo;
+    private TextView huo_tv_regist_Logo;
     private Context mContext;
     private boolean showPwd = false;
     private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -247,7 +247,7 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
                     map_ekv.put("regist_type", "user_and_name");
                     MobclickAgent.onEventValue(mContext, "registSuccess", map_ekv, 200);
                     //tokendata事件
-                    TCAgent.onEvent(mContext ,"registSuccess", "注册成功" , map_ekv);
+                    TalkingDataGA.onEvent("registSuccess", map_ekv);
                     //接口回调通知
                     LoginControl.saveUserToken(data.getCp_user_token());
                     HuosdkInnerManager.notice = data.getNotice(); //发送通知内容

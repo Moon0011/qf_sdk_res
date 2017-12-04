@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.umeng.analytics.MobclickAgent;
-
 /**
  * Created by liu hong liang on 2017/4/27.
  */
@@ -46,6 +44,13 @@ public class BaseActivity extends Activity {
         this.titleView=titleView;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

@@ -32,6 +32,12 @@ import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.kymjs.rxvolley.RxVolley;
+import com.tendcloud.tenddata.TDGAAccount;
+import com.tendcloud.tenddata.TalkingDataGA;
+import com.umeng.analytics.MobclickAgent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liu hong liang on 2016/11/12.
@@ -42,9 +48,9 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
     //快速登陆
     ImageView huoIvFastLoading;
 
-    TextView huoTvFastUserName,tvloginStatus;
+    TextView huoTvFastUserName, tvloginStatus;
 
-//    TextView huoTvFastChangeCount;
+    //    TextView huoTvFastChangeCount;
     Button btnFastChangeCount;
     LinearLayout huoLlFastLogin;
     private HuoLoginActivity loginActivity;
@@ -143,6 +149,14 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
                     public void run() {
                         if (data != null && getVisibility() == VISIBLE) {//当前界面还在显示状态才执行
 //                    T.s(loginActivity,"登陆成功："+data.getCp_user_token());
+                            Map<String, String> map_ekv = new HashMap<String, String>();
+                            map_ekv.put("username", userName);
+                            map_ekv.put("uid", data.getMem_id());
+                            MobclickAgent.onEventValue(mContext, "loginSuccess", map_ekv, 100);
+                            MobclickAgent.onProfileSignIn(userName);
+                            //tokendata事件
+                            TalkingDataGA.onEvent("loginSuccess", map_ekv);
+                            TDGAAccount.setAccount(data.getMem_id());
                             //接口回调通知
                             LoginControl.saveUserToken(data.getCp_user_token());
                             HuosdkInnerManager.notice = data.getNotice(); //发送通知内容
