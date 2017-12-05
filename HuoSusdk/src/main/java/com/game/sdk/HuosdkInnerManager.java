@@ -2,6 +2,7 @@ package com.game.sdk;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -16,6 +17,8 @@ import com.game.sdk.db.impl.UserLoginInfodao;
 import com.game.sdk.dialog.OpenFloatPermissionDialog;
 import com.game.sdk.domain.BaseRequestBean;
 import com.game.sdk.domain.CustomPayParam;
+import com.game.sdk.domain.InstallBean;
+import com.game.sdk.domain.InstallResultBean;
 import com.game.sdk.domain.NotProguard;
 import com.game.sdk.domain.Notice;
 import com.game.sdk.domain.NoticeResultBean;
@@ -97,6 +100,10 @@ public class HuosdkInnerManager {
 //                    TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, SdkConstant.HS_AGENT);
                     TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, "qfsdk_bbb");
 //                    Toast.makeText(mContext, "CODE_INIT_SUCCESS agent =" + SdkConstant.HS_AGENT, Toast.LENGTH_SHORT).show();
+                    if (!mContext.getSharedPreferences("qfsdk",
+                            Context.MODE_MULTI_PROCESS).getBoolean("isInstall", false)) {
+                        getInstall();
+                    }
                     //去初始化
                     gotoStartup(1);
                     break;
@@ -194,6 +201,30 @@ public class HuosdkInnerManager {
         initSdk(1);
     }
 
+    private void getInstall() {
+        InstallBean installBean = new InstallBean();
+        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(installBean));
+        HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<InstallResultBean>(mContext, httpParamsBuild.getAuthkey()) {
+            @Override
+            public void onDataSuccess(InstallResultBean data) {
+                L.e(TAG, "content =");
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("qfsdk",
+                        Context.MODE_MULTI_PROCESS).edit();
+                editor.putBoolean("isInstall", true);
+                editor.commit();
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                L.e(TAG, "code =" + code + ", msg =" + msg);
+            }
+        };
+        httpCallbackDecode.setShowTs(false);
+        httpCallbackDecode.setLoadingCancel(false);
+        httpCallbackDecode.setShowLoading(false);
+        String url = SdkApi.getInstall();
+        RxVolley.post(SdkApi.getInstall(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
+    }
 
     public boolean isDirectLogin() {
         return directLogin;
