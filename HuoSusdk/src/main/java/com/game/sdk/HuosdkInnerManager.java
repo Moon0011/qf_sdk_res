@@ -2,6 +2,7 @@ package com.game.sdk;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -16,6 +17,8 @@ import com.game.sdk.db.impl.UserLoginInfodao;
 import com.game.sdk.dialog.OpenFloatPermissionDialog;
 import com.game.sdk.domain.BaseRequestBean;
 import com.game.sdk.domain.CustomPayParam;
+import com.game.sdk.domain.InstallBean;
+import com.game.sdk.domain.InstallResultBean;
 import com.game.sdk.domain.NotProguard;
 import com.game.sdk.domain.Notice;
 import com.game.sdk.domain.NoticeResultBean;
@@ -51,10 +54,10 @@ import com.game.sdk.util.MiuiDeviceUtil;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
-import com.yolanda.nohttp.Logger;
-import com.yolanda.nohttp.NoHttp;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.analytics.game.UMGameAgent;
+import com.yolanda.nohttp.Logger;
+import com.yolanda.nohttp.NoHttp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -101,6 +104,10 @@ public class HuosdkInnerManager {
                     MobclickAgent.startWithConfigure(
                             new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, "qfsdk_bbb",
                                     MobclickAgent.EScenarioType.E_UM_NORMAL));
+                    if (!mContext.getSharedPreferences("qfsdk",
+                            Context.MODE_MULTI_PROCESS).getBoolean("isInstall", false)) {
+                        getInstall();
+                    }
                     //去初始化
                     gotoStartup(1);
                     break;
@@ -198,6 +205,30 @@ public class HuosdkInnerManager {
         initSdk(1);
     }
 
+    private void getInstall() {
+        InstallBean installBean = new InstallBean();
+        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(installBean));
+        HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<InstallResultBean>(mContext, httpParamsBuild.getAuthkey()) {
+            @Override
+            public void onDataSuccess(InstallResultBean data) {
+                L.e(TAG, "content =");
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("qfsdk",
+                        Context.MODE_MULTI_PROCESS).edit();
+                editor.putBoolean("isInstall", true);
+                editor.commit();
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                L.e(TAG, "code =" + code + ", msg =" + msg);
+            }
+        };
+        httpCallbackDecode.setShowTs(false);
+        httpCallbackDecode.setLoadingCancel(false);
+        httpCallbackDecode.setShowLoading(false);
+        String url = SdkApi.getInstall();
+        RxVolley.post(SdkApi.getInstall(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
+    }
 
     public boolean isDirectLogin() {
         return directLogin;
