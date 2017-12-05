@@ -2,6 +2,7 @@ package com.game.sdk;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -15,6 +16,8 @@ import com.game.sdk.db.LoginControl;
 import com.game.sdk.dialog.OpenFloatPermissionDialog;
 import com.game.sdk.domain.BaseRequestBean;
 import com.game.sdk.domain.CustomPayParam;
+import com.game.sdk.domain.InstallBean;
+import com.game.sdk.domain.InstallResultBean;
 import com.game.sdk.domain.NotProguard;
 import com.game.sdk.domain.Notice;
 import com.game.sdk.domain.NoticeResultBean;
@@ -86,13 +89,16 @@ public class HuosdkInnerManager {
                 case CODE_INIT_SUCCESS:
                     L.e("hongliangsdk1", SdkConstant.HS_AGENT);
                     initRequestCount++;
+                    if (!mContext.getSharedPreferences("qfsdk",
+                            Context.MODE_MULTI_PROCESS).getBoolean("isInstall", false)) {
+                        getInstall();
+                    }
                     //去初始化
                     gotoStartup(1);
                     break;
             }
         }
     };
-
 
     // 单例模式
     @NotProguard
@@ -183,6 +189,30 @@ public class HuosdkInnerManager {
         initSdk(1);
     }
 
+    private void getInstall() {
+        InstallBean installBean = new InstallBean();
+        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(installBean));
+        HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<InstallResultBean>(mContext, httpParamsBuild.getAuthkey()) {
+            @Override
+            public void onDataSuccess(InstallResultBean data) {
+                L.e(TAG, "content =");
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("qfsdk",
+                        Context.MODE_MULTI_PROCESS).edit();
+                editor.putBoolean("isInstall", true);
+                editor.commit();
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                L.e(TAG, "code =" + code + ", msg =" + msg);
+            }
+        };
+        httpCallbackDecode.setShowTs(false);
+        httpCallbackDecode.setLoadingCancel(false);
+        httpCallbackDecode.setShowLoading(false);
+        String url = SdkApi.getInstall();
+        RxVolley.post(SdkApi.getInstall(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
+    }
 
     public boolean isDirectLogin() {
         return directLogin;
@@ -278,34 +308,35 @@ public class HuosdkInnerManager {
                 if (data != null) {
                     SdkConstant.userToken = data.getUser_token();
                     SdkConstant.SERVER_TIME_INTERVAL = data.getTimestamp() - System.currentTimeMillis();
-                    SdkConstant.thirdLoginInfoList=data.getOauth_info();
+                    SdkConstant.thirdLoginInfoList = data.getOauth_info();
                     if ("1".equals(data.getUp_status())) {//版本更新
                         SdkNative.resetInstall(mContext);//有更新重置install数据
                         if (!TextUtils.isEmpty(data.getUp_url())) {
                             HuosdkService.startServiceByUpdate(mContext, data.getUp_url());
                         }
                     }
-                    initSuccess=true;
-                    onInitSdkListener.initSuccess("200","初始化成功");
+                    initSuccess = true;
+                    onInitSdkListener.initSuccess("200", "初始化成功");
                 }
             }
+
             @Override
             public void onFailure(String code, String msg) {
-                if(count<3){
+                if (count < 3) {
                     //1001	请求KEY错误	rsakey	解密错误
-                    if(HttpCallbackDecode.CODE_RSA_KEY_ERROR.equals(code)){//删除本地公钥，重新请求rsa公钥
+                    if (HttpCallbackDecode.CODE_RSA_KEY_ERROR.equals(code)) {//删除本地公钥，重新请求rsa公钥
                         SdkNative.resetInstall(mContext);
-                        L.e(TAG,"rsakey错误，重新请求rsa公钥");
-                        if(initRequestCount<2){//initSdk只重试一次rsa请求
+                        L.e(TAG, "rsakey错误，重新请求rsa公钥");
+                        if (initRequestCount < 2) {//initSdk只重试一次rsa请求
                             initSdk(1000);
                             return;
                         }
                     }
-                    super.onFailure(code,msg);
-                    gotoStartup(count+1);//重试
-                }else{
-                    super.onFailure(code,msg);
-                    onInitSdkListener.initError(code,msg);
+                    super.onFailure(code, msg);
+                    gotoStartup(count + 1);//重试
+                } else {
+                    super.onFailure(code, msg);
+                    onInitSdkListener.initError(code, msg);
                 }
             }
         };

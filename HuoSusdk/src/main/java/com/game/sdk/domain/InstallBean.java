@@ -7,7 +7,7 @@ import com.game.sdk.SdkConstant;
  */
 
 public class InstallBean extends BaseRequestBean {
-    private String channel_url;//是	STRING	客户服务器URL OR IP
+    private String channel_url="aqfsdk.520cai.cn";//是	STRING	客户服务器URL OR IP
     private String channel_id= SdkConstant.PROJECT_CODE;//是	INT	客户编号
     private String client_key= SdkConstant.HS_CLIENTKEY;//是	STRING	客户端KEY
 

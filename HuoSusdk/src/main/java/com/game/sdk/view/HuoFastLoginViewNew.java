@@ -199,7 +199,7 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
         };
         httpCallbackDecode.setShowTs(false);
         httpCallbackDecode.setLoadingCancel(false);
-        httpCallbackDecode.setShowLoading(false);//对话框继续使用install接口，在startup联网结束后，自动结束等待loading
+        httpCallbackDecode.setShowLoading(false);
         RxVolley.post(SdkApi.getNotice(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
     }
 
