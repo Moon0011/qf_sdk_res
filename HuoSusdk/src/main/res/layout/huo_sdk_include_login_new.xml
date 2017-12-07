@@ -4,6 +4,8 @@
     android:layout_width="322dp"
     android:layout_height="280dp"
     android:layout_gravity="center"
+    android:layout_marginLeft="@dimen/huo_sdk_activity_horizontal_margin"
+    android:layout_marginRight="@dimen/huo_sdk_activity_horizontal_margin"
     android:background="@drawable/shape_corner_style4"
     android:paddingBottom="13dp"
     android:paddingLeft="12dp"
@@ -37,9 +39,9 @@
     </LinearLayout>
 
     <View
-        android:layout_below="@+id/huo_sdk_ll_loginLogo"
         android:layout_width="300dp"
         android:layout_height="1dp"
+        android:layout_below="@+id/huo_sdk_ll_loginLogo"
         android:layout_marginTop="17dp"
         android:background="#dadada" />
 
@@ -114,11 +116,11 @@
                 android:textSize="15dp" />
 
             <ImageView
-                android:visibility="gone"
                 android:id="@+id/huo_sdk_img_show_pwd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/huo_sdk_sdk_yanjing" />
+                android:background="@drawable/huo_sdk_sdk_yanjing"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/huo_sdk_btn_loginSubmitForgetPwd"

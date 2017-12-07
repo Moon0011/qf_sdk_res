@@ -40,7 +40,7 @@ android {
 //        rename("classes.jar", "HuoSusdk-release-" + defaultConfig.versionName + ".jar")
 //    }
     def SDK_BASENAME = "HuoSusdk-release-";
-    def sdkDestinationPath = "../HuoSdkLib/libs/";
+    def sdkDestinationPath = "../HuoSusdk/";
     def zipFile = file('build/intermediates/bundles/libRelease/classes.jar')
     //删除文件
     task deleteBuild(type: Delete) {
