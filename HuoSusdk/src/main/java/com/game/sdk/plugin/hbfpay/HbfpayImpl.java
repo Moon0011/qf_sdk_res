@@ -3,6 +3,7 @@ package com.game.sdk.plugin.hbfpay;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.game.sdk.domain.NotProguard;
 import com.game.sdk.domain.PayResultBean;
 import com.game.sdk.pay.IPayListener;
 import com.game.sdk.plugin.IHuoPay;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 public class HbfpayImpl extends IHuoPay {
 
     @Override
+    @NotProguard
     public void startPay(final Activity activity, final IPayListener listener, final float money, final PayResultBean payResultBean) {
         try {
             JSONObject jsonObject = new JSONObject(payResultBean.getToken());

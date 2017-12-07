@@ -4,6 +4,8 @@
     android:layout_width="322dp"
     android:layout_height="280dp"
     android:layout_gravity="center"
+    android:layout_marginLeft="@dimen/huo_sdk_activity_horizontal_margin"
+    android:layout_marginRight="@dimen/huo_sdk_activity_horizontal_margin"
     android:background="@drawable/shape_corner_style4"
     android:orientation="vertical"
     android:paddingLeft="10dp"
