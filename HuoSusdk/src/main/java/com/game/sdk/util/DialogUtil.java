@@ -3,6 +3,7 @@ package com.game.sdk.util;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -151,7 +152,7 @@ public class DialogUtil {
                             "id", "huo_sdk_confirm_tv"));
                     title.setText(finalNotice.getTitle());
                     time.setText(finalNotice.getTime());
-                    content.setText(finalNotice.getContent());
+                    content.setText(Html.fromHtml(finalNotice.getContent()));
                     confirm.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
