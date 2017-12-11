@@ -39,7 +39,7 @@ android {
 //        into("../HuoSdkLib/libs")
 //        rename("classes.jar", "HuoSusdk-release-" + defaultConfig.versionName + ".jar")
 //    }
-    def SDK_BASENAME = "HuoSusdk-release-";
+    def SDK_BASENAME = "qfsdk-";
     def sdkDestinationPath = "../HuoSusdk/";
     def zipFile = file('build/intermediates/bundles/libRelease/classes.jar')
     //删除文件
@@ -65,7 +65,6 @@ dependencies {
     compile files('libs/ipaynow_wechatwp_v2.0.0.jar')
     compile files('libs/okvolly_1.1.5.jar')
     //noinspection GradleCompatible
-    compile 'com.android.support:appcompat-v7:24.0.0'
     compile files('libs/nohttp1.1.0.jar')
 }
 

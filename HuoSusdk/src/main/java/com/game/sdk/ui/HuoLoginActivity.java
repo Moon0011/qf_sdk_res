@@ -4,10 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
@@ -60,21 +57,6 @@ public class HuoLoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(MResource.getIdByName(this, "R.layout.huo_sdk_activity_huo_login_new"));
         setupUI();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // 检查该权限是否已经获取
-//            int i = ContextCompat.checkSelfPermission(this, permissions[0]);
-            // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
-//            if (i != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(HuoLoginActivity.this, permissions, 321);
-//            }
-        }
-
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            builder.detectFileUriExposure();
-        }
     }
 
     private void setupUI() {

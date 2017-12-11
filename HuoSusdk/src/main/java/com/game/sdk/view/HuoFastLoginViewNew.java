@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.game.sdk.HuosdkInnerManager;
+import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
 import com.game.sdk.domain.BaseRequestBean;
@@ -182,7 +183,7 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
 
     private void getNotice() {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setApp_id("1");
+        baseRequestBean.setApp_id(SdkConstant.HS_APPID);
         HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(baseRequestBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<Notice>(mContext, httpParamsBuild.getAuthkey()) {
             @Override
@@ -199,7 +200,7 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
         };
         httpCallbackDecode.setShowTs(false);
         httpCallbackDecode.setLoadingCancel(false);
-        httpCallbackDecode.setShowLoading(false);
+        httpCallbackDecode.setShowLoading(false);//对话框继续使用install接口，在startup联网结束后，自动结束等待loading
         RxVolley.post(SdkApi.getNotice(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
     }
 

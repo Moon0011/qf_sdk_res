@@ -3,10 +3,7 @@ package com.game.sdk.view;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -166,13 +163,8 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
         if (v.getId() == huo_sdk_rl_uRegisterBackLogin.getId()) {//返回登陆
             viewStackManager.showView(viewStackManager.getViewByClass(HuoLoginViewNew.class));
         } else if (v.getId() == huo_sdk_btn_uRegisterSubmit.getId()) {//提交注册
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                int i = ContextCompat.checkSelfPermission(mContext, permissions[0]);
-                if (i == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(mContext, "已截屏保存", Toast.LENGTH_SHORT).show();
-                    ScreenShot.shoot((Activity) mContext, "screenshot_" + huo_sdk_et_uRegisterAccount.getText().toString().trim() + ".png");
-                }
-            }
+            Toast.makeText(mContext, "截屏已保存到手机", Toast.LENGTH_SHORT).show();
+            ScreenShot.shoot((Activity) mContext, "screenshot_" + huo_sdk_et_uRegisterAccount.getText().toString().trim() + ".png");
             submitRegister();
         } else if (v.getId() == huo_sdk_rl_gotoregist.getId()) {//快速注册
             viewStackManager.addView(loginActivity.getHuoRegisterView());

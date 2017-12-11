@@ -25,7 +25,7 @@ public class SdkConstant {
 
     //地址信息
     public static String BASE_URL="";//域名
-    public static String BASE_URL2="http://aqfsdk.520cai.cn";//域名
+//    public static String BASE_URL="http://aqfsdk.520cai.cn";//域名
     public static String BASE_SUFFIX_URL="";//后缀
     public static String BASE_IP;
     //渠道编号
