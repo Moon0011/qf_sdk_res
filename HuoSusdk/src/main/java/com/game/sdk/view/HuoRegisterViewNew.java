@@ -229,7 +229,6 @@ public class HuoRegisterViewNew extends FrameLayout implements View.OnClickListe
         httpCallbackDecode.setShowLoading(true);
         httpCallbackDecode.setLoadMsg("注册中...");
         RxVolley.post(SdkApi.getRegisterMobile(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
-
     }
 
     private void sendSms() {
