@@ -39,6 +39,7 @@ import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.kymjs.rxvolley.RxVolley;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.analytics.game.UMGameAgent;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -64,6 +65,9 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UMGameAgent.setDebugMode(true);
+        UMGameAgent.init( this );
+
         setContentView(MResource.getIdByName(this, "R.layout.huo_sdk_activity_web_pay"));
         setupUI();
     }
@@ -236,7 +240,7 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd("WebPayActivity");
-        MobclickAgent.onPause(this);
+        UMGameAgent.onPause(this);
         overridePendingTransition(0, 0);
 
     }
@@ -245,7 +249,7 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         MobclickAgent.onPageStart("WebPayActivity");
-        MobclickAgent.onResume(this);
+        UMGameAgent.onResume(this);
         if (checkPayJsForPay != null) {
             checkPayJsForPay.onResume();
         }

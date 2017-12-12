@@ -37,6 +37,7 @@ import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.analytics.game.UMGameAgent;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -62,6 +63,9 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UMGameAgent.setDebugMode(true);//设置输出运行时日志
+        UMGameAgent.init( this );
+
         HuosdkInnerManager.getInstance().removeFloatView();
         setContentView(MResource.getIdByName(getApplication(), "layout", "huo_sdk_activity_float_web"));
         Intent intent = getIntent();
@@ -289,7 +293,7 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd("FloatWebActivity");
-        MobclickAgent.onPause(this);
+        UMGameAgent.onPause(this);
         overridePendingTransition(0, 0);
     }
 
@@ -297,7 +301,7 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
     protected void onResume() {
         super.onResume();
         MobclickAgent.onPageStart("FloatWebActivity");
-        MobclickAgent.onResume(this);
+        UMGameAgent.onResume(this);
 
         if (commonJsForWeb != null) {
             commonJsForWeb.onResume();

@@ -95,15 +95,9 @@ public class HuosdkInnerManager {
                     break;
                 case CODE_INIT_SUCCESS:
                     L.e("hongliangsdk1", SdkConstant.HS_AGENT);
+                    Log.e("hongliangsdk1", SdkConstant.HS_AGENT);
                     initRequestCount++;
 
-                    //===友盟初始化===
-                    MobclickAgent.setDebugMode(true);
-                    MobclickAgent.openActivityDurationTrack(false);
-//                    MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
-                    MobclickAgent.startWithConfigure(
-                            new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, "qfsdk_bbb",
-                                    MobclickAgent.EScenarioType.E_UM_NORMAL));
                     if (!mContext.getSharedPreferences("qfsdk",
                             Context.MODE_MULTI_PROCESS).getBoolean("isInstall", false)) {
                         getInstall();
@@ -203,6 +197,12 @@ public class HuosdkInnerManager {
         SP.init(mContext);
         initRequestCount = 0;
         initSdk(1);
+
+//        MobclickAgent.setDebugMode(true);
+//        MobclickAgent.openActivityDurationTrack(false);
+//        MobclickAgent.startWithConfigure(
+//                new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, "qfsdk_ccc",
+//                        MobclickAgent.EScenarioType.E_UM_GAME));
     }
 
     private void getInstall() {
@@ -274,6 +274,13 @@ public class HuosdkInnerManager {
                     SdkNative.initNetConfig(mContext, new NativeListener() {
                         @Override
                         public void onSuccess() {
+                            //===友盟初始化===
+                            MobclickAgent.setDebugMode(true);
+                            MobclickAgent.openActivityDurationTrack(false);
+                            MobclickAgent.startWithConfigure(
+                                    new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, "qfsdk_ddd",
+                                            MobclickAgent.EScenarioType.E_UM_GAME));
+
                             Message message = Message.obtain();
                             message.what = CODE_INIT_SUCCESS;
                             message.arg2 = count;

@@ -39,6 +39,7 @@ import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.kymjs.rxvolley.client.HttpParams;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.analytics.game.UMGameAgent;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -74,6 +75,9 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UMGameAgent.setDebugMode(true);
+        UMGameAgent.init( this );
+
         HuosdkInnerManager.getInstance().removeFloatView();
         initParams();
         initTheme();
@@ -342,7 +346,7 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd("WebViewActivity");
-        MobclickAgent.onPause(this);
+        UMGameAgent.onPause(this);
         overridePendingTransition(0, 0);
     }
 
@@ -350,7 +354,7 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
     protected void onResume() {
         super.onResume();
         MobclickAgent.onPageStart("WebViewActivity");
-        MobclickAgent.onResume(this);
+        UMGameAgent.onResume(this);
         if (commonJsForWeb != null) {
             commonJsForWeb.onResume();
         }

@@ -36,6 +36,7 @@ import com.game.sdk.view.SelectAccountView;
 import com.game.sdk.view.ViewStackManager;
 import com.kymjs.rxvolley.RxVolley;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.analytics.game.UMGameAgent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +60,9 @@ public class HuoLoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UMGameAgent.setDebugMode(true);
+        UMGameAgent.init( this );
+
         setContentView(MResource.getIdByName(this, "R.layout.huo_sdk_activity_huo_login_new"));
         setupUI();
     }
@@ -238,14 +242,14 @@ public class HuoLoginActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onPageStart("HuoLoginActivity");
-        MobclickAgent.onResume(this);
+        UMGameAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd("HuoLoginActivity");
-        MobclickAgent.onPause(this);
+        UMGameAgent.onPause(this);
         overridePendingTransition(0, 0);
     }
 
