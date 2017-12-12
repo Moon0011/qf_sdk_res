@@ -97,9 +97,8 @@ public class HuosdkInnerManager {
                     L.e("hongliangsdk1", SdkConstant.HS_AGENT);
                     initRequestCount++;
 //                    ===talkingdata初始化===
-//                    TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, SdkConstant.HS_AGENT);
-                    TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, "qfsdk_bbb");
-//                    Toast.makeText(mContext, "CODE_INIT_SUCCESS agent =" + SdkConstant.HS_AGENT, Toast.LENGTH_SHORT).show();
+                    TalkingDataGA.init(mContext, SdkConstant.TD_APP_ID, SdkConstant.HS_AGENT);
+
                     if (!mContext.getSharedPreferences("qfsdk",
                             Context.MODE_MULTI_PROCESS).getBoolean("isInstall", false)) {
                         getInstall();
