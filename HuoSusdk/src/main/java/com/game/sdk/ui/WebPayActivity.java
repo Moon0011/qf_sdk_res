@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
+import com.game.sdk.R;
 import com.game.sdk.domain.PaymentCallbackInfo;
 import com.game.sdk.domain.PaymentErrorMsg;
 import com.game.sdk.domain.QueryOrderRequestBean;
@@ -35,7 +36,6 @@ import com.game.sdk.pay.CommonJsForWeb;
 import com.game.sdk.pay.IPayListener;
 import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
-import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.kymjs.rxvolley.RxVolley;
 
@@ -61,7 +61,7 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(MResource.getIdByName(this, "R.layout.huo_sdk_activity_web_pay"));
+        setContentView(R.layout.huo_sdk_activity_web_pay);
         setupUI();
     }
 
@@ -74,7 +74,7 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
     private void setupUI() {
         HuosdkInnerManager huosdkInnerManager = HuosdkInnerManager.getInstance();
         huosdkInnerManager.removeFloatView();
-        payWebview = (WebView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_pay_webview"));
+        payWebview = (WebView) findViewById(R.id.huo_sdk_pay_webview);
         initWebView(payWebview);
         urlParams = getIntent().getStringExtra("urlParams");
         authKey = getIntent().getStringExtra("authKey");
@@ -89,16 +89,12 @@ public class WebPayActivity extends BaseActivity implements View.OnClickListener
         checkPayJsForPay.setChargeMoney(charge_money);//设置支付金额
         checkPayJsForPay.setProduct_name(setProduct_name);
         payWebview.addJavascriptInterface(checkPayJsForPay, "huosdk");
-        tv_back = (TextView) findViewById(MResource.getIdByName(
-                getApplication(), "R.id.huo_sdk_tv_back"));
-        iv_return = (ImageView) findViewById(MResource.getIdByName(
-                getApplication(), "R.id.huo_sdk_iv_return"));
-        iv_cancel = (ImageView) findViewById(MResource.getIdByName(
-                getApplication(), "R.id.huo_sdk_iv_cancel"));
+        tv_back = (TextView) findViewById(R.id.huo_sdk_tv_back);
+        iv_return = (ImageView) findViewById(R.id.huo_sdk_iv_return);
+        iv_cancel = (ImageView) findViewById(R.id.huo_sdk_iv_cancel);
         //设置标题栏view
-        setTitleView(findViewById(MResource.getIdByName(getApplication(), "R.id.huo_sdk_rl_top")));
-        tv_charge_title = (TextView) findViewById(MResource.getIdByName(
-                getApplication(), "R.id.huo_sdk_tv_charge_title"));
+        setTitleView(findViewById(R.id.huo_sdk_rl_top));
+        tv_charge_title = (TextView) findViewById(R.id.huo_sdk_tv_charge_title);
         tv_charge_title.setText("充值中心");
         tv_back.setOnClickListener(this);
         iv_cancel.setOnClickListener(this);

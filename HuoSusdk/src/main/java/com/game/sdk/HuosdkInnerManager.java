@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -54,6 +55,11 @@ import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
 import com.yolanda.nohttp.Logger;
 import com.yolanda.nohttp.NoHttp;
+
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * author janecer 2014年7月22日上午9:45:18
@@ -187,6 +193,51 @@ public class HuosdkInnerManager {
         SP.init(mContext);
         initRequestCount = 0;
         initSdk(1);
+        getChannel(mContext);
+    }
+
+    private static String channel = null;
+
+    public static String getChannel(Context context) {
+        if (channel != null) {
+            return channel;
+        }
+        Toast.makeText(context, "getChannel()", Toast.LENGTH_SHORT).show();
+        final String start_flag = "META-INF/gamechannel";
+        ApplicationInfo appinfo = context.getApplicationInfo();
+        String sourceDir = appinfo.sourceDir;
+        ZipFile zipfile = null;
+        try {
+            zipfile = new ZipFile(sourceDir);
+            Enumeration<?> entries = zipfile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = ((ZipEntry) entries.nextElement());
+                String entryName = entry.getName();
+                if (entryName.contains(start_flag)) {
+                    Toast.makeText(context, "entryName =" + entryName, Toast.LENGTH_SHORT).show();
+                    channel = entryName.replace(start_flag, "");
+                    Toast.makeText(context, "channel =" + channel, Toast.LENGTH_SHORT).show();
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            Toast.makeText(context, "e =" + e.toString(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        } finally {
+            if (zipfile != null) {
+                try {
+                    zipfile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (channel == null || channel.length() <= 0) {
+            channel = "xiaoliangkou";//读不到渠道号就默认官方渠道
+        }
+        Toast.makeText(context, "end =" + channel, Toast.LENGTH_SHORT).show();
+        return channel;
     }
 
     private void getInstall() {
