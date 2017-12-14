@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="20dp"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_width="320dp"
+        android:layout_height="250dp"
         android:background="@drawable/huo_sdk_shape_circle_rect_white"
         android:orientation="vertical"
+        android:weightSum="7"
         tools:ignore="UselessParent">
 
         <TextView
             android:id="@+id/huo_sdk_title_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="5dp"
+            android:layout_weight="1"
             android:gravity="center"
             android:maxLines="1"
             android:padding="5dp"
@@ -36,24 +34,25 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:scrollbars="none"
-            android:layout_height="150dp">
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="5dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingTop="5dp">
 
                 <TextView
-                    android:visibility="gone"
                     android:id="@+id/huo_sdk_time_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
                     android:textColor="@color/huo_sdk_gray7f"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"
+                    android:visibility="gone" />
 
 
                 <com.game.sdk.view.AutoSplitTextView
@@ -61,11 +60,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:autoLink="web"
-                    android:gravity="center|top|left"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:textColor="#666666"
-                    android:textSize="13dp" />
+                    android:textSize="14dp" />
             </LinearLayout>
         </ScrollView>
 
@@ -77,7 +75,9 @@
         <LinearLayout
             android:id="@+id/huo_sdk_layout_dialog"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
@@ -86,6 +86,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:padding="5dp"
                 android:text="我知道了"
                 android:textColor="@color/huo_sdk_orange"
                 android:textSize="14dp" />
