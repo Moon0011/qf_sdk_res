@@ -41,12 +41,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setupUI();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e("sdk","onResume()");
-    }
-
     private void setupUI() {
         btnTestLogin = (Button) findViewById(R.id.btn_test_login);
         etTestMoney = (EditText) findViewById(R.id.et_test_money);

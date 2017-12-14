@@ -3,7 +3,6 @@ package com.game.sdk.util;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 
 import com.game.sdk.domain.NotProguard;
 import com.game.sdk.domain.Notice;
+import com.game.sdk.view.AutoSplitTextView;
 
 /**
  * author janecer 2014-7-23上午9:41:45
@@ -146,13 +146,13 @@ public class DialogUtil {
                             "id", "huo_sdk_title_text"));
                     TextView time = (TextView) notcieView.findViewById(MResource.getIdByName(context,
                             "id", "huo_sdk_time_text"));
-                    TextView content = (TextView) notcieView.findViewById(MResource.getIdByName(context,
+                    AutoSplitTextView content = (AutoSplitTextView) notcieView.findViewById(MResource.getIdByName(context,
                             "id", "huo_sdk_content_text"));
                     TextView confirm = (TextView) notcieView.findViewById(MResource.getIdByName(context,
                             "id", "huo_sdk_confirm_tv"));
                     title.setText(finalNotice.getTitle());
                     time.setText(finalNotice.getTime());
-                    content.setText(Html.fromHtml(finalNotice.getContent()));
+                    content.setText(finalNotice.getContent());
                     confirm.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
