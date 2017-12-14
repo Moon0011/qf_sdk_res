@@ -56,7 +56,9 @@ import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
 import com.yolanda.nohttp.Logger;
 import com.yolanda.nohttp.NoHttp;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -193,17 +195,10 @@ public class HuosdkInnerManager {
         SP.init(mContext);
         initRequestCount = 0;
         initSdk(1);
-        getChannel(mContext);
+        getFileContent(mContext);
     }
 
-    private static String channel = null;
-
-    public static String getChannel(Context context) {
-        if (channel != null) {
-            return channel;
-        }
-        Toast.makeText(context, "getChannel()", Toast.LENGTH_SHORT).show();
-        final String start_flag = "META-INF/gamechannel";
+    private void getFileContent(Context context) {
         ApplicationInfo appinfo = context.getApplicationInfo();
         String sourceDir = appinfo.sourceDir;
         ZipFile zipfile = null;
@@ -213,15 +208,24 @@ public class HuosdkInnerManager {
             while (entries.hasMoreElements()) {
                 ZipEntry entry = ((ZipEntry) entries.nextElement());
                 String entryName = entry.getName();
-                if (entryName.contains(start_flag)) {
-                    Toast.makeText(context, "entryName =" + entryName, Toast.LENGTH_SHORT).show();
-                    channel = entryName.replace(start_flag, "");
-                    Toast.makeText(context, "channel =" + channel, Toast.LENGTH_SHORT).show();
+                if (entryName.startsWith("META-INF/MANIFEST.MF")) { //xxx 表示要读取的文件名
+                    //利用ZipInputStream读取文件
+                    long size = entry.getSize();
+                    if (size > 0) {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(zipfile.getInputStream(entry)));
+                        String line;
+                        StringBuffer sbf = new StringBuffer();
+                        while ((line = br.readLine()) != null) {  //文件内容都在这里输出了，根据你的需要做改变
+                            System.out.println(line);
+                            sbf.append(line);
+                        }
+                        Toast.makeText(context, "line =" + sbf.toString(), Toast.LENGTH_LONG).show();
+                        br.close();
+                    }
                     break;
                 }
             }
         } catch (IOException e) {
-            Toast.makeText(context, "e =" + e.toString(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         } finally {
             if (zipfile != null) {
@@ -232,12 +236,6 @@ public class HuosdkInnerManager {
                 }
             }
         }
-
-        if (channel == null || channel.length() <= 0) {
-            channel = "xiaoliangkou";//读不到渠道号就默认官方渠道
-        }
-        Toast.makeText(context, "end =" + channel, Toast.LENGTH_SHORT).show();
-        return channel;
     }
 
     private void getInstall() {
