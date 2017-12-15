@@ -1,5 +1,6 @@
 package com.game.sdk;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -50,11 +52,15 @@ import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.HLAppUtil;
 import com.game.sdk.util.MiuiDeviceUtil;
+import com.game.sdk.util.RSAUtils;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
 import com.yolanda.nohttp.Logger;
 import com.yolanda.nohttp.NoHttp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -81,6 +87,7 @@ public class HuosdkInnerManager {
     public static boolean isSwitchLogin = false; //是否切换
     private boolean directLogin = false;//是否使用直接登陆
     private boolean initSuccess = false;
+    @SuppressLint("HandlerLeak")
     private Handler huosdkHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -100,6 +107,20 @@ public class HuosdkInnerManager {
                     if (!mContext.getSharedPreferences("qfsdk",
                             Context.MODE_MULTI_PROCESS).getBoolean("isInstall", false)) {
                         getInstall();
+                    }
+                    String agentName = mContext.getResources().getString(R.string.huo_sdk_rsastr);
+                    String privatekey = mContext.getResources().getString(R.string.private_key2);
+                    //http://blog.csdn.net/a1047189887/article/details/51539789
+                    try {
+                        Toast.makeText(mContext, "agentgame =" + agentName, Toast.LENGTH_LONG).show();
+                        byte[] rsaByte = RSAUtils.decryptByPublicKey(Base64.encode(agentName.getBytes(), Base64.DEFAULT), SdkConstant.RSA_PUBLIC_KEY);
+//                        byte[] rsaByte =  RSAUtils.decryptByPublicKey(agentName.getBytes(), SdkConstant.RSA_PUBLIC_KEY.getBytes());
+                        String rsaAgentName = new String(rsaByte, "utf-8");
+                        Toast.makeText(mContext, "rsaAgentName =" + rsaAgentName, Toast.LENGTH_LONG).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     //去初始化
                     gotoStartup(1);
@@ -195,10 +216,11 @@ public class HuosdkInnerManager {
         SP.init(mContext);
         initRequestCount = 0;
         initSdk(1);
-        getFileContent(mContext);
+//        getFileContent(mContext);
     }
 
     private void getFileContent(Context context) {
+        Toast.makeText(context, "getFileContent()", Toast.LENGTH_LONG).show();
         ApplicationInfo appinfo = context.getApplicationInfo();
         String sourceDir = appinfo.sourceDir;
         ZipFile zipfile = null;
@@ -208,16 +230,28 @@ public class HuosdkInnerManager {
             while (entries.hasMoreElements()) {
                 ZipEntry entry = ((ZipEntry) entries.nextElement());
                 String entryName = entry.getName();
-                if (entryName.startsWith("META-INF/MANIFEST.MF")) { //xxx 表示要读取的文件名
+                if (entryName.startsWith("META-INF/gamechannel")) {
                     //利用ZipInputStream读取文件
                     long size = entry.getSize();
                     if (size > 0) {
                         BufferedReader br = new BufferedReader(new InputStreamReader(zipfile.getInputStream(entry)));
                         String line;
                         StringBuffer sbf = new StringBuffer();
-                        while ((line = br.readLine()) != null) {  //文件内容都在这里输出了，根据你的需要做改变
+                        while ((line = br.readLine()) != null) {
                             System.out.println(line);
                             sbf.append(line);
+                        }
+                        try {
+                            JSONObject jsonObject = new JSONObject(sbf.toString());
+                            String agentName = jsonObject.getString("agentgame");
+                            Toast.makeText(context, "agentgame =" + agentName, Toast.LENGTH_LONG).show();
+                            byte[] rsaByte = RSAUtils.decryptByPublicKey(agentName.getBytes(), SdkConstant.RSA_PUBLIC_KEY);
+                            String rsaAgentName = new String(rsaByte);
+                            Toast.makeText(context, "rsaAgentName =" + rsaAgentName, Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         Toast.makeText(context, "line =" + sbf.toString(), Toast.LENGTH_LONG).show();
                         br.close();
