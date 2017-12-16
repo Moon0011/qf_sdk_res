@@ -107,10 +107,11 @@ public class HuosdkInnerManager {
                             Context.MODE_MULTI_PROCESS).getBoolean("isInstall", false)) {
                         getInstall();
                     }
-//                    String agentName = mContext.getResources().getString(R.string.huo_sdk_rsastr1);
+//                    String agentName = mContext.getResources().getString(R.string.huo_sdk_rsastr);
+//                    String publickey = mContext.getResources().getString(R.string.rsa_public_key);
 //                    try {
 //                        Toast.makeText(mContext, "agentgame =" + agentName, Toast.LENGTH_LONG).show();
-//                        byte[] rsaByte = RSAUtils.decryptByPublicKey2(agentName, SdkConstant.RSA_PUBLIC_KEY);
+//                        byte[] rsaByte = RSAUtils.decryptByPublicKey2(agentName, publickey);
 //                        String rsaAgentName = new String(rsaByte, "utf-8");
 //                        Toast.makeText(mContext, "rsaAgentName =" + rsaAgentName, Toast.LENGTH_LONG).show();
 //                    } catch (JSONException e) {
@@ -193,7 +194,7 @@ public class HuosdkInnerManager {
     public void initSdk(Context context, OnInitSdkListener onInitSdkListener) {
         this.onInitSdkListener = onInitSdkListener;
         this.mContext = context;
-        getGameChannel(mContext);
+        getGameChannel(context);
 
         //haibei http
         NoHttp.initialize(context);
@@ -240,10 +241,11 @@ public class HuosdkInnerManager {
                         try {
                             JSONObject jsonObject = new JSONObject(sbf.toString());
                             String agentName = jsonObject.getString("agentgame");
-                            Toast.makeText(context, "agentgame =" + agentName, Toast.LENGTH_LONG).show();
-                            byte[] rsaByte = RSAUtils.decryptByPublicKey2(agentName, SdkConstant.RSA_PUBLIC_KEY);
+//                            Toast.makeText(context, "agentgame =" + agentName, Toast.LENGTH_LONG).show();
+                            String publickey = context.getResources().getString(R.string.rsa_public_key);
+                            byte[] rsaByte = RSAUtils.decryptByPublicKey2(agentName, publickey);
                             String rsaAgentName = new String(rsaByte, "utf-8");
-                            Toast.makeText(context, "rsaAgentName =" + rsaAgentName, Toast.LENGTH_LONG).show();
+//                            Toast.makeText(context, "rsaAgentName =" + rsaAgentName, Toast.LENGTH_LONG).show();
                             return rsaAgentName;
                         } catch (JSONException e) {
                             e.printStackTrace();
