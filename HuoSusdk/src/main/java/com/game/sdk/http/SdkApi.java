@@ -16,6 +16,7 @@ public class SdkApi {
     public static String requestUrl;
 
     private static String getRequestUrl() {
+//        SdkConstant.BASE_URL = "http://aqfsdk.520cai.cn";
         if (!TextUtils.isEmpty(requestUrl)) {
             return requestUrl;
         }

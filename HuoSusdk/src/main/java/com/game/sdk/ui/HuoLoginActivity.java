@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
+import com.game.sdk.R;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
 import com.game.sdk.domain.BaseRequestBean;
@@ -27,7 +28,6 @@ import com.game.sdk.log.L;
 import com.game.sdk.util.Base64Util;
 import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
-import com.game.sdk.util.MResource;
 import com.game.sdk.view.HuoFastLoginViewNew;
 import com.game.sdk.view.HuoLoginViewNew;
 import com.game.sdk.view.HuoRegisterViewNew;
@@ -60,7 +60,7 @@ public class HuoLoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(MResource.getIdByName(this, "R.layout.huo_sdk_activity_huo_login_new"));
+        setContentView(R.layout.huo_sdk_activity_huo_login_new);
         setupUI();
     }
 
@@ -68,11 +68,11 @@ public class HuoLoginActivity extends BaseActivity {
         callBacked = false;
         viewStackManager = ViewStackManager.getInstance(this);
         int type = getIntent().getIntExtra("type", 1);
-        huoLoginView = (HuoLoginViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_loginView_new"));
-        huoFastLoginView = (HuoFastLoginViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_fastLoginView_new"));
-        huoRegisterView = (HuoRegisterViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_registerView"));
-        huoUserNameRegisterView = (HuoUserNameRegisterViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_userNameRegisterView"));
-        huoSdkSelectAccountView = (SelectAccountView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_selectAccountView"));
+        huoLoginView = (HuoLoginViewNew) findViewById(R.id.huo_sdk_loginView_new);
+        huoFastLoginView = (HuoFastLoginViewNew) findViewById(R.id.huo_sdk_fastLoginView_new);
+        huoRegisterView = (HuoRegisterViewNew) findViewById(R.id.huo_sdk_registerView);
+        huoUserNameRegisterView = (HuoUserNameRegisterViewNew) findViewById(R.id.huo_sdk_userNameRegisterView);
+        huoSdkSelectAccountView = (SelectAccountView) findViewById(R.id.huo_sdk_selectAccountView);
         viewStackManager.addBackupView(huoLoginView);
         viewStackManager.addBackupView(huoFastLoginView);
         viewStackManager.addBackupView(huoRegisterView);
