@@ -1,7 +1,6 @@
 package com.game.sdk.view;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.text.InputType;
@@ -165,7 +164,7 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
             viewStackManager.showView(viewStackManager.getViewByClass(HuoLoginViewNew.class));
         } else if (v.getId() == huo_sdk_btn_uRegisterSubmit.getId()) {//提交注册
             Toast.makeText(mContext, "截屏已保存到手机", Toast.LENGTH_SHORT).show();
-            ScreenShot.shoot((Activity) mContext, "screenshot_" + huo_sdk_et_uRegisterAccount.getText().toString().trim() + ".png");
+            ScreenShot.shoot(mContext, "screenshot_" + huo_sdk_et_uRegisterAccount.getText().toString().trim() + ".jpg");
             submitRegister();
         } else if (v.getId() == huo_sdk_rl_gotoregist.getId()) {//快速注册
             viewStackManager.addView(loginActivity.getHuoRegisterView());

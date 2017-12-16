@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -108,20 +107,17 @@ public class HuosdkInnerManager {
                             Context.MODE_MULTI_PROCESS).getBoolean("isInstall", false)) {
                         getInstall();
                     }
-                    String agentName = mContext.getResources().getString(R.string.huo_sdk_rsastr);
-                    String privatekey = mContext.getResources().getString(R.string.private_key2);
-                    //http://blog.csdn.net/a1047189887/article/details/51539789
-                    try {
-                        Toast.makeText(mContext, "agentgame =" + agentName, Toast.LENGTH_LONG).show();
-                        byte[] rsaByte = RSAUtils.decryptByPublicKey(Base64.encode(agentName.getBytes(), Base64.DEFAULT), SdkConstant.RSA_PUBLIC_KEY);
-//                        byte[] rsaByte =  RSAUtils.decryptByPublicKey(agentName.getBytes(), SdkConstant.RSA_PUBLIC_KEY.getBytes());
-                        String rsaAgentName = new String(rsaByte, "utf-8");
-                        Toast.makeText(mContext, "rsaAgentName =" + rsaAgentName, Toast.LENGTH_LONG).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    String agentName = mContext.getResources().getString(R.string.huo_sdk_rsastr1);
+//                    try {
+//                        Toast.makeText(mContext, "agentgame =" + agentName, Toast.LENGTH_LONG).show();
+//                        byte[] rsaByte = RSAUtils.decryptByPublicKey2(agentName, SdkConstant.RSA_PUBLIC_KEY);
+//                        String rsaAgentName = new String(rsaByte, "utf-8");
+//                        Toast.makeText(mContext, "rsaAgentName =" + rsaAgentName, Toast.LENGTH_LONG).show();
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
                     //去初始化
                     gotoStartup(1);
                     break;
@@ -197,6 +193,8 @@ public class HuosdkInnerManager {
     public void initSdk(Context context, OnInitSdkListener onInitSdkListener) {
         this.onInitSdkListener = onInitSdkListener;
         this.mContext = context;
+        getGameChannel(mContext);
+
         //haibei http
         NoHttp.initialize(context);
         Logger.setTag("clock");
@@ -216,11 +214,9 @@ public class HuosdkInnerManager {
         SP.init(mContext);
         initRequestCount = 0;
         initSdk(1);
-//        getFileContent(mContext);
     }
 
-    private void getFileContent(Context context) {
-        Toast.makeText(context, "getFileContent()", Toast.LENGTH_LONG).show();
+    private String getGameChannel(Context context) {
         ApplicationInfo appinfo = context.getApplicationInfo();
         String sourceDir = appinfo.sourceDir;
         ZipFile zipfile = null;
@@ -245,15 +241,15 @@ public class HuosdkInnerManager {
                             JSONObject jsonObject = new JSONObject(sbf.toString());
                             String agentName = jsonObject.getString("agentgame");
                             Toast.makeText(context, "agentgame =" + agentName, Toast.LENGTH_LONG).show();
-                            byte[] rsaByte = RSAUtils.decryptByPublicKey(agentName.getBytes(), SdkConstant.RSA_PUBLIC_KEY);
-                            String rsaAgentName = new String(rsaByte);
+                            byte[] rsaByte = RSAUtils.decryptByPublicKey2(agentName, SdkConstant.RSA_PUBLIC_KEY);
+                            String rsaAgentName = new String(rsaByte, "utf-8");
                             Toast.makeText(context, "rsaAgentName =" + rsaAgentName, Toast.LENGTH_LONG).show();
+                            return rsaAgentName;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        Toast.makeText(context, "line =" + sbf.toString(), Toast.LENGTH_LONG).show();
                         br.close();
                     }
                     break;
@@ -270,6 +266,7 @@ public class HuosdkInnerManager {
                 }
             }
         }
+        return null;
     }
 
     private void getInstall() {
