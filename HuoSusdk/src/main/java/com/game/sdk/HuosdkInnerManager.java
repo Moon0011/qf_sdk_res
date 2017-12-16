@@ -240,13 +240,14 @@ public class HuosdkInnerManager {
                             String publickey = context.getResources().getString(R.string.rsa_public_key);
                             byte[] rsaByte = RSAUtils.decryptByPublicKey2(agentName, publickey);
                             String rsaAgentName = new String(rsaByte, "utf-8");
+                            Toast.makeText(context, "rsaAgentName1 =" + rsaAgentName, Toast.LENGTH_LONG).show();
                             //===友盟初始化===
                             MobclickAgent.setDebugMode(true);
                             MobclickAgent.openActivityDurationTrack(false);
                             MobclickAgent.startWithConfigure(
                                     new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, rsaAgentName,
                                             MobclickAgent.EScenarioType.E_UM_GAME));
-//                            Toast.makeText(context, "rsaAgentName =" + rsaAgentName, Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "rsaAgentName2 =" + rsaAgentName, Toast.LENGTH_LONG).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (Exception e) {

@@ -84,5 +84,5 @@ public class SdkConstant {
     public static int floatInitX=0;//浮点初始化的x坐标
     public static int floatInitY=0;//浮点初始化的x坐标
 
-    public static String UMENG_APP_KEY="5a210a80b27b0a35ee00000d";
+    public static String UMENG_APP_KEY="5a34e336f43e48498d000781";
 }
