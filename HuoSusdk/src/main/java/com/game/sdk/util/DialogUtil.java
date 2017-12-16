@@ -3,7 +3,9 @@ package com.game.sdk.util;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.game.sdk.R;
 import com.game.sdk.domain.NotProguard;
 import com.game.sdk.domain.Notice;
 import com.game.sdk.view.AutoSplitTextView;
@@ -138,21 +141,17 @@ public class DialogUtil {
                 @Override
                 public void run() {
 
-                    final Dialog dialog = new Dialog(context, MResource.getIdByName(context,
-                            "style", "huo_sdk_customDialog"));
+                    final Dialog dialog = new Dialog(context, R.style.huo_sdk_customDialog);
                     View notcieView = LayoutInflater.from(context)
-                            .inflate(MResource.getIdByName(context, "layout", "huo_sdk_dialog_notice"), null);
-                    TextView title = (TextView) notcieView.findViewById(MResource.getIdByName(context,
-                            "id", "huo_sdk_title_text"));
-                    TextView time = (TextView) notcieView.findViewById(MResource.getIdByName(context,
-                            "id", "huo_sdk_time_text"));
-                    AutoSplitTextView content = (AutoSplitTextView) notcieView.findViewById(MResource.getIdByName(context,
-                            "id", "huo_sdk_content_text"));
-                    TextView confirm = (TextView) notcieView.findViewById(MResource.getIdByName(context,
-                            "id", "huo_sdk_confirm_tv"));
+                            .inflate(R.layout.huo_sdk_dialog_notice, null);
+                    TextView title = (TextView) notcieView.findViewById(R.id.huo_sdk_title_text);
+                    TextView time = (TextView) notcieView.findViewById(R.id.huo_sdk_time_text);
+                    AutoSplitTextView content = (AutoSplitTextView) notcieView.findViewById(R.id.huo_sdk_content_text);
+                    TextView confirm = (TextView) notcieView.findViewById(R.id.huo_sdk_confirm_tv);
                     title.setText(finalNotice.getTitle());
                     time.setText(finalNotice.getTime());
-                    content.setText(finalNotice.getContent());
+                    content.setText(Html.fromHtml(finalNotice.getContent()));
+                    content.setMovementMethod(LinkMovementMethod.getInstance());
                     confirm.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

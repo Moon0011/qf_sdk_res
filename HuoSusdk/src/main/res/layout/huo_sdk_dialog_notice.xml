@@ -54,16 +54,15 @@
                     android:textSize="10sp"
                     android:visibility="gone" />
 
-
                 <com.game.sdk.view.AutoSplitTextView
                     android:id="@+id/huo_sdk_content_text"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:autoLink="web"
+                    android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:textColor="#666666"
-                    android:textSize="14dp" />
+                    android:textSize="14dp"/>
+
             </LinearLayout>
         </ScrollView>
 

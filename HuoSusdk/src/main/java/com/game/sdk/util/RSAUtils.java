@@ -28,36 +28,35 @@ import javax.crypto.Cipher;
  * 由于非对称加密速度极其缓慢，一般文件不使用它来加密而是使用对称加密，<br/>
  * 非对称加密算法可以用来对对称加密的密钥加密，这样保证密钥的安全也就保证了数据的安全
  * </p>
- * 
  */
 @NotProguard
 public class RSAUtils {
- 
+
     /**
      * 加密算法RSA
      */
     public static final String KEY_ALGORITHM = "RSA";
-     
+
     /**
      * 签名算法
      */
     public static final String SIGNATURE_ALGORITHM = "SHA1WithRSA";
- 
+
     /**
      * 获取公钥的key
      */
     private static final String PUBLIC_KEY = "LocatorPublicKey";
-     
+
     /**
      * 获取私钥的key
      */
     private static final String PRIVATE_KEY = "LocatorPrivateKey";
-     
+
     /**
      * RSA最大加密明文大小
      */
     private static final int MAX_ENCRYPT_BLOCK = 117;
-     
+
     /**
      * RSA最大解密密文大小
      */
@@ -66,19 +65,23 @@ public class RSAUtils {
 
     /**
      * BASE64解密
+     *
      * @param key
      * @return
      * @throws Exception
-     */public static byte[] decryptBASE64(String key) throws Exception{
-        return  Base64Util.decode(key);
+     */
+    public static byte[] decryptBASE64(String key) throws Exception {
+        return Base64Util.decode(key);
     }
 
     /**
      * BASE64加密
+     *
      * @param key
      * @return
      * @throws Exception
-     */public static String encryptBASE64(byte[] key)throws Exception{
+     */
+    public static String encryptBASE64(byte[] key) throws Exception {
         return Base64Util.encode(key);
     }
 
@@ -86,7 +89,7 @@ public class RSAUtils {
      * <p>
      * 生成密钥对(公钥和私钥)
      * </p>
-     * 
+     *
      * @return
      * @throws Exception
      */
@@ -101,15 +104,14 @@ public class RSAUtils {
         keyMap.put(PRIVATE_KEY, privateKey);
         return keyMap;
     }
-     
+
     /**
      * <p>
      * 用私钥对信息生成数字签名
      * </p>
-     * 
-     * @param data 已加密数据
+     *
+     * @param data       已加密数据
      * @param privateKey 私钥(BASE64编码)
-     * 
      * @return
      * @throws Exception
      */
@@ -123,19 +125,17 @@ public class RSAUtils {
         signature.update(data);
         return Base64Util.encode(signature.sign());
     }
- 
+
     /**
      * <p>
      * 校验数字签名
      * </p>
-     * 
-     * @param data 已加密数据
+     *
+     * @param data      已加密数据
      * @param publicKey 公钥(BASE64编码)
-     * @param sign 数字签名
-     * 
+     * @param sign      数字签名
      * @return
      * @throws Exception
-     * 
      */
     public static boolean verify(byte[] data, String publicKey, String sign)
             throws Exception {
@@ -154,14 +154,14 @@ public class RSAUtils {
         }
         return false;
     }
- 
+
     /**
      * <P>
      * 私钥解密
      * </p>
-     * 
+     *
      * @param encryptedData 已加密数据
-     * @param privateKey 私钥(BASE64编码)
+     * @param privateKey    私钥(BASE64编码)
      * @return
      * @throws Exception
      */
@@ -170,7 +170,7 @@ public class RSAUtils {
         byte[] decryptedData = new byte[0];
         try {
             //解密的数据一般是base64过后的，需要先解码
-            encryptedData=decryptBASE64(new String (encryptedData,"utf-8"));
+            encryptedData = decryptBASE64(new String(encryptedData, "utf-8"));
             byte[] keyBytes = decryptBASE64(privateKey);
             PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
@@ -202,23 +202,23 @@ public class RSAUtils {
         }
         return null;
     }
- 
+
     /**
      * <p>
      * 公钥解密
      * </p>
-     * 
+     *
      * @param encryptedData 已加密数据
-     * @param publicKey 公钥(BASE64编码)
+     * @param publicKey     公钥(BASE64编码)
      * @return
      * @throws Exception
      */
     public static byte[] decryptByPublicKey(byte[] encryptedData, String publicKey)
             throws Exception {
-        L.e("decryptByPublicKey","data="+new String(encryptedData,"utf-8"));
-        try{
+        L.e("decryptByPublicKey", "data=" + new String(encryptedData, "utf-8"));
+        try {
             //解密的数据一般是base64过后的，需要先解码
-            encryptedData=decryptBASE64(new String (encryptedData,"utf-8"));
+            encryptedData = decryptBASE64(new String(encryptedData, "utf-8"));
 
             byte[] keyBytes = decryptBASE64(publicKey);
             X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
@@ -245,20 +245,57 @@ public class RSAUtils {
             }
             byte[] decryptedData = out.toByteArray();
             out.close();
-            L.e("decryptByPublicKey","解密数据为："+new String(decryptedData,"utf-8"));
+            L.e("decryptByPublicKey", "解密数据为：" + new String(decryptedData, "utf-8"));
             return decryptedData;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
- 
+
+    public static byte[] decryptByPublicKey2(String encryStr, String publicKey)
+            throws Exception {
+        try {
+            //解密的数据一般是base64过后的，需要先解码
+            byte[] encryptedData = Base64.decode(encryStr.toCharArray());
+            byte[] keyBytes = decryptBASE64(publicKey);
+            X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM, "BC");
+            Key publicK = keyFactory.generatePublic(x509KeySpec);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+            cipher.init(Cipher.DECRYPT_MODE, publicK);
+            int inputLen = encryptedData.length;
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            int offSet = 0;
+            byte[] cache;
+            int i = 0;
+            // 对数据分段解密
+            while (inputLen - offSet > 0) {
+                if (inputLen - offSet > MAX_DECRYPT_BLOCK) {
+                    cache = cipher.doFinal(encryptedData, offSet, MAX_DECRYPT_BLOCK);
+                } else {
+                    cache = cipher.doFinal(encryptedData, offSet, inputLen - offSet);
+                }
+                out.write(cache, 0, cache.length);
+                i++;
+                offSet = i * MAX_DECRYPT_BLOCK;
+            }
+            byte[] decryptedData = out.toByteArray();
+            out.close();
+            L.e("decryptByPublicKey", "解密数据为：" + new String(decryptedData, "utf-8"));
+            return decryptedData;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      * <p>
      * 公钥加密
      * </p>
-     * 
-     * @param data 源数据
+     *
+     * @param data      源数据
      * @param publicKey 公钥(BASE64编码)
      * @return
      * @throws Exception
@@ -298,13 +335,13 @@ public class RSAUtils {
         }
         return null;
     }
- 
+
     /**
      * <p>
      * 私钥加密
      * </p>
-     * 
-     * @param data 源数据
+     *
+     * @param data       源数据
      * @param privateKey 私钥(BASE64编码)
      * @return
      * @throws Exception
@@ -343,12 +380,12 @@ public class RSAUtils {
         }
         return null;
     }
- 
+
     /**
      * <p>
      * 获取私钥
      * </p>
-     * 
+     *
      * @param keyMap 密钥对
      * @return
      * @throws Exception
@@ -358,11 +395,12 @@ public class RSAUtils {
         Key key = (Key) keyMap.get(PRIVATE_KEY);
         return encryptBASE64(key.getEncoded());
     }
+
     /**
      * <p>
      * 获取公钥
      * </p>
-     * 
+     *
      * @param keyMap 密钥对
      * @return
      * @throws Exception

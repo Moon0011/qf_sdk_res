@@ -1,9 +1,11 @@
 package com.game.sdk;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -51,6 +53,7 @@ import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.HLAppUtil;
 import com.game.sdk.util.MiuiDeviceUtil;
+import com.game.sdk.util.RSAUtils;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.http.RequestQueue;
 import com.kymjs.rxvolley.toolbox.HTTPSTrustManager;
@@ -59,8 +62,17 @@ import com.umeng.analytics.game.UMGameAgent;
 import com.yolanda.nohttp.Logger;
 import com.yolanda.nohttp.NoHttp;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * author janecer 2014年7月22日上午9:45:18
@@ -80,6 +92,7 @@ public class HuosdkInnerManager {
     public static boolean isSwitchLogin = false; //是否切换
     private boolean directLogin = false;//是否使用直接登陆
     private boolean initSuccess = false;
+    @SuppressLint("HandlerLeak")
     private Handler huosdkHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -95,9 +108,7 @@ public class HuosdkInnerManager {
                     break;
                 case CODE_INIT_SUCCESS:
                     L.e("hongliangsdk1", SdkConstant.HS_AGENT);
-                    Log.e("hongliangsdk1", SdkConstant.HS_AGENT);
                     initRequestCount++;
-
                     if (!mContext.getSharedPreferences("qfsdk",
                             Context.MODE_MULTI_PROCESS).getBoolean("isInstall", false)) {
                         getInstall();
@@ -178,6 +189,8 @@ public class HuosdkInnerManager {
     public void initSdk(Context context, OnInitSdkListener onInitSdkListener) {
         this.onInitSdkListener = onInitSdkListener;
         this.mContext = context;
+        getGameChannel(context);
+
         //haibei http
         NoHttp.initialize(context);
         Logger.setTag("clock");
@@ -197,12 +210,64 @@ public class HuosdkInnerManager {
         SP.init(mContext);
         initRequestCount = 0;
         initSdk(1);
+    }
 
-//        MobclickAgent.setDebugMode(true);
-//        MobclickAgent.openActivityDurationTrack(false);
-//        MobclickAgent.startWithConfigure(
-//                new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, "qfsdk_ccc",
-//                        MobclickAgent.EScenarioType.E_UM_GAME));
+    private void getGameChannel(Context context) {
+        ApplicationInfo appinfo = context.getApplicationInfo();
+        String sourceDir = appinfo.sourceDir;
+        ZipFile zipfile = null;
+        try {
+            zipfile = new ZipFile(sourceDir);
+            Enumeration<?> entries = zipfile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = ((ZipEntry) entries.nextElement());
+                String entryName = entry.getName();
+                if (entryName.startsWith("META-INF/gamechannel")) {
+                    //利用ZipInputStream读取文件
+                    long size = entry.getSize();
+                    if (size > 0) {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(zipfile.getInputStream(entry)));
+                        String line;
+                        StringBuffer sbf = new StringBuffer();
+                        while ((line = br.readLine()) != null) {
+                            System.out.println(line);
+                            sbf.append(line);
+                        }
+                        try {
+                            JSONObject jsonObject = new JSONObject(sbf.toString());
+                            String agentName = jsonObject.getString("agentgame");
+//                            Toast.makeText(context, "agentgame =" + agentName, Toast.LENGTH_LONG).show();
+                            String publickey = context.getResources().getString(R.string.rsa_public_key);
+                            byte[] rsaByte = RSAUtils.decryptByPublicKey2(agentName, publickey);
+                            String rsaAgentName = new String(rsaByte, "utf-8");
+                            //===友盟初始化===
+                            MobclickAgent.setDebugMode(true);
+                            MobclickAgent.openActivityDurationTrack(false);
+                            MobclickAgent.startWithConfigure(
+                                    new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, rsaAgentName,
+                                            MobclickAgent.EScenarioType.E_UM_GAME));
+//                            Toast.makeText(context, "rsaAgentName =" + rsaAgentName, Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        br.close();
+                    }
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (zipfile != null) {
+                try {
+                    zipfile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void getInstall() {
@@ -274,13 +339,6 @@ public class HuosdkInnerManager {
                     SdkNative.initNetConfig(mContext, new NativeListener() {
                         @Override
                         public void onSuccess() {
-                            //===友盟初始化===
-                            MobclickAgent.setDebugMode(true);
-                            MobclickAgent.openActivityDurationTrack(false);
-                            MobclickAgent.startWithConfigure(
-                                    new MobclickAgent.UMAnalyticsConfig(mContext, SdkConstant.UMENG_APP_KEY, "qfsdk_ddd",
-                                            MobclickAgent.EScenarioType.E_UM_GAME));
-
                             Message message = Message.obtain();
                             message.what = CODE_INIT_SUCCESS;
                             message.arg2 = count;
