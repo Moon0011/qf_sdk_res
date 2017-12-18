@@ -236,11 +236,11 @@ public class HuosdkInnerManager {
                         try {
                             JSONObject jsonObject = new JSONObject(sbf.toString());
                             String agentName = jsonObject.getString("agentgame");
-//                            Toast.makeText(context, "agentgame =" + agentName, Toast.LENGTH_LONG).show();
+//                            Toast.makeText(context, "umeng agentgame =" + agentName, Toast.LENGTH_LONG).show();
                             String publickey = context.getResources().getString(R.string.rsa_public_key);
                             byte[] rsaByte = RSAUtils.decryptByPublicKey2(agentName, publickey);
                             String rsaAgentName = new String(rsaByte, "utf-8");
-//                            Toast.makeText(context, "rsaAgentName1 =" + rsaAgentName, Toast.LENGTH_LONG).show();
+//                            Toast.makeText(context, "umeng rsaAgentName1 =" + rsaAgentName, Toast.LENGTH_LONG).show();
                             //===友盟初始化===
                             MobclickAgent.setDebugMode(true);
                             MobclickAgent.openActivityDurationTrack(false);
@@ -278,6 +278,9 @@ public class HuosdkInnerManager {
             @Override
             public void onDataSuccess(InstallResultBean data) {
                 L.e(TAG, "content =");
+                Map<String, String> map_ekv = new HashMap<String, String>();
+                MobclickAgent.onEventValue(mContext, "first_install_event", map_ekv, 500);
+
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("qfsdk",
                         Context.MODE_MULTI_PROCESS).edit();
                 editor.putBoolean("isInstall", true);
