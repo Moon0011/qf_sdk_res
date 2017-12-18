@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.game.sdk.HuosdkInnerManager;
+import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
 import com.game.sdk.domain.BaseRequestBean;
@@ -189,7 +190,7 @@ public class HuoFastLoginView extends FrameLayout implements View.OnClickListene
 
     private void getNotice() {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setApp_id("1");
+        baseRequestBean.setApp_id(SdkConstant.HS_APPID);
         HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(baseRequestBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<Notice>(mContext, httpParamsBuild.getAuthkey()) {
             @Override
