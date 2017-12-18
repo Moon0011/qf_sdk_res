@@ -126,6 +126,7 @@ public class HuosdkInnerManager {
         }
     };
 
+
     // 单例模式
     @NotProguard
     public static synchronized HuosdkInnerManager getInstance() {
