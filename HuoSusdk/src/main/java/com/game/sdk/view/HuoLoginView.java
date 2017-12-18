@@ -301,7 +301,7 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
 
     private void getNotice() {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setApp_id("1");
+        baseRequestBean.setApp_id(SdkConstant.HS_APPID);
         HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(baseRequestBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<Notice>(mContext, httpParamsBuild.getAuthkey()) {
             @Override
