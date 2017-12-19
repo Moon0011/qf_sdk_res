@@ -35,16 +35,13 @@ public class DialogUtil {
      * 显示对话框
      */
     private static void init(Context context) {
-        dialog = new Dialog(context, MResource.getIdByName(context, "style",
-                "huo_sdk_customDialog"));
+        dialog = new Dialog(context, R.style.huo_sdk_customDialog);
         view = LayoutInflater.from(context).inflate(
-                MResource.getIdByName(context, "layout", "huo_sdk_dialog_loading"), null);
-        iv_pd = (ImageView) view.findViewById(MResource.getIdByName(context,
-                "id", "huo_sdk_iv_circle"));
+                R.layout.huo_sdk_dialog_loading, null);
+        iv_pd = (ImageView) view.findViewById(R.id.huo_sdk_iv_circle);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        tv_msg = (TextView) view.findViewById(MResource.getIdByName(context,
-                "id", "huo_sdk_tv_msg"));
+        tv_msg = (TextView) view.findViewById(R.id.huo_sdk_tv_msg);
         dialog.setContentView(view);
     }
 

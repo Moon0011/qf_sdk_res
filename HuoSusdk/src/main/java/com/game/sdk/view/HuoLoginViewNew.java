@@ -153,7 +153,7 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
                     httpParamsBuild.getHttpParams().getUrlParams().toString(), httpParamsBuild.getAuthkey());
         } else if (view.getId() == huo_iv_loginUserSelect.getId()) {
             userselect(huo_et_loginAccount, huo_rl_loginAccount.getWidth());
-        } else if (view.getId() == huoLlOneKeyLogin.getId()) {//试玩
+        } else if (view.getId() == huoLlOneKeyLogin.getId()) {//一键注册
             HuoUserNameRegisterViewNew huoUserNameRegisterView = (HuoUserNameRegisterViewNew) viewStackManager.getViewByClass(HuoUserNameRegisterViewNew.class);
             if (huoUserNameRegisterView != null) {
                 huoUserNameRegisterView.switchUI(true);
@@ -181,16 +181,6 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
             @Override
             public void onDataSuccess(LoginResultBean data) {
                 if (data != null) {
-//                    T.s(loginActivity,"登陆成功："+data.getCp_user_token());
-                    //接口回调通知
-//                    data.setUserlist(getTestList());
-                    if (data.getUserlist() != null && data.getUserlist().size() > 1) {
-                        SelectAccountView selectAccountView = (SelectAccountView) viewStackManager.getViewByClass(SelectAccountView.class);
-                        selectAccountView.setUserNameList(data.getUserlist(), password);
-                        //填对话框选择账号进行登陆
-                        viewStackManager.showView(viewStackManager.getViewByClass(SelectAccountView.class));
-                        return;
-                    }
                     LoginControl.saveUserToken(data.getCp_user_token());
                     HuosdkInnerManager.notice = data.getNotice(); //发送通知内容
                     OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();

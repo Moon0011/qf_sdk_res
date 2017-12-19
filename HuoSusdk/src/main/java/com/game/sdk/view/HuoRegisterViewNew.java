@@ -31,14 +31,13 @@ import com.game.sdk.http.SdkApi;
 import com.game.sdk.listener.OnLoginListener;
 import com.game.sdk.log.T;
 import com.game.sdk.ui.HuoLoginActivity;
-import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.kymjs.rxvolley.RxVolley;
 
 /**
- * Created by Liuhongliangsdk on 2016/11/11.
+ * 快速注册
  */
 
 public class HuoRegisterViewNew extends FrameLayout implements View.OnClickListener {
@@ -194,15 +193,10 @@ public class HuoRegisterViewNew extends FrameLayout implements View.OnClickListe
             @Override
             public void onDataSuccess(RegisterResultBean data) {
                 if (data != null) {
-//                    T.s(loginActivity,"登陆成功："+data.getCp_user_token());
-                    //接口回调通知
                     LoginControl.saveUserToken(data.getCp_user_token());
-                    HuosdkInnerManager.notice = data.getNotice(); //发送通知内容
                     OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();
                     if (onLoginListener != null) {
                         onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(), data.getCp_user_token()));
-                        //登录成功后统一弹出弹框
-                        DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), HuosdkInnerManager.notice);
                     }
                     loginActivity.callBackFinish();
                     //保存账号到数据库
@@ -212,8 +206,6 @@ public class HuoRegisterViewNew extends FrameLayout implements View.OnClickListe
                         UserLoginInfodao.getInstance(loginActivity).deleteUserLoginByName(account);
                         UserLoginInfodao.getInstance(loginActivity).saveUserLoginInfo(account, password);
                     }
-
-                    //弹出notice框
                 }
             }
         };

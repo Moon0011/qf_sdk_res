@@ -26,7 +26,7 @@ import java.io.OutputStream;
 public class DBHelper extends SQLiteOpenHelper {
 
 	public static final String OUT_DB_NAME="outdbName.db";
-	public static boolean dbCanUse=true;
+	public static boolean dbCanUse=false;
 	private Context mContext;
 	private String mName;
 	public static final String DB_FILE_DIR = Environment.getExternalStorageDirectory().toString()
