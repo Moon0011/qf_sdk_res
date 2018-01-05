@@ -81,15 +81,6 @@ public final class HuosdkManager {
     }
 
     /**
-     * 设置是否使用直接登录
-     * @param directLogin 是否直接登陆 true在第一次登陆的时候，系统没有找到登陆的账号记录，则自动获取账号并登陆
-     */
-    @NotProguard
-    public void setDirectLogin(boolean directLogin) {
-        Log.d("huosdk","HuosdkManager setDirectLogin:"+directLogin);
-        sdkInnerManager.setDirectLogin(directLogin);
-    }
-    /**
      * 提交用户角色信息
      * @param roleInfo 角色信息类
      * @param submitRoleInfoCallBack 结果回调

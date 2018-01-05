@@ -90,7 +90,6 @@ public class HuosdkInnerManager {
     private int initRequestCount = 0;
     public static Notice notice; //登录后公告
     public static boolean isSwitchLogin = false; //是否切换
-    private boolean directLogin = false;//是否使用直接登陆
     private boolean initSuccess = false;
     @SuppressLint("HandlerLeak")
     private Handler huosdkHandler = new Handler() {
@@ -191,23 +190,18 @@ public class HuosdkInnerManager {
         this.mContext = context;
         getGameChannel(context);
 
-        //haibei http
-        NoHttp.initialize(context);
+        NoHttp.initialize(context);//海贝付初始化
         Logger.setTag("clock");
-        Logger.setDebug(false);// 开始NoHttp的调试模式, 这样就能看到请求过程和日志
+        Logger.setDebug(false);
 
         if (!checkCallOk(false)) {
             return;
         }
         initSetting();
-        HuosdkService.startService(mContext);
-//        CrashHandler crashHandler = CrashHandler.getInstance();
-//        crashHandler.init(mContext, "");
-        new ActivityLifecycleManager().startActivityLifecycleManager(mContext);
-        //初始化设备信息
-        SdkNative.soInit(context);
-        //初始化sp
-        SP.init(mContext);
+        HuosdkService.startService(mContext);//游戏更新,暂时没用到
+        new ActivityLifecycleManager().startActivityLifecycleManager(mContext);//管理Activity生命周期,控制悬浮球显示
+        SdkNative.soInit(context);//初始化设备信息
+        SP.init(mContext);//初始化sp
         initRequestCount = 0;
         initSdk(1);
     }
@@ -295,16 +289,7 @@ public class HuosdkInnerManager {
         httpCallbackDecode.setShowTs(false);
         httpCallbackDecode.setLoadingCancel(false);
         httpCallbackDecode.setShowLoading(false);
-        String url = SdkApi.getInstall();
         RxVolley.post(SdkApi.getInstall(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
-    }
-
-    public boolean isDirectLogin() {
-        return directLogin;
-    }
-
-    public void setDirectLogin(boolean directLogin) {
-        this.directLogin = directLogin;
     }
 
     public void setFloatInitXY(int x, int y) {
@@ -317,17 +302,8 @@ public class HuosdkInnerManager {
      * count=1标示正常请求，2表示在初始化时发现rsakey错误后的重试流程
      */
     private void initSdk(final int count) {
-        Log.e(TAG, "isSLogin:" + isSwitchLogin);
-        isSwitchLogin = mContext.getSharedPreferences("huo_sdk_sp", Context.MODE_PRIVATE).getBoolean("switch_login", false);
-        //TODO 如果判断有切换账号逻辑，则不执行nativeInit，将使用net获取的值,此时直接返回init_success
-        if (isSwitchLogin) {
-            Message message = Message.obtain();
-            message.what = CODE_INIT_SUCCESS;
-            message.arg2 = count;
-            huosdkHandler.sendMessage(message);
-            return;
-        }
         //初始化native
+        @SuppressLint("StaticFieldLeak")
         AsyncTask<String, Integer, String> nativeAsyncTask = new AsyncTask<String, Integer, String>() {
             @Override
             protected void onPreExecute() {

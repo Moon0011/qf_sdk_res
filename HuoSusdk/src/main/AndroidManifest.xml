@@ -125,12 +125,20 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
 
-        <activity android:name="com.game.sdk.plugin.hbfpay.PayInterfaceActivity"
+        <activity
+            android:name="com.game.sdk.plugin.hbfpay.PayInterfaceActivity"
             android:configChanges="screenSize|orientation|keyboardHidden|navigation"
             android:launchMode="singleTask"
             android:screenOrientation="behind"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <receiver android:name=".receive.NoticeReceiver">
+            <intent-filter>
+                <action android:name="com.qf.sdklogin.fornotice" />
+            </intent-filter>
+
+        </receiver>
 
         <meta-data
             android:name="HS_APPID"

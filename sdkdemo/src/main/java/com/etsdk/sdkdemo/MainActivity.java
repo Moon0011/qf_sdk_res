@@ -55,8 +55,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         btn_test_switchAccount.setOnClickListener(this);
         //获得sdk单例
         sdkManager = HuosdkManager.getInstance();
-        //设置是否使用直接登陆,true为使用：第一次调用登陆时自动生成一个账号登陆
-        sdkManager.setDirectLogin(false);
         sdkManager.setFloatInitXY(500, 200);
         //sdk初始化
         sdkManager.initSdk(this, new OnInitSdkListener() {

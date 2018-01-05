@@ -26,7 +26,7 @@ import com.game.sdk.view.AutoSplitTextView;
 @NotProguard
 public class DialogUtil {
 
-    private static Dialog dialog;// 显示对话框
+    private static Dialog dialog, dialog2;// 显示对话框
     private static ImageView iv_pd;// 待旋转动画
     private static TextView tv_msg;// 消息
     private static View view;
@@ -35,16 +35,13 @@ public class DialogUtil {
      * 显示对话框
      */
     private static void init(Context context) {
-        dialog = new Dialog(context, MResource.getIdByName(context, "style",
-                "huo_sdk_customDialog"));
+        dialog = new Dialog(context, R.style.huo_sdk_customDialog);
         view = LayoutInflater.from(context).inflate(
-                MResource.getIdByName(context, "layout", "huo_sdk_dialog_loading"), null);
-        iv_pd = (ImageView) view.findViewById(MResource.getIdByName(context,
-                "id", "huo_sdk_iv_circle"));
+                R.layout.huo_sdk_dialog_loading, null);
+        iv_pd = (ImageView) view.findViewById(R.id.huo_sdk_iv_circle);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        tv_msg = (TextView) view.findViewById(MResource.getIdByName(context,
-                "id", "huo_sdk_tv_msg"));
+        tv_msg = (TextView) view.findViewById(R.id.huo_sdk_tv_msg);
         dialog.setContentView(view);
     }
 
@@ -64,6 +61,34 @@ public class DialogUtil {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 显示对话框
+     */
+    private static void init2(Context context) {
+        dialog2 = new Dialog(context, R.style.huo_sdk_customDialog);
+        view = LayoutInflater.from(context).inflate(
+                R.layout.huo_sdk_dialog_loading, null);
+        iv_pd = (ImageView) view.findViewById(R.id.huo_sdk_iv_circle);
+        dialog2.setCancelable(false);
+        dialog2.setCanceledOnTouchOutside(false);
+        tv_msg = (TextView) view.findViewById(R.id.huo_sdk_tv_msg);
+        dialog2.setContentView(view);
+    }
+
+
+    public static void showDialog2(Context ctx, boolean cansable, String msg) {
+        if (dialog2 != null && dialog2.isShowing()) {
+            dialog2.dismiss();
+        }
+        init2(ctx);
+        tv_msg.setText(msg);// 显示进度信息
+        if (null != dialog2 && !dialog2.isShowing()) {
+            dialog2.setCancelable(cansable);
+            iv_pd.startAnimation(rotaAnimation());
+            dialog2.show();
         }
     }
 
@@ -89,6 +114,21 @@ public class DialogUtil {
                 dialog.dismiss();
                 iv_pd.clearAnimation();
                 dialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 隐藏对话框
+     */
+    public static void dismissDialog2() {
+        try {
+            if (null != dialog2 && dialog2.isShowing()) {
+                dialog2.dismiss();
+                iv_pd.clearAnimation();
+                dialog2 = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
