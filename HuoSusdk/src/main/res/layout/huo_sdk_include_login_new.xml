@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/huo_sdk_rl_login"
     android:layout_width="322dp"
-    android:layout_height="280dp"
+    android:layout_height="320dp"
     android:layout_gravity="center"
     android:layout_marginLeft="@dimen/huo_sdk_activity_horizontal_margin"
     android:layout_marginRight="@dimen/huo_sdk_activity_horizontal_margin"
@@ -150,10 +150,35 @@
         android:textSize="15dp" />
 
     <LinearLayout
+        android:id="@+id/ll_third_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/huo_sdk_btn_loginSubmit"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/img_login_qq"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:src="@drawable/login_qq" />
+
+        <ImageView
+            android:id="@+id/img_login_wx"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/login_wx" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/huo_sdk_ll_onekeylogin"
         android:layout_width="89dp"
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
+        android:layout_below="@+id/ll_third_login"
+        android:layout_marginTop="14dp"
         android:background="@drawable/shape_corner_style2"
         android:gravity="center">
 
@@ -177,6 +202,8 @@
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/ll_third_login"
+        android:layout_marginTop="14dp"
         android:background="@drawable/shape_corner_style2"
         android:gravity="center">
 

@@ -33,7 +33,6 @@ import com.game.sdk.http.SdkApi;
 import com.game.sdk.listener.OnLoginListener;
 import com.game.sdk.log.T;
 import com.game.sdk.ui.HuoLoginActivity;
-import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
@@ -45,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by liu hong liang on 2016/11/12.
+ * 一键注册/用户注册
  */
 
 public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnClickListener {
@@ -58,7 +57,7 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
     private LinearLayout huo_sdk_rl_uRegisterBackLogin, huo_sdk_rl_gotoregist;
     private Button huo_sdk_btn_uRegisterSubmit;
     private EditText huo_sdk_et_uRegisterPwd;
-    private boolean isShiWan = false;
+    private boolean isOneKeyRegist = false;
     private ImageView huo_sdk_img_show_pwd;
     private ImageView huo_sdk_iv_logo;
     private TextView huo_tv_regist_Logo;
@@ -125,22 +124,18 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
         });
     }
 
-    public void switchUI(boolean isShiWan) {
-        this.isShiWan = isShiWan;
-        if (isShiWan) {
+    public void switchUI(boolean isOneKeyRegist) {
+        this.isOneKeyRegist = isOneKeyRegist;
+        if (isOneKeyRegist) {
             huo_sdk_et_uRegisterAccount.setEnabled(false);
-//            huo_sdk_ll_uRegisterAccount.setBackgroundColor(Color.parseColor("#e8ecf3"));
             huo_tv_regist_Logo.setText("一键注册");
-//            huo_login_regist_Logo.setImageResource(R.drawable.one_key_login);
             //一键注册显示密码
             huo_sdk_et_uRegisterPwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             showPwd = true;
             getAccountByNet();
         } else {
             huo_sdk_et_uRegisterAccount.setEnabled(true);
-//            huo_sdk_ll_uRegisterAccount.setBackgroundColor(loginActivity.getResources().getColor(android.R.color.transparent));
             huo_sdk_et_uRegisterAccount.setBackgroundColor(loginActivity.getResources().getColor(android.R.color.transparent));
-//            huo_login_regist_Logo.setImageResource(R.drawable.user_regist);
             huo_tv_regist_Logo.setText("用户注册");
             huo_sdk_et_uRegisterAccount.setText("");
             huo_sdk_et_uRegisterPwd.setText("");
@@ -240,13 +235,10 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
                     TalkingDataGA.onEvent("registSuccess", map_ekv);
                     //接口回调通知
                     LoginControl.saveUserToken(data.getCp_user_token());
-                    HuosdkInnerManager.notice = data.getNotice(); //发送通知内容
                     OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();
                     if (onLoginListener != null) {
                         onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(), data.getCp_user_token()));
-                        //登录成功后统一弹出弹框
-                        DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), HuosdkInnerManager.notice);
-                        if (isShiWan) {
+                        if (isOneKeyRegist) {
                             Toast.makeText(getContext(), "试玩/一键注册无法进行实名信息认证，账号会存在安全隐患。", Toast.LENGTH_LONG).show();
                         }
                     }

@@ -1,5 +1,6 @@
 package com.game.sdk.floatwindow;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.game.sdk.HuosdkInnerManager;
+import com.game.sdk.R;
 import com.game.sdk.SdkConstant;
 import com.game.sdk.domain.WebRequestBean;
 import com.game.sdk.http.HttpParamsBuild;
@@ -83,8 +85,11 @@ public class FloatViewImpl implements IFloatView {
             switch (msg.what) {
                 case MOBILE_QUERY:
                     if (!HuosdkInnerManager.isSwitchLogin){
-
-                        mFloatView.setImageResource(MResource.getIdByName(mContext, "drawable", isleft ? "huo_sdk_pull_left" : "huo_sdk_pull_right"));
+                        if(isleft){
+                            mFloatView.setImageResource(R.drawable.huo_sdk_pull_left);
+                        }else{
+                            mFloatView.setImageResource(R.drawable.huo_sdk_pull_right);
+                        }
                     }else{
                         MResource.loadImgFromSDCard(mFloatView,isleft ? MResource.PATH_FILE_ICON_FLOAT_LEFT
                              : MResource.PATH_FILE_ICON_FLOAT_RIGHT);
@@ -132,30 +137,26 @@ public class FloatViewImpl implements IFloatView {
         LayoutInflater inflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         // 获取浮动窗口视图所在布局
-        mFloatLayout = (RelativeLayout) inflater.inflate(MResource
-                .getIdByName(mContext, MResource.LAYOUT, "huo_sdk_float_layout"), null);
+        mFloatLayout = (RelativeLayout) inflater.inflate(R.layout.huo_sdk_float_layout, null);
         // 添加mFloatLayout
         mWindowManager.addView(mFloatLayout, wmParams);
         initUI();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initUI() {
         // 浮动窗口按钮
-        mFloatView = (ImageView) mFloatLayout.findViewById(MResource
-                .getIdByName(mContext, "R.id.huo_sdk_iv_float"));
+        mFloatView = (ImageView) mFloatLayout.findViewById(R.id.huo_sdk_iv_float);
 
-        item_lay = (LinearLayout) mFloatLayout.findViewById(MResource
-                .getIdByName(mContext, "R.id.huo_sdk_item_lay"));
-        float_item_id = (ImageView) mFloatLayout.findViewById(MResource
-                .getIdByName(mContext,  "R.id.huo_sdk_float_item_id"));
+        item_lay = (LinearLayout) mFloatLayout.findViewById(R.id.huo_sdk_item_lay);
+        float_item_id = (ImageView) mFloatLayout.findViewById(R.id.huo_sdk_float_item_id);
         float_item_user_lay = (LinearLayout) mFloatLayout
-                .findViewById(MResource.getIdByName(mContext, "R.id.huo_sdk_float_item_user_lay"));
+                .findViewById(R.id.huo_sdk_float_item_user_lay);
         float_item_gift_lay = (LinearLayout) mFloatLayout
-                .findViewById(MResource.getIdByName(mContext, "R.id.huo_sdk_float_item_gift_lay"));
+                .findViewById(R.id.huo_sdk_float_item_gift_lay);
         float_item_server_lay = (LinearLayout) mFloatLayout
-                .findViewById(MResource.getIdByName(mContext, "R.id.huo_sdk_float_item_server_lay"));
-        float_item_bbs_lay = (LinearLayout) mFloatLayout.findViewById(MResource
-                .getIdByName(mContext, "R.id.huo_sdk_float_item_bbs_lay"));
+                .findViewById(R.id.huo_sdk_float_item_server_lay);
+        float_item_bbs_lay = (LinearLayout) mFloatLayout.findViewById(R.id.huo_sdk_float_item_bbs_lay);
 
         mFloatLayout.measure(View.MeasureSpec.makeMeasureSpec(0,
                 View.MeasureSpec.UNSPECIFIED), View.MeasureSpec
@@ -163,8 +164,7 @@ public class FloatViewImpl implements IFloatView {
         item_lay.setVisibility(View.GONE);
 
         if (!HuosdkInnerManager.isSwitchLogin){
-            mFloatView.setImageResource(MResource.getIdByName(mContext,
-                    "drawable", "huo_sdk_fload"));
+            mFloatView.setImageResource(R.drawable.huo_sdk_fload);
         }else{
             MResource.loadImgFromSDCard(mFloatView, MResource.PATH_FILE_ICON_FLOAT);
         }
@@ -177,8 +177,7 @@ public class FloatViewImpl implements IFloatView {
 
 
                 if (!HuosdkInnerManager.isSwitchLogin){
-                    mFloatView.setImageResource(MResource.getIdByName(mContext,
-                            "drawable", "huo_sdk_fload"));
+                    mFloatView.setImageResource(R.drawable.huo_sdk_fload);
                 }else{
                     MResource.loadImgFromSDCard(mFloatView, MResource.PATH_FILE_ICON_FLOAT);
                 }
@@ -212,9 +211,9 @@ public class FloatViewImpl implements IFloatView {
                             bottomLayout.setVisibility(View.VISIBLE);
                         }
                         if(isScrollHideArea(ViewRawX,ViewRawY)){
-                            huo_sdk_iv_hide.setImageResource(MResource.getIdByName(mContext,"R.drawable.huo_sdk_float_hide_acitve"));
+                            huo_sdk_iv_hide.setImageResource(R.drawable.huo_sdk_float_hide_acitve);
                         }else{
-                            huo_sdk_iv_hide.setImageResource(MResource.getIdByName(mContext,"R.drawable.huo_sdk_float_hide_normal"));
+                            huo_sdk_iv_hide.setImageResource(R.drawable.huo_sdk_float_hide_normal);
                         }
                         break;
                     case MotionEvent.ACTION_UP:
@@ -227,7 +226,7 @@ public class FloatViewImpl implements IFloatView {
                         pullover(3000);
                         bottomLayout.setVisibility(View.INVISIBLE);
                         if(isScrollHideArea(ViewRawX,ViewRawY)){
-                            huo_sdk_iv_hide.setImageResource(MResource.getIdByName(mContext,"R.drawable.huo_sdk_float_hide_normal"));
+                            huo_sdk_iv_hide.setImageResource(R.drawable.huo_sdk_float_hide_normal);
                             showHideHintDialog();
                         }
                         //只要发生移动，不响应点击事件
@@ -277,11 +276,9 @@ public class FloatViewImpl implements IFloatView {
     }
 
     public void initFloatHideBottom(){
-        bottomLayout = (ViewGroup) LayoutInflater.from(mContext).inflate(MResource.getIdByName(mContext, "R.layout.huo_sdk_float_bottom"), null);
-        huo_sdk_hide_area = (View) bottomLayout.findViewById(MResource
-                .getIdByName(mContext, "R.id.huo_sdk_hide_area"));
-        huo_sdk_iv_hide = (ImageView) bottomLayout.findViewById(MResource
-                .getIdByName(mContext, "R.id.huo_sdk_iv_hide"));
+        bottomLayout = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.huo_sdk_float_bottom, null);
+        huo_sdk_hide_area = (View) bottomLayout.findViewById(R.id.huo_sdk_hide_area);
+        huo_sdk_iv_hide = (ImageView) bottomLayout.findViewById(R.id.huo_sdk_iv_hide);
         WindowManager.LayoutParams bottomLp=new WindowManager.LayoutParams();
         // 设置window type
         bottomLp.type = LayoutParams.TYPE_PHONE;
@@ -413,13 +410,10 @@ public class FloatViewImpl implements IFloatView {
         //先移除底部隐藏view和浮点
         hidFloat();
         //创建隐藏提示对话框并显示
-        final ViewGroup hideHintLayout = (ViewGroup) LayoutInflater.from(mContext).inflate(MResource.getIdByName(mContext, "R.layout.huo_sdk_float_hide_dialog"), null);
-        View huo_sdk_btn_cancel =  hideHintLayout.findViewById(MResource
-                .getIdByName(mContext, "R.id.huo_sdk_btn_cancel"));
-        View huo_sdk_btn_confirm = hideHintLayout.findViewById(MResource
-                .getIdByName(mContext, "R.id.huo_sdk_btn_confirm"));
-        ImageView huo_sdk_iv_hide_anim = (ImageView) hideHintLayout.findViewById(MResource
-                .getIdByName(mContext, "R.id.huo_sdk_iv_hide_anim"));
+        final ViewGroup hideHintLayout = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.huo_sdk_float_hide_dialog, null);
+        View huo_sdk_btn_cancel =  hideHintLayout.findViewById(R.id.huo_sdk_btn_cancel);
+        View huo_sdk_btn_confirm = hideHintLayout.findViewById(R.id.huo_sdk_btn_confirm);
+        ImageView huo_sdk_iv_hide_anim = (ImageView) hideHintLayout.findViewById(R.id.huo_sdk_iv_hide_anim);
         WindowManager.LayoutParams bottomLp=new WindowManager.LayoutParams();
         // 设置window type
         bottomLp.type = LayoutParams.TYPE_PHONE;
