@@ -36,6 +36,7 @@ import com.game.sdk.pay.CommonJsForWeb;
 import com.game.sdk.pay.IPayListener;
 import com.game.sdk.util.BaseAppUtil;
 import com.game.sdk.util.DialogUtil;
+import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.kymjs.rxvolley.client.HttpParams;
 
@@ -104,16 +105,16 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
         Log.e("hongliang", "windowType=" + windowType);
         switch (windowType) {
             case TYPE_NO_STATUS_NO_TITLE:
-                setTheme(R.style.huo_sdk_FullscreenTheme);
+                setTheme(MResource.getIdByName(this,"R.style.huo_sdk_FullscreenTheme"));
                 break;
             case TYPE_NO_STATUS_TITLE:
-                setTheme(R.style.huo_sdk_FullscreenTheme);
+                setTheme(MResource.getIdByName(this,"R.style.huo_sdk_FullscreenTheme"));
                 break;
             case TYPE_STATUS_NO_TITLE:
-                setTheme(R.style.huo_sdk_AppTheme);
+                setTheme(MResource.getIdByName(this,"R.style.huo_sdk_AppTheme"));
                 break;
             case TYPE_STATUS_TITLE:
-                setTheme(R.style.huo_sdk_AppTheme);
+                setTheme(MResource.getIdByName(this,"R.style.huo_sdk_AppTheme"));
                 break;
         }
     }

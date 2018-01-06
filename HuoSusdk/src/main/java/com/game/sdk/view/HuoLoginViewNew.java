@@ -3,8 +3,12 @@ package com.game.sdk.view;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
@@ -24,6 +28,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
 import com.game.sdk.R;
@@ -47,9 +52,15 @@ import com.game.sdk.ui.FloatWebActivity;
 import com.game.sdk.ui.HuoLoginActivity;
 import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
+import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.kymjs.rxvolley.RxVolley;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -142,7 +153,7 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
         if (getChildCount() > 0) {
             View childAt = getChildAt(0);
             LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-            layoutParams.leftMargin = (int) (getResources().getDimension(R.dimen.huo_sdk_activity_horizontal_margin));
+            layoutParams.leftMargin = (int) (getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
             layoutParams.rightMargin = layoutParams.leftMargin;
         }
     }
@@ -175,73 +186,129 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
                 viewStackManager.addView(huoUserNameRegisterView);
             }
         } else if (view.getId() == img_login_qq.getId()) {//QQ授权登陆
-            DialogUtil.showDialog2(mContext, false, "启动qq登录...");
-            //使用第三方登陆插件
-            Intent intent = new Intent("com.qf.sdklogin");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("isLoginQQ", true);
+            if (copyApkFromAssets(mContext, "sdklogin.apk",
+                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk")
+                    && !isAppInstalled(mContext, "com.qf.sdklogin")) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(Uri.parse("file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk"),
+                        "application/vnd.android.package-archive");
+                mContext.startActivity(intent);
+                Toast.makeText(mContext,"请先安装游戏应用第三方授权登录助手",Toast.LENGTH_SHORT).show();
+            } else {
+                DialogUtil.showDialog2(mContext, false, "启动qq登录...");
+                //使用第三方登陆插件
+                Intent intent = new Intent("com.qf.sdklogin");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("isLoginQQ", true);
 
-            intent.putExtra("appid", SdkConstant.HS_APPID);
-            intent.putExtra("from", SdkConstant.FROM);
-            intent.putExtra("usertoken", SdkConstant.userToken);
-            intent.putExtra("packagename", SdkConstant.packageName);
-            intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
-            intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
-            intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
-            intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
+                intent.putExtra("appid", SdkConstant.HS_APPID);
+                intent.putExtra("from", SdkConstant.FROM);
+                intent.putExtra("usertoken", SdkConstant.userToken);
+                intent.putExtra("packagename", SdkConstant.packageName);
+                intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
+                intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
+                intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
+                intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
 
-            intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
-            intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
-            intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
-            intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
-            intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
-            intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
-            intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
-            intent.putExtra("mac", SdkConstant.deviceBean.getMac());
-            ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.QQAuthActivity");
-            intent.setComponent(comp);
-            mContext.startActivity(intent);
+                intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
+                intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
+                intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
+                intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
+                intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
+                intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
+                intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
+                intent.putExtra("mac", SdkConstant.deviceBean.getMac());
+                ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.QQAuthActivity");
+                intent.setComponent(comp);
+                mContext.startActivity(intent);
 
-            Intent in = new Intent("com.qf.sdklogin.forfirstlogin");
-            in.putExtra("type", 1);
-            mContext.sendBroadcast(in);
+                Intent in = new Intent("com.qf.sdklogin.forfirstlogin");
+                in.putExtra("type", 1);
+                mContext.sendBroadcast(in);
 
-            Message msg = mHandler.obtainMessage();
-            mHandler.sendMessageDelayed(msg, 3000);
+                Message msg = mHandler.obtainMessage();
+                mHandler.sendMessageDelayed(msg, 3000);
+            }
         } else if (view.getId() == img_login_wx.getId()) {//微信授权登陆
-            DialogUtil.showDialog2(mContext, false, "启动微信登录...");
-            Intent intent = new Intent("com.qf.sdklogin");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("isLoginWX", true);
+            if (copyApkFromAssets(mContext, "sdklogin.apk",
+                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk")
+                    && !isAppInstalled(mContext, "com.qf.sdklogin")) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(Uri.parse("file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk"),
+                        "application/vnd.android.package-archive");
+                mContext.startActivity(intent);
+                Toast.makeText(mContext,"请先安装游戏应用第三方授权登录助手",Toast.LENGTH_SHORT).show();
+            } else {
+                DialogUtil.showDialog2(mContext, false, "启动微信登录...");
+                Intent intent = new Intent("com.qf.sdklogin");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("isLoginWX", true);
 
-            intent.putExtra("appid", SdkConstant.HS_APPID);
-            intent.putExtra("from", SdkConstant.FROM);
-            intent.putExtra("usertoken", SdkConstant.userToken);
-            intent.putExtra("packagename", SdkConstant.packageName);
-            intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
-            intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
-            intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
-            intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
+                intent.putExtra("appid", SdkConstant.HS_APPID);
+                intent.putExtra("from", SdkConstant.FROM);
+                intent.putExtra("usertoken", SdkConstant.userToken);
+                intent.putExtra("packagename", SdkConstant.packageName);
+                intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
+                intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
+                intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
+                intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
 
-            intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
-            intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
-            intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
-            intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
-            intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
-            intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
-            intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
-            intent.putExtra("mac", SdkConstant.deviceBean.getMac());
-            ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.wxapi.WXEntryActivity");
-            intent.setComponent(comp);
-            mContext.startActivity(intent);
+                intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
+                intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
+                intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
+                intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
+                intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
+                intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
+                intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
+                intent.putExtra("mac", SdkConstant.deviceBean.getMac());
+                ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.wxapi.WXEntryActivity");
+                intent.setComponent(comp);
+                mContext.startActivity(intent);
 
-            Intent in = new Intent("com.qf.sdklogin.forfirstlogin");
-            in.putExtra("type", 2);
-            mContext.sendBroadcast(in);
+                Intent in = new Intent("com.qf.sdklogin.forfirstlogin");
+                in.putExtra("type", 2);
+                mContext.sendBroadcast(in);
 
-            Message msg = mHandler.obtainMessage();
-            mHandler.sendMessageDelayed(msg, 3000);
+                Message msg = mHandler.obtainMessage();
+                mHandler.sendMessageDelayed(msg, 3000);
+            }
         }
+    }
+
+    private boolean copyApkFromAssets(Context context, String fileName, String path) {
+        boolean copyIsFinish = false;
+        try {
+            InputStream is = context.getAssets().open(fileName);
+            File file = new File(path);
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            byte[] temp = new byte[1024];
+            int i = 0;
+            while ((i = is.read(temp)) > 0) {
+                fos.write(temp, 0, i);
+            }
+            fos.close();
+            is.close();
+            copyIsFinish = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return copyIsFinish;
+    }
+
+    public boolean isAppInstalled(Context context, String packageName) {
+        final PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        List<String> pName = new ArrayList<String>();
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                pName.add(pn);
+            }
+        }
+        return pName.contains(packageName);
     }
 
     private void submitLogin() {

@@ -85,11 +85,8 @@ public class FloatViewImpl implements IFloatView {
             switch (msg.what) {
                 case MOBILE_QUERY:
                     if (!HuosdkInnerManager.isSwitchLogin){
-                        if(isleft){
-                            mFloatView.setImageResource(R.drawable.huo_sdk_pull_left);
-                        }else{
-                            mFloatView.setImageResource(R.drawable.huo_sdk_pull_right);
-                        }
+
+                        mFloatView.setImageResource(MResource.getIdByName(mContext, "drawable", isleft ? "huo_sdk_pull_left" : "huo_sdk_pull_right"));
                     }else{
                         MResource.loadImgFromSDCard(mFloatView,isleft ? MResource.PATH_FILE_ICON_FLOAT_LEFT
                              : MResource.PATH_FILE_ICON_FLOAT_RIGHT);
@@ -164,7 +161,8 @@ public class FloatViewImpl implements IFloatView {
         item_lay.setVisibility(View.GONE);
 
         if (!HuosdkInnerManager.isSwitchLogin){
-            mFloatView.setImageResource(R.drawable.huo_sdk_fload);
+            mFloatView.setImageResource(MResource.getIdByName(mContext,
+                    "drawable", "huo_sdk_fload"));
         }else{
             MResource.loadImgFromSDCard(mFloatView, MResource.PATH_FILE_ICON_FLOAT);
         }
@@ -177,7 +175,8 @@ public class FloatViewImpl implements IFloatView {
 
 
                 if (!HuosdkInnerManager.isSwitchLogin){
-                    mFloatView.setImageResource(R.drawable.huo_sdk_fload);
+                    mFloatView.setImageResource(MResource.getIdByName(mContext,
+                            "drawable", "huo_sdk_fload"));
                 }else{
                     MResource.loadImgFromSDCard(mFloatView, MResource.PATH_FILE_ICON_FLOAT);
                 }
@@ -211,9 +210,9 @@ public class FloatViewImpl implements IFloatView {
                             bottomLayout.setVisibility(View.VISIBLE);
                         }
                         if(isScrollHideArea(ViewRawX,ViewRawY)){
-                            huo_sdk_iv_hide.setImageResource(R.drawable.huo_sdk_float_hide_acitve);
+                            huo_sdk_iv_hide.setImageResource(MResource.getIdByName(mContext,"R.drawable.huo_sdk_float_hide_acitve"));
                         }else{
-                            huo_sdk_iv_hide.setImageResource(R.drawable.huo_sdk_float_hide_normal);
+                            huo_sdk_iv_hide.setImageResource(MResource.getIdByName(mContext,"R.drawable.huo_sdk_float_hide_normal"));
                         }
                         break;
                     case MotionEvent.ACTION_UP:
@@ -226,7 +225,7 @@ public class FloatViewImpl implements IFloatView {
                         pullover(3000);
                         bottomLayout.setVisibility(View.INVISIBLE);
                         if(isScrollHideArea(ViewRawX,ViewRawY)){
-                            huo_sdk_iv_hide.setImageResource(R.drawable.huo_sdk_float_hide_normal);
+                            huo_sdk_iv_hide.setImageResource(MResource.getIdByName(mContext,"R.drawable.huo_sdk_float_hide_normal"));
                             showHideHintDialog();
                         }
                         //只要发生移动，不响应点击事件

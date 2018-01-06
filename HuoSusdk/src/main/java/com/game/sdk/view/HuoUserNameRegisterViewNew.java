@@ -147,9 +147,9 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
         //自动设置相应的布局尺寸
         if (getChildCount() > 0) {
             View childAt = getChildAt(0);
-            LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-            layoutParams.leftMargin = (int) (getResources().getDimension(R.dimen.huo_sdk_activity_horizontal_margin));
-            layoutParams.rightMargin = layoutParams.leftMargin;
+            HuoFastLoginView.LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
+            layoutParams.leftMargin=(int)(getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
+            layoutParams.rightMargin=layoutParams.leftMargin;
         }
     }
 

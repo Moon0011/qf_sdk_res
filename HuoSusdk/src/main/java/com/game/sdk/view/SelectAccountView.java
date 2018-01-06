@@ -100,8 +100,8 @@ public class SelectAccountView extends FrameLayout {
         if (getChildCount() > 0) {
             View childAt = getChildAt(0);
             HuoFastLoginView.LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-            layoutParams.leftMargin = (int) (getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
-            layoutParams.rightMargin = layoutParams.leftMargin;
+            layoutParams.leftMargin=(int)(getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
+            layoutParams.rightMargin=layoutParams.leftMargin;
         }
     }
 
