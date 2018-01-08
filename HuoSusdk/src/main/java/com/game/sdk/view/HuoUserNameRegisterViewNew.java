@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
-import com.game.sdk.R;
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
@@ -82,19 +81,19 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
     private void setupUI() {
         loginActivity = (HuoLoginActivity) getContext();
         viewStackManager = ViewStackManager.getInstance(loginActivity);
-        LayoutInflater.from(getContext()).inflate(R.layout.huo_sdk_include_user_register_new, this);
+        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), MResource.LAYOUT, "huo_sdk_include_user_register_new"), this);
 //        huo_sdk_tv_uRegisterTitle= (TextView) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_tv_uRegisterTitle"));
 //        huo_sdk_ll_uRegisterAccount= (LinearLayout) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_ll_uRegisterAccount"));
-        huo_sdk_et_uRegisterAccount = (EditText) findViewById(R.id.huo_sdk_et_uRegisterAccount);
-        huo_sdk_et_uRegisterPwd = (EditText) findViewById(R.id.huo_sdk_et_uRegisterPwd);
-        huo_sdk_et_uInvitationCode = (EditText) findViewById(R.id.huo_sdk_et_uInvitationCode);
-        huo_sdk_rl_uInvitationCode = (RelativeLayout) findViewById(R.id.huo_sdk_rl_uInvitationCode);
-        huo_sdk_rl_uRegisterBackLogin = (LinearLayout) findViewById(R.id.huo_sdk_rl_uRegisterBackLogin);
-        huo_sdk_rl_gotoregist = (LinearLayout) findViewById(R.id.huo_sdk_ll_mRegisterUserNameRegister);
-        huo_sdk_btn_uRegisterSubmit = (Button) findViewById(R.id.huo_sdk_btn_uRegisterSubmit);
-        huo_sdk_img_show_pwd = (ImageView) findViewById(R.id.huo_sdk_img_show_pwd);
-        huo_sdk_iv_logo = (ImageView) findViewById(R.id.huo_sdk_iv_uRegisterLogo);
-        huo_tv_regist_Logo = (TextView) findViewById(R.id.tv_login_regist);
+        huo_sdk_et_uRegisterAccount = (EditText) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_et_uRegisterAccount"));
+        huo_sdk_et_uRegisterPwd = (EditText) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_et_uRegisterPwd"));
+        huo_sdk_et_uInvitationCode = (EditText) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_et_uInvitationCode"));
+        huo_sdk_rl_uInvitationCode = (RelativeLayout) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_rl_uInvitationCode"));
+        huo_sdk_rl_uRegisterBackLogin = (LinearLayout) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_rl_uRegisterBackLogin"));
+        huo_sdk_rl_gotoregist = (LinearLayout) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_ll_mRegisterUserNameRegister"));
+        huo_sdk_btn_uRegisterSubmit = (Button) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_btn_uRegisterSubmit"));
+        huo_sdk_img_show_pwd = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_img_show_pwd"));
+        huo_sdk_iv_logo = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_iv_uRegisterLogo"));
+        huo_tv_regist_Logo = (TextView) findViewById(MResource.getIdByName(getContext(), "R.id.tv_login_regist"));
 
         huo_sdk_rl_gotoregist.setOnClickListener(this);
         huo_sdk_rl_uRegisterBackLogin.setOnClickListener(this);
@@ -148,8 +147,8 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
         if (getChildCount() > 0) {
             View childAt = getChildAt(0);
             HuoFastLoginView.LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-            layoutParams.leftMargin=(int)(getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
-            layoutParams.rightMargin=layoutParams.leftMargin;
+            layoutParams.leftMargin = (int) (getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
+            layoutParams.rightMargin = layoutParams.leftMargin;
         }
     }
 

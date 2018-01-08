@@ -31,7 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
-import com.game.sdk.R;
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
@@ -117,19 +116,19 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
     private void setupUI() {
         loginActivity = (HuoLoginActivity) getContext();
         viewStackManager = ViewStackManager.getInstance(loginActivity);
-        LayoutInflater.from(getContext()).inflate(R.layout.huo_sdk_include_login_new, this);
-        huoRlLogin = (RelativeLayout) findViewById(R.id.huo_sdk_rl_login);
-        huo_et_loginAccount = (EditText) findViewById(R.id.huo_sdk_et_loginAccount);
-        huo_et_loginPwd = (EditText) findViewById(R.id.huo_sdk_et_loginPwd);
-        huo_img_show_pwd = (ImageView) findViewById(R.id.huo_sdk_img_show_pwd);
-        huo_btn_loginSubmitForgetPwd = (Button) findViewById(R.id.huo_sdk_btn_loginSubmitForgetPwd);
-        huo_btn_loginSubmit = (Button) findViewById(R.id.huo_sdk_btn_loginSubmit);
-        huoLlOneKeyLogin = (LinearLayout) findViewById(R.id.huo_sdk_ll_onekeylogin);
-        huoLlLoginRegister = (LinearLayout) findViewById(R.id.huo_sdk_ll_loginRegister);
-        huo_iv_loginUserSelect = (ImageView) findViewById(R.id.huo_sdk_iv_loginUserSelect);
-        huo_rl_loginAccount = (RelativeLayout) findViewById(R.id.huo_sdk_rl_loginAccount);
-        img_login_qq = (ImageView) findViewById(R.id.img_login_qq);
-        img_login_wx = (ImageView) findViewById(R.id.img_login_wx);
+        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), MResource.LAYOUT, "huo_sdk_include_login_new"), this);
+        huoRlLogin = (RelativeLayout) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_rl_login"));
+        huo_et_loginAccount = (EditText) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_et_loginAccount"));
+        huo_et_loginPwd = (EditText) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_et_loginPwd"));
+        huo_img_show_pwd = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_img_show_pwd"));
+        huo_btn_loginSubmitForgetPwd = (Button) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_btn_loginSubmitForgetPwd"));
+        huo_btn_loginSubmit = (Button) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_btn_loginSubmit"));
+        huoLlOneKeyLogin = (LinearLayout) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_ll_onekeylogin"));
+        huoLlLoginRegister = (LinearLayout) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_ll_loginRegister"));
+        huo_iv_loginUserSelect = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_iv_loginUserSelect"));
+        huo_rl_loginAccount = (RelativeLayout) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_rl_loginAccount"));
+        img_login_qq = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.img_login_qq"));
+        img_login_wx = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.img_login_wx"));
 
         huoLlOneKeyLogin.setOnClickListener(this);
         huoLlLoginRegister.setOnClickListener(this);
@@ -194,7 +193,7 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
                 intent.setDataAndType(Uri.parse("file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk"),
                         "application/vnd.android.package-archive");
                 mContext.startActivity(intent);
-                Toast.makeText(mContext,"请先安装游戏应用第三方授权登录助手",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "请先安装游戏应用第三方授权登录助手", Toast.LENGTH_SHORT).show();
             } else {
                 DialogUtil.showDialog2(mContext, false, "启动qq登录...");
                 //使用第三方登陆插件
@@ -239,7 +238,7 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
                 intent.setDataAndType(Uri.parse("file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk"),
                         "application/vnd.android.package-archive");
                 mContext.startActivity(intent);
-                Toast.makeText(mContext,"请先安装游戏应用第三方授权登录助手",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "请先安装游戏应用第三方授权登录助手", Toast.LENGTH_SHORT).show();
             } else {
                 DialogUtil.showDialog2(mContext, false, "启动微信登录...");
                 Intent intent = new Intent("com.qf.sdklogin");
@@ -395,9 +394,10 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
             if (pw_select_user == null) {
                 // View
                 // view=getLayoutInflater().inflate(R.layout.tiantianwan_pw_list,null);
-                View view = LayoutInflater.from(loginActivity).inflate(R.layout.huo_sdk_pop_record_account, null);
+                View view = LayoutInflater.from(loginActivity).inflate(MResource.getIdByName(loginActivity, "R.layout.huo_sdk_pop_record_account"), null);
                 // ListView lv_pw=(ListView) view.findViewById(R.id.lv_pw);
-                ListView lv_pw = (ListView) view.findViewById(R.id.huo_sdk_lv_pw);
+                ListView lv_pw = (ListView) view.findViewById(MResource
+                        .getIdByName(loginActivity, "R.id.huo_sdk_lv_pw"));
                 // LinearLayout.LayoutParams lp=new
                 // LinearLayout.LayoutParams(200,-2 );
                 // lv_pw.setLayoutParams(lp);
@@ -454,12 +454,13 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
         public View getView(final int position, View convertView,
                             ViewGroup parent) {
             if (null == convertView) {
-                View view = LayoutInflater.from(loginActivity).inflate(R.layout.huo_sdk_pop_record_account_list_item, null);
+                View view = LayoutInflater.from(loginActivity).inflate(MResource.getIdByName(loginActivity,
+                        "R.layout.huo_sdk_pop_record_account_list_item"), null);
 
                 convertView = view;
             }
-            TextView tv_username = (TextView) convertView.findViewById(R.id.huo_sdk_tv_username);
-            ImageView iv_delete = (ImageView) convertView.findViewById(R.id.huo_sdk_iv_delete);
+            TextView tv_username = (TextView) convertView.findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_tv_username"));
+            ImageView iv_delete = (ImageView) convertView.findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_iv_delete"));
             iv_delete.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

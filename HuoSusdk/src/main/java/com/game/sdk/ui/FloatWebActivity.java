@@ -35,6 +35,7 @@ import com.game.sdk.pay.CommonJsForWeb;
 import com.game.sdk.pay.IPayListener;
 import com.game.sdk.util.BaseAppUtil;
 import com.game.sdk.util.DialogUtil;
+import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         HuosdkInnerManager.getInstance().removeFloatView();
-        setContentView(R.layout.huo_sdk_activity_float_web);
+        setContentView(MResource.getIdByName(this, "R.layout.huo_sdk_activity_float_web"));
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
         title = intent.getStringExtra("title");
@@ -70,12 +71,17 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
         }
         L.e("WebPayActivity", "url=" + SdkApi.getWebSdkPay());
         authKey = getIntent().getStringExtra("authKey");
-        wv = (WebView) findViewById(R.id.huo_sdk_wv_content);
-        tv_back = (TextView) findViewById(R.id.huo_sdk_tv_back);
-        iv_return = (ImageView) findViewById(R.id.huo_sdk_iv_return);
-        iv_cancel = (ImageView) findViewById(R.id.huo_sdk_iv_cancel);
+        wv = (WebView) findViewById(MResource.getIdByName(getApplication(),
+                "R.id.huo_sdk_wv_content"));
+        tv_back = (TextView) findViewById(MResource.getIdByName(
+                getApplication(),"R.id.huo_sdk_tv_back"));
+        iv_return = (ImageView) findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_iv_return"));
+        iv_cancel = (ImageView) findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_iv_cancel"));
         setTitleView(findViewById(R.id.huo_sdk_rl_top));
-        tv_charge_title = (TextView) findViewById(R.id.huo_sdk_tv_charge_title);
+        tv_charge_title = (TextView) findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_tv_charge_title"));
         tv_charge_title.setText(title);
         tv_back.setOnClickListener(this);
         iv_cancel.setOnClickListener(this);

@@ -74,9 +74,9 @@ public class SelectAccountView extends FrameLayout {
     private void initUI() {
         loginActivity = (HuoLoginActivity) getContext();
         viewStackManager = ViewStackManager.getInstance(loginActivity);
-        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), "R.layout.huo_sdk_view_select_account"), this);
-        lvAccountList = (ListView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_lv_account_list"));
-        btnSubmit = (Button) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_btn_submit"));
+        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(),"R.layout.huo_sdk_view_select_account"), this);
+        lvAccountList= (ListView) findViewById(MResource.getIdByName(getContext(),"R.id.huo_sdk_lv_account_list"));
+        btnSubmit= (Button) findViewById(MResource.getIdByName(getContext(),"R.id.huo_sdk_btn_submit"));
         btnSubmit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

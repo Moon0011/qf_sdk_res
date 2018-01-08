@@ -82,16 +82,16 @@ public class HuoUserNameRegisterView extends FrameLayout implements View.OnClick
         loginActivity = (HuoLoginActivity) getContext();
         viewStackManager = ViewStackManager.getInstance(loginActivity);
         LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), MResource.LAYOUT, "huo_sdk_include_user_register"), this);
-        huo_sdk_tv_uRegisterTitle = (TextView) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_tv_uRegisterTitle"));
-        huo_sdk_ll_uRegisterAccount = (LinearLayout) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_ll_uRegisterAccount"));
-        huo_sdk_et_uRegisterAccount = (EditText) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_et_uRegisterAccount"));
-        huo_sdk_et_uRegisterPwd = (EditText) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_et_uRegisterPwd"));
-        huo_sdk_et_uInvitationCode = (EditText) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_et_uInvitationCode"));
-        huo_sdk_rl_uInvitationCode = (RelativeLayout) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_rl_uInvitationCode"));
-        huo_sdk_rl_uRegisterBackLogin = (RelativeLayout) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_rl_uRegisterBackLogin"));
-        huo_sdk_btn_uRegisterSubmit = (Button) findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_btn_uRegisterSubmit"));
-        huo_sdk_img_show_pwd = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_img_show_pwd"));
-        huo_sdk_iv_logo = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_iv_uRegisterLogo"));
+        huo_sdk_tv_uRegisterTitle= (TextView) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_tv_uRegisterTitle"));
+        huo_sdk_ll_uRegisterAccount= (LinearLayout) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_ll_uRegisterAccount"));
+        huo_sdk_et_uRegisterAccount= (EditText) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_et_uRegisterAccount"));
+        huo_sdk_et_uRegisterPwd= (EditText) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_et_uRegisterPwd"));
+        huo_sdk_et_uInvitationCode= (EditText) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_et_uInvitationCode"));
+        huo_sdk_rl_uInvitationCode= (RelativeLayout) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_rl_uInvitationCode"));
+        huo_sdk_rl_uRegisterBackLogin= (RelativeLayout) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_rl_uRegisterBackLogin"));
+        huo_sdk_btn_uRegisterSubmit= (Button) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_btn_uRegisterSubmit"));
+        huo_sdk_img_show_pwd= (ImageView) findViewById(MResource.getIdByName(getContext(),"R.id.huo_sdk_img_show_pwd"));
+        huo_sdk_iv_logo= (ImageView) findViewById(MResource.getIdByName(getContext(),"R.id.huo_sdk_iv_uRegisterLogo"));
 
         huo_sdk_rl_uRegisterBackLogin.setOnClickListener(this);
         huo_sdk_btn_uRegisterSubmit.setOnClickListener(this);
@@ -146,8 +146,8 @@ public class HuoUserNameRegisterView extends FrameLayout implements View.OnClick
         if (getChildCount() > 0) {
             View childAt = getChildAt(0);
             HuoFastLoginView.LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-            layoutParams.leftMargin = (int) (getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
-            layoutParams.rightMargin = layoutParams.leftMargin;
+            layoutParams.leftMargin=(int)(getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
+            layoutParams.rightMargin=layoutParams.leftMargin;
         }
     }
 

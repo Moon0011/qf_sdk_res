@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
 import com.game.sdk.HuosdkService;
-import com.game.sdk.R;
 import com.game.sdk.domain.WebLoadAssert;
 import com.game.sdk.http.SdkApi;
 import com.game.sdk.log.L;
@@ -75,7 +74,7 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
         HuosdkInnerManager.getInstance().removeFloatView();
         initParams();
         initTheme();
-        setContentView(R.layout.huo_sdk_activity_float_web);
+        setContentView(MResource.getIdByName(getApplication(), "layout", "huo_sdk_activity_float_web"));
         initUI();
         webviewInit();
         HttpParams httpParams = SdkApi.getCommonHttpParams("");
@@ -120,13 +119,19 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
     }
 
     private void initUI() {
-        wv = (WebView) findViewById(R.id.huo_sdk_wv_content);
-        tv_back = (TextView) findViewById(R.id.huo_sdk_tv_back);
-        iv_return = (ImageView) findViewById(R.id.huo_sdk_iv_return);
-        iv_cancel = (ImageView) findViewById(R.id.huo_sdk_iv_cancel);
+        wv = (WebView) findViewById(MResource.getIdByName(getApplication(),
+                "R.id.huo_sdk_wv_content"));
+        tv_back = (TextView) findViewById(MResource.getIdByName(
+                getApplication(),"R.id.huo_sdk_tv_back"));
+        iv_return = (ImageView) findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_iv_return"));
+        iv_cancel = (ImageView) findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_iv_cancel"));
 
-        tv_charge_title = (TextView) findViewById(R.id.huo_sdk_tv_charge_title);
-        huo_sdk_rl_top = findViewById(R.id.huo_sdk_rl_top);
+        tv_charge_title = (TextView) findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_tv_charge_title"));
+        huo_sdk_rl_top= findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_rl_top"));
         setTitleView(huo_sdk_rl_top);
         tv_back.setOnClickListener(this);
         iv_cancel.setOnClickListener(this);
