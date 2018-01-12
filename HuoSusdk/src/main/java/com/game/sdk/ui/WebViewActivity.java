@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -101,7 +100,7 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
     }
 
     private void initTheme() {
-        Log.e("hongliang", "windowType=" + windowType);
+        L.e("hongliang", "windowType=" + windowType);
         switch (windowType) {
             case TYPE_NO_STATUS_NO_TITLE:
                 setTheme(MResource.getIdByName(this,"R.style.huo_sdk_FullscreenTheme"));

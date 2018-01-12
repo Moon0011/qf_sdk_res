@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.game.sdk.db.LoginControl;
@@ -489,7 +488,7 @@ public class HuosdkInnerManager {
         float price = payParam.getProduct_price();
         float tempPrice = price * 100;
         if (tempPrice - (int) tempPrice > 0) {
-            Log.d("checkPayParams", "价格不合理，多于两位小数,已经去掉");
+            L.d("checkPayParams", "价格不合理，多于两位小数,已经去掉");
             payParam.setProduct_price((Float.valueOf((int) tempPrice)) / 100);
         }
         if (payParam.getProduct_id() == null) {

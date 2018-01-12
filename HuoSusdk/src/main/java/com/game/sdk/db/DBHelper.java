@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.impl.AgentDbDao;
@@ -76,7 +75,7 @@ public class DBHelper extends SQLiteOpenHelper {
 				return realDb;
 			}else{
 //				Toast.makeText(mContext,"外部存储卡不可用，分包功能不可用！",Toast.LENGTH_SHORT).show();
-				Log.e("DBHelper","外部存储卡不可用，分包功能不可用！");
+				L.e("DBHelper","外部存储卡不可用，分包功能不可用！");
 			}
 		}
 		return writableDatabase;
@@ -89,7 +88,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			if(realDb!=null){
 				return realDb;
 			}else{
-				Log.e("DBHelper","外部存储卡不可用，分包功能不可用！");
+				L.e("DBHelper","外部存储卡不可用，分包功能不可用！");
 //				Toast.makeText(mContext,"外部存储卡不可用，分包功能不可用！",Toast.LENGTH_SHORT).show();
 			}
 		}
@@ -126,7 +125,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	 */
 	public static void copyFile(File from, File to) {
 		if (null == from || !from.exists()) {
-			Log.i("hongliangsdk", "file(from) is null or is not exists!!");
+			L.i("hongliangsdk", "file(from) is null or is not exists!!");
 			return;
 		}
 		if (null == to) {

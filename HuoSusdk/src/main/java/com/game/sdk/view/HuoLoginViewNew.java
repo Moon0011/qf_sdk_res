@@ -90,10 +90,9 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
         @Override
         public void handleMessage(Message msg) {
             DialogUtil.dismissDialog2();
-            loginActivity.finish();
+            loginActivity.callBackFinish();
         }
     };
-
 
     public HuoLoginViewNew(Context context) {
         super(context);
@@ -185,6 +184,7 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
                 viewStackManager.addView(huoUserNameRegisterView);
             }
         } else if (view.getId() == img_login_qq.getId()) {//QQ授权登陆
+            L.e("sdkLogin", "启动QQ授权登陆。。");
             if (copyApkFromAssets(mContext, "sdklogin.apk",
                     Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk")
                     && !isAppInstalled(mContext, "com.qf.sdklogin")) {
@@ -222,14 +222,11 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
                 intent.setComponent(comp);
                 mContext.startActivity(intent);
 
-                Intent in = new Intent("com.qf.sdklogin.forfirstlogin");
-                in.putExtra("type", 1);
-                mContext.sendBroadcast(in);
-
                 Message msg = mHandler.obtainMessage();
                 mHandler.sendMessageDelayed(msg, 3000);
             }
         } else if (view.getId() == img_login_wx.getId()) {//微信授权登陆
+            L.e("sdkLogin", "启动微信授权登陆。。");
             if (copyApkFromAssets(mContext, "sdklogin.apk",
                     Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk")
                     && !isAppInstalled(mContext, "com.qf.sdklogin")) {
@@ -265,10 +262,6 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
                 ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.wxapi.WXEntryActivity");
                 intent.setComponent(comp);
                 mContext.startActivity(intent);
-
-                Intent in = new Intent("com.qf.sdklogin.forfirstlogin");
-                in.putExtra("type", 2);
-                mContext.sendBroadcast(in);
 
                 Message msg = mHandler.obtainMessage();
                 mHandler.sendMessageDelayed(msg, 3000);

@@ -2,8 +2,9 @@ package com.game.sdk.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+
+import com.game.sdk.log.L;
 
 /**
  * Created by liu hong liang on 2017/4/27.
@@ -26,7 +27,7 @@ public class BaseActivity extends Activity {
      */
     public void changeTitleStatus(boolean show){
         if(titleView==null){
-            Log.e(TAG,"没有设置titleView");
+            L.e(TAG,"没有设置titleView");
             return;
         }
         if(show){

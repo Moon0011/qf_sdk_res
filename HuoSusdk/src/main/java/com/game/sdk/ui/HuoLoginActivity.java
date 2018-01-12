@@ -9,6 +9,7 @@ import android.view.View;
 import com.game.sdk.HuosdkInnerManager;
 import com.game.sdk.domain.LoginErrorMsg;
 import com.game.sdk.listener.OnLoginListener;
+import com.game.sdk.log.L;
 import com.game.sdk.util.MResource;
 import com.game.sdk.view.HuoFastLoginViewNew;
 import com.game.sdk.view.HuoLoginViewNew;
@@ -94,6 +95,7 @@ public class HuoLoginActivity extends BaseActivity {
             LoginErrorMsg loginErrorMsg = new LoginErrorMsg(CODE_LOGIN_CANCEL, "用户取消登陆");
             OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();
             if (onLoginListener != null) {
+                L.e("SdkLogin", "onDestroy  CODE_LOGIN_CANCEL");
                 onLoginListener.loginError(loginErrorMsg);
             }
         }

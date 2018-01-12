@@ -26,7 +26,6 @@ import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
 import com.game.sdk.HuosdkService;
-import com.game.sdk.R;
 import com.game.sdk.domain.WebLoadAssert;
 import com.game.sdk.http.SdkApi;
 import com.game.sdk.log.L;
@@ -74,14 +73,15 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
         wv = (WebView) findViewById(MResource.getIdByName(getApplication(),
                 "R.id.huo_sdk_wv_content"));
         tv_back = (TextView) findViewById(MResource.getIdByName(
-                getApplication(),"R.id.huo_sdk_tv_back"));
+                getApplication(), "R.id.huo_sdk_tv_back"));
         iv_return = (ImageView) findViewById(MResource.getIdByName(
-                getApplication(),  "R.id.huo_sdk_iv_return"));
+                getApplication(), "R.id.huo_sdk_iv_return"));
         iv_cancel = (ImageView) findViewById(MResource.getIdByName(
-                getApplication(),  "R.id.huo_sdk_iv_cancel"));
-        setTitleView(findViewById(R.id.huo_sdk_rl_top));
+                getApplication(), "R.id.huo_sdk_iv_cancel"));
+        setTitleView(findViewById(MResource.getIdByName(
+                getApplication(), "R.id.huo_sdk_rl_top")));
         tv_charge_title = (TextView) findViewById(MResource.getIdByName(
-                getApplication(),  "R.id.huo_sdk_tv_charge_title"));
+                getApplication(), "R.id.huo_sdk_tv_charge_title"));
         tv_charge_title.setText(title);
         tv_back.setOnClickListener(this);
         iv_cancel.setOnClickListener(this);

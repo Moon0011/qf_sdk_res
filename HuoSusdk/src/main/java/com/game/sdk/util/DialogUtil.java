@@ -6,7 +6,6 @@ import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -15,9 +14,9 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.game.sdk.R;
 import com.game.sdk.domain.NotProguard;
 import com.game.sdk.domain.Notice;
+import com.game.sdk.log.L;
 import com.game.sdk.view.AutoSplitTextView;
 
 /**
@@ -179,7 +178,7 @@ public class DialogUtil {
 
         if (notice == null || TextUtils.isEmpty(notice.getContent())) return;
 
-        Log.e("notice", " notice.title:" + notice.getTitle() + " | notice.setContent:" + notice.getContent());
+        L.e("notice", " notice.title:" + notice.getTitle() + " | notice.setContent:" + notice.getContent());
         if (context instanceof Activity) {
 
             final Notice finalNotice = notice;
@@ -197,7 +196,8 @@ public class DialogUtil {
                             "id", "huo_sdk_time_text"));
                     AutoSplitTextView content = (AutoSplitTextView) notcieView.findViewById(MResource.getIdByName(context,
                             "id", "huo_sdk_content_text"));
-                    TextView confirm = (TextView) notcieView.findViewById(R.id.huo_sdk_confirm_tv);
+                    TextView confirm = (TextView) notcieView.findViewById(MResource.getIdByName(context,
+                            "id", "huo_sdk_confirm_tv"));
                     title.setText(finalNotice.getTitle());
                     time.setText(finalNotice.getTime());
                     content.setText(Html.fromHtml(finalNotice.getContent()));

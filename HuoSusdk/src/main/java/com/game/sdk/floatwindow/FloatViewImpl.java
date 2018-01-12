@@ -5,7 +5,6 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,6 +24,7 @@ import com.game.sdk.SdkConstant;
 import com.game.sdk.domain.WebRequestBean;
 import com.game.sdk.http.HttpParamsBuild;
 import com.game.sdk.http.SdkApi;
+import com.game.sdk.log.L;
 import com.game.sdk.ui.FloatWebActivity;
 import com.game.sdk.util.DimensionUtil;
 import com.game.sdk.util.GsonUtil;
@@ -114,7 +114,7 @@ public class FloatViewImpl implements IFloatView {
     }
     private void initFloatIcon(){
         wmParams = new LayoutParams();
-        Log.i(TAG, "mWindowManager--->" + mWindowManager);
+        L.i(TAG, "mWindowManager--->" + mWindowManager);
         // 设置window type
         wmParams.type = LayoutParams.TYPE_PHONE;
         // 设置图片格式，效果为背景透明
@@ -186,14 +186,14 @@ public class FloatViewImpl implements IFloatView {
                 wmParams.alpha = 10;
                 wmParams.x = (int) event.getRawX()
                         - mFloatView.getMeasuredWidth() / 2;
-                Log.i(TAG, "RawX" + event.getRawX());
-                Log.i(TAG, "X" + event.getX());
-                Log.i(TAG, "Width:" + mFloatView.getMeasuredWidth());
+                L.i(TAG, "RawX" + event.getRawX());
+                L.i(TAG, "X" + event.getX());
+                L.i(TAG, "Width:" + mFloatView.getMeasuredWidth());
                 // 减25为状态栏的高度
                 wmParams.y = (int) event.getRawY()
                         - mFloatView.getMeasuredHeight() / 2 - 25;
-                Log.i(TAG, "RawY" + event.getRawY());
-                Log.i(TAG, "Y" + event.getY());
+                L.i(TAG, "RawY" + event.getRawY());
+                L.i(TAG, "Y" + event.getY());
 
                 // 刷新
                 mWindowManager.updateViewLayout(mFloatLayout, wmParams);

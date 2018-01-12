@@ -7,7 +7,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.impl.AgentDbDao;
@@ -174,7 +173,7 @@ public class ChannelNewUtil {
      * @param agent
      */
     public static void saveAgentAndUpdateSdkAgent(Context context,String agent){
-        Log.e("hongliang","准备保存的agent="+agent);
+        L.e("hongliang","准备保存的agent="+agent);
         saveAgentToSp(context,agent);
         //更新外部sdk数据库的agent
         AgentDbDao.getInstance(context).updateAllAgent(agent);

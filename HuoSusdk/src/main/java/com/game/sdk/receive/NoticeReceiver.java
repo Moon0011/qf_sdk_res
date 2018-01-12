@@ -27,9 +27,10 @@ public class NoticeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        DialogUtil.dismissDialog();
+        L.e("sdkLogin", "==============onReceive=============");
         String userToken = intent.getStringExtra("usertoken");
         int from = intent.getIntExtra("from", -1);
+        L.e("sdkLogin", "userToken =" + userToken + " ,from = " + from);
         if (from == IHuoLogin.LOGIN_QQ) {
             Toast.makeText(context, "QQ授权登录成功", Toast.LENGTH_SHORT).show();
         } else if (from == IHuoLogin.LOGIN_WX) {
@@ -43,17 +44,20 @@ public class NoticeReceiver extends BroadcastReceiver {
     private void getNotice(Context context) {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setApp_id(SdkConstant.HS_APPID);
+        L.e("sdkLogin", "baseRequestBean =" + baseRequestBean.toString());
         HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(baseRequestBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<Notice>(context, httpParamsBuild.getAuthkey()) {
             @Override
             public void onDataSuccess(Notice data) {
                 //登录成功后统一弹出弹框
+                L.e("sdkLogin", "data =" + data.toString());
                 DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), data);
             }
 
             @Override
             public void onFailure(String code, String msg) {
                 L.e("NoticeReceiver", "code =" + code + ", msg =" + msg);
+                L.e("sdkLogin", "code =" + code + ", msg =" + msg);
             }
         };
         httpCallbackDecode.setShowTs(false);
