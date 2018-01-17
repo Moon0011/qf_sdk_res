@@ -250,7 +250,7 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
                     tv_charge_title.setText(title);
                 } else {
                     if (TextUtils.isEmpty(WebViewActivity.this.title)) {
-                        tv_charge_title.setText("火速sdk");
+                        tv_charge_title.setText("清风sdk");
                     } else {
                         tv_charge_title.setText(WebViewActivity.this.title);
                     }

@@ -43,8 +43,6 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="com.android.permission.WRITE_APN_SETTINGS" />
 
-    <permission android:name="com.qf.sdklogin.fornotice.RECEIVE" />
-
     <application>
         <!--支付-->
         <activity

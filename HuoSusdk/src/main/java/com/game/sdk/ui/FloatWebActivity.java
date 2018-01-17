@@ -190,7 +190,7 @@ public class FloatWebActivity extends BaseActivity implements OnClickListener, I
                     tv_charge_title.setText(title);
                 } else {
                     if (TextUtils.isEmpty(FloatWebActivity.this.title)) {
-                        tv_charge_title.setText("火速sdk");
+                        tv_charge_title.setText("清风sdk");
                     } else {
                         tv_charge_title.setText(FloatWebActivity.this.title);
                     }

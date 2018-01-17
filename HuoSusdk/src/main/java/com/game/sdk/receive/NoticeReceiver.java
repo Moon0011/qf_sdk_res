@@ -9,10 +9,13 @@ import com.game.sdk.HuosdkInnerManager;
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.domain.BaseRequestBean;
+import com.game.sdk.domain.LoginErrorMsg;
+import com.game.sdk.domain.LogincallBack;
 import com.game.sdk.domain.Notice;
 import com.game.sdk.http.HttpCallbackDecode;
 import com.game.sdk.http.HttpParamsBuild;
 import com.game.sdk.http.SdkApi;
+import com.game.sdk.listener.OnLoginListener;
 import com.game.sdk.log.L;
 import com.game.sdk.plugin.IHuoLogin;
 import com.game.sdk.util.DialogUtil;
@@ -29,16 +32,33 @@ public class NoticeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         L.e("sdkLogin", "==============onReceive=============");
         String userToken = intent.getStringExtra("usertoken");
-        int from = intent.getIntExtra("from", -1);
-        L.e("sdkLogin", "userToken =" + userToken + " ,from = " + from);
-        if (from == IHuoLogin.LOGIN_QQ) {
-            Toast.makeText(context, "QQ授权登录成功", Toast.LENGTH_SHORT).show();
-        } else if (from == IHuoLogin.LOGIN_WX) {
-            Toast.makeText(context, "微信授权登录成功", Toast.LENGTH_SHORT).show();
+        String memid = intent.getStringExtra("memid");
+        int code = intent.getIntExtra("code", 0);
+        if (code == 500) {
+            LoginErrorMsg loginErrorMsg = new LoginErrorMsg(500, "用户登陆失败");
+            OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();
+            if (onLoginListener != null) {
+                L.e("SdkLogin", "onDestroy  CODE_LOGIN_CANCEL");
+                onLoginListener.loginError(loginErrorMsg);
+            }
+        } else if (code == 200) {
+            int from = intent.getIntExtra("from", -1);
+            L.e("sdkLogin", "userToken =" + userToken + " ,from = " + from);
+            if (from == IHuoLogin.LOGIN_QQ) {
+                Toast.makeText(context, "QQ授权登录成功", Toast.LENGTH_SHORT).show();
+            } else if (from == IHuoLogin.LOGIN_WX) {
+                Toast.makeText(context, "微信授权登录成功", Toast.LENGTH_SHORT).show();
+            }
+
+            LoginControl.saveUserToken(userToken);
+            OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();
+            if (onLoginListener != null) {
+                onLoginListener.loginSuccess(new LogincallBack(memid, userToken));
+                //登录成功后统一弹出弹框
+                getNotice(context);
+            }
         }
 
-        LoginControl.saveUserToken(userToken);
-        getNotice(context);
     }
 
     private void getNotice(Context context) {
