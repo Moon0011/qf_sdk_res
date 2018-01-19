@@ -6,8 +6,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
+
+import com.game.sdk.log.L;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,7 +33,7 @@ public class ScreenShot {
         Rect frame = new Rect();
         activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
         int statusBarHeight = frame.top;
-        Log.i("TAG", "" + statusBarHeight);
+        L.i("TAG", "" + statusBarHeight);
         // 获取屏幕长和高
         int width = activity.getWindowManager().getDefaultDisplay().getWidth();
         int height = activity.getWindowManager().getDefaultDisplay()

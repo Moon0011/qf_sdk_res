@@ -1,10 +1,10 @@
 package com.game.sdk.plugin.nowpay;
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.game.sdk.domain.NotProguard;
 import com.game.sdk.domain.PayResultBean;
+import com.game.sdk.log.L;
 import com.game.sdk.pay.IPayListener;
 import com.game.sdk.plugin.IHuoPay;
 import com.ipaynow.plugin.api.IpaynowPlugin;
@@ -40,7 +40,7 @@ public class NowpayImpl extends IHuoPay implements ReceivePayResult{
         String respCode = responseParams.respCode;
         String errorCode = responseParams.errorCode;
         String errorMsg = responseParams.respMsg;
-        Log.d(TAG,"errorCode="+errorCode+" errorMsg="+errorMsg);
+        L.d(TAG,"errorCode="+errorCode+" errorMsg="+errorMsg);
         if (iPayListener != null) {
             if (respCode.equals("00")) {
 //            temp.append("交易状态:成功");

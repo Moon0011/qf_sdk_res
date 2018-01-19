@@ -2,7 +2,6 @@ package com.game.sdk;
 
 import android.content.Context;
 import android.os.Looper;
-import android.util.Log;
 
 import com.game.sdk.domain.CustomPayParam;
 import com.game.sdk.domain.NotProguard;
@@ -25,7 +24,7 @@ public final class HuosdkManager {
     // 单例模式
     @NotProguard
     public static synchronized HuosdkManager getInstance() {
-        Log.d("huosdk","HuosdkManager getInstance");
+        L.d("huosdk","HuosdkManager getInstance");
         if (Looper.myLooper() != Looper.getMainLooper()) {
             L.e(TAG, "实例化失败,未在主线程调用");
             return null;
@@ -55,7 +54,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void setScreenOrientation(boolean isPortrait){
-        Log.d("huosdk","HuosdkManager setScreenOrientation:"+isPortrait);
+        L.d("huosdk","HuosdkManager setScreenOrientation:"+isPortrait);
         sdkInnerManager.setScreenOrientation(isPortrait);
     }
     /**
@@ -65,7 +64,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void initSdk(Context context,OnInitSdkListener onInitSdkListener){
-        Log.d("huosdk","HuosdkManager initSdk");
+        L.d("huosdk","HuosdkManager initSdk");
         sdkInnerManager.initSdk(context,onInitSdkListener);
     }
 
@@ -76,7 +75,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void setFloatInitXY(int x,int y){
-        Log.d("huosdk","HuosdkManager setFloatInitXY x="+x+" y="+y);
+        L.d("huosdk","HuosdkManager setFloatInitXY x="+x+" y="+y);
         sdkInnerManager.setFloatInitXY(x,y);
     }
 
@@ -87,7 +86,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void setRoleInfo(RoleInfo roleInfo, SubmitRoleInfoCallBack submitRoleInfoCallBack) {
-        Log.d("huosdk","HuosdkManager setRoleInfo");
+        L.d("huosdk","HuosdkManager setRoleInfo");
         sdkInnerManager.setRoleInfo(roleInfo,submitRoleInfoCallBack);
     }
 
@@ -96,7 +95,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void logout(){
-        Log.d("huosdk","HuosdkManager logout");
+        L.d("huosdk","HuosdkManager logout");
         sdkInnerManager.logout();
     }
     /**
@@ -104,7 +103,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void addLogoutListener(OnLogoutListener onLogoutListener) {
-        Log.d("huosdk","HuosdkManager addLogoutListener");
+        L.d("huosdk","HuosdkManager addLogoutListener");
         sdkInnerManager.addLogoutListener(onLogoutListener);
     }
     /**
@@ -112,7 +111,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void openUcenter() {
-        Log.d("huosdk","HuosdkManager openUcenter");
+        L.d("huosdk","HuosdkManager openUcenter");
         sdkInnerManager.openUcenter();
     }
 
@@ -121,7 +120,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void showLogin(boolean isShowQuikLogin) {
-        Log.d("huosdk","HuosdkManager showLogin");
+        L.d("huosdk","HuosdkManager showLogin");
        sdkInnerManager.showLogin(isShowQuikLogin);
     }
     /**
@@ -129,7 +128,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void switchAccount(){
-        Log.d("huosdk","HuosdkManager switchAccount");
+        L.d("huosdk","HuosdkManager switchAccount");
         sdkInnerManager.switchAccount();
     }
     /**
@@ -138,7 +137,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void addLoginListener(OnLoginListener onLoginListener) {
-        Log.d("huosdk","HuosdkManager addLoginListener");
+        L.d("huosdk","HuosdkManager addLoginListener");
         sdkInnerManager.addLoginListener(onLoginListener);
     }
     /**
@@ -148,7 +147,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void showPay(CustomPayParam payParam, OnPaymentListener paymentListener) {
-        Log.d("huosdk","HuosdkManager showPay");
+        L.d("huosdk","HuosdkManager showPay");
         sdkInnerManager.showPay(payParam,paymentListener);
     }
     /**
@@ -156,7 +155,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void showFloatView() {
-        Log.d("huosdk","HuosdkManager showFloatView");
+        L.d("huosdk","HuosdkManager showFloatView");
         sdkInnerManager.showFloatView();
     }
     /**
@@ -164,7 +163,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void removeFloatView() {
-        Log.d("huosdk","HuosdkManager removeFloatView");
+        L.d("huosdk","HuosdkManager removeFloatView");
         sdkInnerManager.removeFloatView();
     }
     /**
@@ -172,7 +171,7 @@ public final class HuosdkManager {
      */
     @NotProguard
     public void recycle() {
-        Log.d("huosdk","HuosdkManager recycle");
+        L.d("huosdk","HuosdkManager recycle");
         sdkInnerManager.recycle();
     }
 }

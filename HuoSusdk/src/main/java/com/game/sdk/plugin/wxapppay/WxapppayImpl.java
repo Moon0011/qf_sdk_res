@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.game.sdk.SdkConstant;
@@ -43,7 +42,7 @@ public class WxapppayImpl extends IHuoPay {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("MainActivity","requestCode="+requestCode+" resultCode="+resultCode+" data="+data);
+        L.e("MainActivity","requestCode="+requestCode+" resultCode="+resultCode+" data="+data);
         if(requestCode==WxPayPlugin.REQUEST_WX_PAY_CODE){
             if(data!=null){
                 if(data.getIntExtra("errCode",-1)==0){

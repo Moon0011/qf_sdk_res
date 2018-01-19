@@ -133,7 +133,9 @@
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
-        <receiver android:name=".receive.NoticeReceiver">
+        <receiver
+            android:name=".receive.NoticeReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.qf.sdklogin.fornotice" />
             </intent-filter>

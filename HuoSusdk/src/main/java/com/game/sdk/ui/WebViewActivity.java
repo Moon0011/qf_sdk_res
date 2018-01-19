@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
 import com.game.sdk.HuosdkService;
-import com.game.sdk.R;
 import com.game.sdk.domain.WebLoadAssert;
 import com.game.sdk.http.SdkApi;
 import com.game.sdk.log.L;
@@ -36,6 +34,7 @@ import com.game.sdk.pay.CommonJsForWeb;
 import com.game.sdk.pay.IPayListener;
 import com.game.sdk.util.BaseAppUtil;
 import com.game.sdk.util.DialogUtil;
+import com.game.sdk.util.MResource;
 import com.game.sdk.util.WebLoadByAssertUtil;
 import com.kymjs.rxvolley.client.HttpParams;
 import com.tendcloud.tenddata.TalkingDataGA;
@@ -77,7 +76,7 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
         HuosdkInnerManager.getInstance().removeFloatView();
         initParams();
         initTheme();
-        setContentView(R.layout.huo_sdk_activity_float_web);
+        setContentView(MResource.getIdByName(getApplication(), "layout", "huo_sdk_activity_float_web"));
         initUI();
         webviewInit();
         HttpParams httpParams = SdkApi.getCommonHttpParams("");
@@ -104,31 +103,37 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
     }
 
     private void initTheme() {
-        Log.e("hongliang", "windowType=" + windowType);
+        L.e("hongliang", "windowType=" + windowType);
         switch (windowType) {
             case TYPE_NO_STATUS_NO_TITLE:
-                setTheme(R.style.huo_sdk_FullscreenTheme);
+                setTheme(MResource.getIdByName(this,"R.style.huo_sdk_FullscreenTheme"));
                 break;
             case TYPE_NO_STATUS_TITLE:
-                setTheme(R.style.huo_sdk_FullscreenTheme);
+                setTheme(MResource.getIdByName(this,"R.style.huo_sdk_FullscreenTheme"));
                 break;
             case TYPE_STATUS_NO_TITLE:
-                setTheme(R.style.huo_sdk_AppTheme);
+                setTheme(MResource.getIdByName(this,"R.style.huo_sdk_AppTheme"));
                 break;
             case TYPE_STATUS_TITLE:
-                setTheme(R.style.huo_sdk_AppTheme);
+                setTheme(MResource.getIdByName(this,"R.style.huo_sdk_AppTheme"));
                 break;
         }
     }
 
     private void initUI() {
-        wv = (WebView) findViewById(R.id.huo_sdk_wv_content);
-        tv_back = (TextView) findViewById(R.id.huo_sdk_tv_back);
-        iv_return = (ImageView) findViewById(R.id.huo_sdk_iv_return);
-        iv_cancel = (ImageView) findViewById(R.id.huo_sdk_iv_cancel);
+        wv = (WebView) findViewById(MResource.getIdByName(getApplication(),
+                "R.id.huo_sdk_wv_content"));
+        tv_back = (TextView) findViewById(MResource.getIdByName(
+                getApplication(),"R.id.huo_sdk_tv_back"));
+        iv_return = (ImageView) findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_iv_return"));
+        iv_cancel = (ImageView) findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_iv_cancel"));
 
-        tv_charge_title = (TextView) findViewById(R.id.huo_sdk_tv_charge_title);
-        huo_sdk_rl_top = findViewById(R.id.huo_sdk_rl_top);
+        tv_charge_title = (TextView) findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_tv_charge_title"));
+        huo_sdk_rl_top= findViewById(MResource.getIdByName(
+                getApplication(),  "R.id.huo_sdk_rl_top"));
         setTitleView(huo_sdk_rl_top);
         tv_back.setOnClickListener(this);
         iv_cancel.setOnClickListener(this);
@@ -248,7 +253,7 @@ public class WebViewActivity extends BaseActivity implements OnClickListener, IP
                     tv_charge_title.setText(title);
                 } else {
                     if (TextUtils.isEmpty(WebViewActivity.this.title)) {
-                        tv_charge_title.setText("火速sdk");
+                        tv_charge_title.setText("清风sdk");
                     } else {
                         tv_charge_title.setText(WebViewActivity.this.title);
                     }

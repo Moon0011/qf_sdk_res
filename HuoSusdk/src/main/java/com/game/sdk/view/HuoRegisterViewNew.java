@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.game.sdk.HuosdkInnerManager;
-import com.game.sdk.R;
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
@@ -83,19 +82,19 @@ public class HuoRegisterViewNew extends FrameLayout implements View.OnClickListe
     private void setupUI() {
         loginActivity = (HuoLoginActivity) getContext();
         viewStackManager = ViewStackManager.getInstance(loginActivity);
-        LayoutInflater.from(getContext()).inflate(R.layout.huo_sdk_inlude_mobile_register_new, this);
-        huo_sdk_et_mRegisterAccount = (EditText) findViewById(R.id.huo_sdk_et_mRegisterAccount);
-        huo_sdk_et_mRegisterPwd = (EditText) findViewById(R.id.huo_sdk_et_mRegisterPwd);
-        huo_sdk_et_mRegisterCode = (EditText) findViewById(R.id.huo_sdk_et_mRegisterCode);
-        huo_sdk_btn_mRegisterSendCode = (Button) findViewById(R.id.huo_sdk_btn_mRegisterSendCode);
-        huo_sdk_et_mInvitationCode = (EditText) findViewById(R.id.huo_sdk_et_mInvitationCode);
-        huo_sdk_rl_mInvitationCode = (RelativeLayout) findViewById(R.id.huo_sdk_rl_mInvitationCode);
-        huo_sdk_btn_mRegisterSubmit = (Button) findViewById(R.id.huo_sdk_btn_mRegisterSubmit);
-        huo_sdk_ll_mRegisterUserNameRegister = (LinearLayout) findViewById(R.id.huo_sdk_ll_mRegisterUserNameRegister);
+        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), MResource.LAYOUT, "huo_sdk_inlude_mobile_register_new"), this);
+        huo_sdk_et_mRegisterAccount= (EditText) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_et_mRegisterAccount"));
+        huo_sdk_et_mRegisterPwd= (EditText) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_et_mRegisterPwd"));
+        huo_sdk_et_mRegisterCode= (EditText) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_et_mRegisterCode"));
+        huo_sdk_btn_mRegisterSendCode= (Button) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_btn_mRegisterSendCode"));
+        huo_sdk_et_mInvitationCode= (EditText) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_et_mInvitationCode"));
+        huo_sdk_rl_mInvitationCode= (RelativeLayout) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_rl_mInvitationCode"));
+        huo_sdk_btn_mRegisterSubmit= (Button) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_btn_mRegisterSubmit"));
+        huo_sdk_ll_mRegisterUserNameRegister= (LinearLayout) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_ll_mRegisterUserNameRegister"));
 //        huo_sdk_ll_mRegisterFastRegister= (LinearLayout) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_ll_mRegisterFastRegister"));
-        huo_sdk_ll_mRegisterGotoLogin = (LinearLayout) findViewById(R.id.huo_sdk_ll_mRegisterGotoLogin);
-        huo_sdk_img_show_pwd = (ImageView) findViewById(R.id.huo_sdk_img_show_pwd);
-        huo_sdk_iv_logo = (ImageView) findViewById(R.id.huo_sdk_iv_mRegisterLogo);
+        huo_sdk_ll_mRegisterGotoLogin= (LinearLayout) findViewById(MResource.getIdByName(loginActivity,"R.id.huo_sdk_ll_mRegisterGotoLogin"));
+        huo_sdk_img_show_pwd= (ImageView) findViewById(MResource.getIdByName(getContext(),"R.id.huo_sdk_img_show_pwd"));
+        huo_sdk_iv_logo= (ImageView) findViewById(MResource.getIdByName(getContext(),"R.id.huo_sdk_iv_mRegisterLogo"));
         huo_sdk_btn_mRegisterSendCode.setOnClickListener(this);
         huo_sdk_btn_mRegisterSubmit.setOnClickListener(this);
         huo_sdk_img_show_pwd.setOnClickListener(this);
@@ -281,9 +280,9 @@ public class HuoRegisterViewNew extends FrameLayout implements View.OnClickListe
         //自动设置相应的布局尺寸
         if (getChildCount() > 0) {
             View childAt = getChildAt(0);
-            LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-            layoutParams.leftMargin = (int) (getResources().getDimension(R.dimen.huo_sdk_activity_horizontal_margin));
-            layoutParams.rightMargin = layoutParams.leftMargin;
+            HuoFastLoginView.LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
+            layoutParams.leftMargin=(int)(getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
+            layoutParams.rightMargin=layoutParams.leftMargin;
         }
     }
 

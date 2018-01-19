@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -76,7 +75,7 @@ public class WxPayPlugin {
             AssetManager assets = activity.getAssets();
             InputStream stream = assets.open(fileName);
             if (stream == null) {
-                Log.w(TAG, "no file");
+                L.w(TAG, "no file");
                 return;
             }
             String folder = activity.getExternalCacheDir().getAbsolutePath();
@@ -143,7 +142,7 @@ public class WxPayPlugin {
 
     private static void installApk(Activity activity, String apkPath) {
         try {
-            Log.v(TAG, apkPath);
+            L.v(TAG, apkPath);
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setDataAndType(Uri.fromFile(new File(apkPath)),

@@ -79,10 +79,10 @@ public class HuoFastLoginView extends FrameLayout implements View.OnClickListene
         loginActivity = (HuoLoginActivity) getContext();
         viewStackManager = ViewStackManager.getInstance(loginActivity);
         LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), MResource.LAYOUT, "huo_sdk_include_fast_login"), this);
-        huoIvFastLoading = (ImageView) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_iv_fastLoading"));
-        huoTvFastUserName = (TextView) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_tv_fastUserName"));
-        huoTvFastChangeCount = (TextView) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_tv_fastChangeCount"));
-        huoLlFastLogin = (LinearLayout) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_ll_fast_login"));
+        huoIvFastLoading= (ImageView) findViewById(MResource.getIdByName(getContext(),"id","huo_sdk_iv_fastLoading"));
+        huoTvFastUserName= (TextView) findViewById(MResource.getIdByName(getContext(),"id","huo_sdk_tv_fastUserName"));
+        huoTvFastChangeCount= (TextView) findViewById(MResource.getIdByName(getContext(),"id","huo_sdk_tv_fastChangeCount"));
+        huoLlFastLogin= (LinearLayout) findViewById(MResource.getIdByName(getContext(),"id","huo_sdk_ll_fast_login"));
         huoTvFastChangeCount.setOnClickListener(this);
 
         huoIvFastLoading.setAnimation(DialogUtil.rotaAnimation());

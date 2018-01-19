@@ -2,7 +2,6 @@ package com.game.sdk.http;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.game.sdk.HuosdkInnerManager;
 import com.game.sdk.SdkConstant;
@@ -111,11 +110,11 @@ public abstract class HttpCallbackDecode<E>  extends HttpCallback {
 
     @Override
     public final void onFailure(int errorNo, String strMsg, String completionInfo) {
-        Log.d(TAG,"onFailure="+completionInfo);
+        L.d(TAG,"onFailure="+completionInfo);
         onFailure(""+errorNo,"连接失败，请稍后重试！");
     }
     public void onFailure(String code,String msg){
-        Log.d(TAG,"onFailure="+msg);
+        L.d(TAG,"onFailure="+msg);
         if(showTs){
             T.s(activity,msg==null?"连接失败":msg);
         }

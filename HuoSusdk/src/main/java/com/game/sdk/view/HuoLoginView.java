@@ -8,7 +8,6 @@ import android.os.Message;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -199,7 +198,7 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d(TAG, "没有添加第三方登陆插件");
+            L.d(TAG, "没有添加第三方登陆插件");
             return;
         }
     }
