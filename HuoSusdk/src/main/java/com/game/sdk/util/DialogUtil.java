@@ -6,7 +6,6 @@ import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -15,9 +14,9 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.game.sdk.R;
 import com.game.sdk.domain.NotProguard;
 import com.game.sdk.domain.Notice;
+import com.game.sdk.log.L;
 import com.game.sdk.view.AutoSplitTextView;
 
 /**
@@ -35,13 +34,16 @@ public class DialogUtil {
      * 显示对话框
      */
     private static void init(Context context) {
-        dialog = new Dialog(context, R.style.huo_sdk_customDialog);
+        dialog = new Dialog(context, MResource.getIdByName(context, "style",
+                "huo_sdk_customDialog"));
         view = LayoutInflater.from(context).inflate(
-                R.layout.huo_sdk_dialog_loading, null);
-        iv_pd = (ImageView) view.findViewById(R.id.huo_sdk_iv_circle);
+                MResource.getIdByName(context, "layout", "huo_sdk_dialog_loading"), null);
+        iv_pd = (ImageView) view.findViewById(MResource.getIdByName(context,
+                "id", "huo_sdk_iv_circle"));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        tv_msg = (TextView) view.findViewById(R.id.huo_sdk_tv_msg);
+        tv_msg = (TextView) view.findViewById(MResource.getIdByName(context,
+                "id", "huo_sdk_tv_msg"));
         dialog.setContentView(view);
     }
 
@@ -68,13 +70,16 @@ public class DialogUtil {
      * 显示对话框
      */
     private static void init2(Context context) {
-        dialog2 = new Dialog(context, R.style.huo_sdk_customDialog);
+        dialog2 = new Dialog(context, MResource.getIdByName(context, "style",
+                "huo_sdk_customDialog"));
         view = LayoutInflater.from(context).inflate(
-                R.layout.huo_sdk_dialog_loading, null);
-        iv_pd = (ImageView) view.findViewById(R.id.huo_sdk_iv_circle);
+                MResource.getIdByName(context, "layout", "huo_sdk_dialog_loading"), null);
+        iv_pd = (ImageView) view.findViewById(MResource.getIdByName(context,
+                "id", "huo_sdk_iv_circle"));
         dialog2.setCancelable(false);
         dialog2.setCanceledOnTouchOutside(false);
-        tv_msg = (TextView) view.findViewById(R.id.huo_sdk_tv_msg);
+        tv_msg = (TextView) view.findViewById(MResource.getIdByName(context,
+                "id", "huo_sdk_tv_msg"));
         dialog2.setContentView(view);
     }
 
@@ -173,7 +178,7 @@ public class DialogUtil {
 
         if (notice == null || TextUtils.isEmpty(notice.getContent())) return;
 
-        Log.e("notice", " notice.title:" + notice.getTitle() + " | notice.setContent:" + notice.getContent());
+        L.e("notice", " notice.title:" + notice.getTitle() + " | notice.setContent:" + notice.getContent());
         if (context instanceof Activity) {
 
             final Notice finalNotice = notice;
@@ -181,13 +186,18 @@ public class DialogUtil {
                 @Override
                 public void run() {
 
-                    final Dialog dialog = new Dialog(context, R.style.huo_sdk_customDialog);
+                    final Dialog dialog = new Dialog(context, MResource.getIdByName(context,
+                            "style", "huo_sdk_customDialog"));
                     View notcieView = LayoutInflater.from(context)
-                            .inflate(R.layout.huo_sdk_dialog_notice, null);
-                    TextView title = (TextView) notcieView.findViewById(R.id.huo_sdk_title_text);
-                    TextView time = (TextView) notcieView.findViewById(R.id.huo_sdk_time_text);
-                    AutoSplitTextView content = (AutoSplitTextView) notcieView.findViewById(R.id.huo_sdk_content_text);
-                    TextView confirm = (TextView) notcieView.findViewById(R.id.huo_sdk_confirm_tv);
+                            .inflate(MResource.getIdByName(context, "layout", "huo_sdk_dialog_notice"), null);
+                    TextView title = (TextView) notcieView.findViewById(MResource.getIdByName(context,
+                            "id", "huo_sdk_title_text"));
+                    TextView time = (TextView) notcieView.findViewById(MResource.getIdByName(context,
+                            "id", "huo_sdk_time_text"));
+                    AutoSplitTextView content = (AutoSplitTextView) notcieView.findViewById(MResource.getIdByName(context,
+                            "id", "huo_sdk_content_text"));
+                    TextView confirm = (TextView) notcieView.findViewById(MResource.getIdByName(context,
+                            "id", "huo_sdk_confirm_tv"));
                     title.setText(finalNotice.getTitle());
                     time.setText(finalNotice.getTime());
                     content.setText(Html.fromHtml(finalNotice.getContent()));

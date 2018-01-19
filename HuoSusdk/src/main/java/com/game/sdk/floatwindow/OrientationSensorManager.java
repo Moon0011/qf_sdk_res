@@ -5,7 +5,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 
 import com.game.sdk.log.L;
 
@@ -72,7 +71,7 @@ public final class OrientationSensorManager implements SensorEventListener {
         if((mOrientationListener !=null||phoneReversalListener!=null)&&mSensorManager!=null){
             mSensorManager.registerListener(this, accSensor, SensorManager.SENSOR_DELAY_UI);
             mSensorManager.registerListener(this, manSensor, SensorManager.SENSOR_DELAY_UI);
-            Log.e("hongliang","注册了监听");
+            L.e("hongliang","注册了监听");
         }
     }
 

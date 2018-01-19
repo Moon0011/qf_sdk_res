@@ -5,7 +5,6 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +22,7 @@ import com.game.sdk.SdkConstant;
 import com.game.sdk.domain.WebRequestBean;
 import com.game.sdk.http.HttpParamsBuild;
 import com.game.sdk.http.SdkApi;
+import com.game.sdk.log.L;
 import com.game.sdk.ui.FloatWebActivity;
 import com.game.sdk.util.DimensionUtil;
 import com.game.sdk.util.GsonUtil;
@@ -118,7 +118,7 @@ public class IdentifyFloatViewImpl  implements IFloatView{
     }
     private void initFloatIcon(){
         wmParams = new WindowManager.LayoutParams();
-        Log.i(TAG, "mWindowManager--->" + mWindowManager);
+        L.i(TAG, "mWindowManager--->" + mWindowManager);
         // 设置window type
         wmParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         // 设置图片格式，效果为背景透明

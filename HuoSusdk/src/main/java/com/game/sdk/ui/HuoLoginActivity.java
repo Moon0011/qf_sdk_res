@@ -7,9 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.game.sdk.HuosdkInnerManager;
-import com.game.sdk.R;
 import com.game.sdk.domain.LoginErrorMsg;
 import com.game.sdk.listener.OnLoginListener;
+import com.game.sdk.log.L;
+import com.game.sdk.util.MResource;
 import com.game.sdk.view.HuoFastLoginViewNew;
 import com.game.sdk.view.HuoLoginViewNew;
 import com.game.sdk.view.HuoRegisterViewNew;
@@ -40,7 +41,7 @@ public class HuoLoginActivity extends BaseActivity {
         UMGameAgent.setDebugMode(true);
         UMGameAgent.init( this );
 
-        setContentView(R.layout.huo_sdk_activity_huo_login_new);
+        setContentView(MResource.getIdByName(this,"R.layout.huo_sdk_activity_huo_login_new"));
         setupUI();
     }
 
@@ -48,11 +49,11 @@ public class HuoLoginActivity extends BaseActivity {
         callBacked = false;
         viewStackManager = ViewStackManager.getInstance(this);
         int type = getIntent().getIntExtra("type", 1);
-        huoLoginView = (HuoLoginViewNew) findViewById(R.id.huo_sdk_loginView_new);
-        huoFastLoginView = (HuoFastLoginViewNew) findViewById(R.id.huo_sdk_fastLoginView_new);
-        huoRegisterView = (HuoRegisterViewNew) findViewById(R.id.huo_sdk_registerView);
-        huoUserNameRegisterView = (HuoUserNameRegisterViewNew) findViewById(R.id.huo_sdk_userNameRegisterView);
-        huoSdkSelectAccountView = (SelectAccountView) findViewById(R.id.huo_sdk_selectAccountView);
+        huoLoginView = (HuoLoginViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_loginView_new"));
+        huoFastLoginView = (HuoFastLoginViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_fastLoginView_new"));
+        huoRegisterView = (HuoRegisterViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_registerView"));
+        huoUserNameRegisterView = (HuoUserNameRegisterViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_userNameRegisterView"));
+        huoSdkSelectAccountView = (SelectAccountView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_selectAccountView"));
         viewStackManager.addBackupView(huoLoginView);
         viewStackManager.addBackupView(huoFastLoginView);
         viewStackManager.addBackupView(huoRegisterView);
@@ -99,6 +100,7 @@ public class HuoLoginActivity extends BaseActivity {
             LoginErrorMsg loginErrorMsg = new LoginErrorMsg(CODE_LOGIN_CANCEL, "用户取消登陆");
             OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();
             if (onLoginListener != null) {
+                L.e("SdkLogin", "onDestroy  CODE_LOGIN_CANCEL");
                 onLoginListener.loginError(loginErrorMsg);
             }
         }

@@ -77,4 +77,18 @@ public class DeviceBean {
     public void setMac(String mac) {
         this.mac = mac;
     }
+
+    @Override
+    public String toString() {
+        return "DeviceBean{" +
+                "device_id='" + device_id + '\'' +
+                ", userua='" + userua + '\'' +
+                ", ipaddrid='" + ipaddrid + '\'' +
+                ", deviceinfo='" + deviceinfo + '\'' +
+                ", idfv='" + idfv + '\'' +
+                ", idfa='" + idfa + '\'' +
+                ", local_ip='" + local_ip + '\'' +
+                ", mac='" + mac + '\'' +
+                '}';
+    }
 }

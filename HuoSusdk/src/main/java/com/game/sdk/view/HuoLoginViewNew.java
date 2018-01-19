@@ -3,8 +3,12 @@ package com.game.sdk.view;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
@@ -24,9 +28,9 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
-import com.game.sdk.R;
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
@@ -47,10 +51,16 @@ import com.game.sdk.ui.FloatWebActivity;
 import com.game.sdk.ui.HuoLoginActivity;
 import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
+import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.kymjs.rxvolley.RxVolley;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,10 +93,9 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
         @Override
         public void handleMessage(Message msg) {
             DialogUtil.dismissDialog2();
-            loginActivity.finish();
+            loginActivity.callBackFinish();
         }
     };
-
 
     public HuoLoginViewNew(Context context) {
         super(context);
@@ -109,19 +118,19 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
     private void setupUI() {
         loginActivity = (HuoLoginActivity) getContext();
         viewStackManager = ViewStackManager.getInstance(loginActivity);
-        LayoutInflater.from(getContext()).inflate(R.layout.huo_sdk_include_login_new, this);
-        huoRlLogin = (RelativeLayout) findViewById(R.id.huo_sdk_rl_login);
-        huo_et_loginAccount = (EditText) findViewById(R.id.huo_sdk_et_loginAccount);
-        huo_et_loginPwd = (EditText) findViewById(R.id.huo_sdk_et_loginPwd);
-        huo_img_show_pwd = (ImageView) findViewById(R.id.huo_sdk_img_show_pwd);
-        huo_btn_loginSubmitForgetPwd = (Button) findViewById(R.id.huo_sdk_btn_loginSubmitForgetPwd);
-        huo_btn_loginSubmit = (Button) findViewById(R.id.huo_sdk_btn_loginSubmit);
-        huoLlOneKeyLogin = (LinearLayout) findViewById(R.id.huo_sdk_ll_onekeylogin);
-        huoLlLoginRegister = (LinearLayout) findViewById(R.id.huo_sdk_ll_loginRegister);
-        huo_iv_loginUserSelect = (ImageView) findViewById(R.id.huo_sdk_iv_loginUserSelect);
-        huo_rl_loginAccount = (RelativeLayout) findViewById(R.id.huo_sdk_rl_loginAccount);
-        img_login_qq = (ImageView) findViewById(R.id.img_login_qq);
-        img_login_wx = (ImageView) findViewById(R.id.img_login_wx);
+        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), MResource.LAYOUT, "huo_sdk_include_login_new"), this);
+        huoRlLogin = (RelativeLayout) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_rl_login"));
+        huo_et_loginAccount = (EditText) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_et_loginAccount"));
+        huo_et_loginPwd = (EditText) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_et_loginPwd"));
+        huo_img_show_pwd = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_img_show_pwd"));
+        huo_btn_loginSubmitForgetPwd = (Button) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_btn_loginSubmitForgetPwd"));
+        huo_btn_loginSubmit = (Button) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_btn_loginSubmit"));
+        huoLlOneKeyLogin = (LinearLayout) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_ll_onekeylogin"));
+        huoLlLoginRegister = (LinearLayout) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_ll_loginRegister"));
+        huo_iv_loginUserSelect = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_iv_loginUserSelect"));
+        huo_rl_loginAccount = (RelativeLayout) findViewById(MResource.getIdByName(getContext(), "R.id.huo_sdk_rl_loginAccount"));
+        img_login_qq = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.img_login_qq"));
+        img_login_wx = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.img_login_wx"));
 
         huoLlOneKeyLogin.setOnClickListener(this);
         huoLlLoginRegister.setOnClickListener(this);
@@ -145,7 +154,7 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
         if (getChildCount() > 0) {
             View childAt = getChildAt(0);
             LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-            layoutParams.leftMargin = (int) (getResources().getDimension(R.dimen.huo_sdk_activity_horizontal_margin));
+            layoutParams.leftMargin = (int) (getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
             layoutParams.rightMargin = layoutParams.leftMargin;
         }
     }
@@ -178,73 +187,123 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
                 viewStackManager.addView(huoUserNameRegisterView);
             }
         } else if (view.getId() == img_login_qq.getId()) {//QQ授权登陆
-            DialogUtil.showDialog2(mContext, false, "启动qq登录...");
-            //使用第三方登陆插件
-            Intent intent = new Intent("com.qf.sdklogin");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("isLoginQQ", true);
+            L.e("sdkLogin", "启动QQ授权登陆。。");
+            if (copyApkFromAssets(mContext, "sdklogin.apk",
+                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk")
+                    && !isAppInstalled(mContext, "com.qf.sdklogin")) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(Uri.parse("file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk"),
+                        "application/vnd.android.package-archive");
+                mContext.startActivity(intent);
+                Toast.makeText(mContext, "请先安装游戏应用第三方授权登录助手", Toast.LENGTH_SHORT).show();
+            } else {
+                DialogUtil.showDialog2(mContext, false, "启动qq登录...");
+                //使用第三方登陆插件
+                Intent intent = new Intent("com.qf.sdklogin");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("isLoginQQ", true);
 
-            intent.putExtra("appid", SdkConstant.HS_APPID);
-            intent.putExtra("from", SdkConstant.FROM);
-            intent.putExtra("usertoken", SdkConstant.userToken);
-            intent.putExtra("packagename", SdkConstant.packageName);
-            intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
-            intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
-            intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
-            intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
+                intent.putExtra("appid", SdkConstant.HS_APPID);
+                intent.putExtra("from", SdkConstant.FROM);
+                intent.putExtra("usertoken", SdkConstant.userToken);
+                intent.putExtra("packagename", SdkConstant.packageName);
+                intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
+                intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
+                intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
+                intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
 
-            intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
-            intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
-            intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
-            intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
-            intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
-            intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
-            intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
-            intent.putExtra("mac", SdkConstant.deviceBean.getMac());
-            ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.QQAuthActivity");
-            intent.setComponent(comp);
-            mContext.startActivity(intent);
+                intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
+                intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
+                intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
+                intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
+                intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
+                intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
+                intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
+                intent.putExtra("mac", SdkConstant.deviceBean.getMac());
+                ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.QQAuthActivity");
+                intent.setComponent(comp);
+                mContext.startActivity(intent);
 
-            Intent in = new Intent("com.qf.sdklogin.forfirstlogin");
-            in.putExtra("type", 1);
-            mContext.sendBroadcast(in);
-
-            Message msg = mHandler.obtainMessage();
-            mHandler.sendMessageDelayed(msg, 3000);
+                Message msg = mHandler.obtainMessage();
+                mHandler.sendMessageDelayed(msg, 3000);
+            }
         } else if (view.getId() == img_login_wx.getId()) {//微信授权登陆
-            DialogUtil.showDialog2(mContext, false, "启动微信登录...");
-            Intent intent = new Intent("com.qf.sdklogin");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("isLoginWX", true);
+            L.e("sdkLogin", "启动微信授权登陆。。");
+            if (copyApkFromAssets(mContext, "sdklogin.apk",
+                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk")
+                    && !isAppInstalled(mContext, "com.qf.sdklogin")) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(Uri.parse("file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk"),
+                        "application/vnd.android.package-archive");
+                mContext.startActivity(intent);
+                Toast.makeText(mContext, "请先安装游戏应用第三方授权登录助手", Toast.LENGTH_SHORT).show();
+            } else {
+                DialogUtil.showDialog2(mContext, false, "启动微信登录...");
+                Intent intent = new Intent("com.qf.sdklogin");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("isLoginWX", true);
 
-            intent.putExtra("appid", SdkConstant.HS_APPID);
-            intent.putExtra("from", SdkConstant.FROM);
-            intent.putExtra("usertoken", SdkConstant.userToken);
-            intent.putExtra("packagename", SdkConstant.packageName);
-            intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
-            intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
-            intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
-            intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
+                intent.putExtra("appid", SdkConstant.HS_APPID);
+                intent.putExtra("from", SdkConstant.FROM);
+                intent.putExtra("usertoken", SdkConstant.userToken);
+                intent.putExtra("packagename", SdkConstant.packageName);
+                intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
+                intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
+                intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
+                intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
 
-            intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
-            intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
-            intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
-            intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
-            intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
-            intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
-            intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
-            intent.putExtra("mac", SdkConstant.deviceBean.getMac());
-            ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.wxapi.WXEntryActivity");
-            intent.setComponent(comp);
-            mContext.startActivity(intent);
+                intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
+                intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
+                intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
+                intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
+                intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
+                intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
+                intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
+                intent.putExtra("mac", SdkConstant.deviceBean.getMac());
+                ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.wxapi.WXEntryActivity");
+                intent.setComponent(comp);
+                mContext.startActivity(intent);
 
-            Intent in = new Intent("com.qf.sdklogin.forfirstlogin");
-            in.putExtra("type", 2);
-            mContext.sendBroadcast(in);
-
-            Message msg = mHandler.obtainMessage();
-            mHandler.sendMessageDelayed(msg, 3000);
+                Message msg = mHandler.obtainMessage();
+                mHandler.sendMessageDelayed(msg, 3000);
+            }
         }
+    }
+
+    private boolean copyApkFromAssets(Context context, String fileName, String path) {
+        boolean copyIsFinish = false;
+        try {
+            InputStream is = context.getAssets().open(fileName);
+            File file = new File(path);
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            byte[] temp = new byte[1024];
+            int i = 0;
+            while ((i = is.read(temp)) > 0) {
+                fos.write(temp, 0, i);
+            }
+            fos.close();
+            is.close();
+            copyIsFinish = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return copyIsFinish;
+    }
+
+    public boolean isAppInstalled(Context context, String packageName) {
+        final PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        List<String> pName = new ArrayList<String>();
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                pName.add(pn);
+            }
+        }
+        return pName.contains(packageName);
     }
 
     private void submitLogin() {
@@ -336,9 +395,10 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
             if (pw_select_user == null) {
                 // View
                 // view=getLayoutInflater().inflate(R.layout.tiantianwan_pw_list,null);
-                View view = LayoutInflater.from(loginActivity).inflate(R.layout.huo_sdk_pop_record_account, null);
+                View view = LayoutInflater.from(loginActivity).inflate(MResource.getIdByName(loginActivity, "R.layout.huo_sdk_pop_record_account"), null);
                 // ListView lv_pw=(ListView) view.findViewById(R.id.lv_pw);
-                ListView lv_pw = (ListView) view.findViewById(R.id.huo_sdk_lv_pw);
+                ListView lv_pw = (ListView) view.findViewById(MResource
+                        .getIdByName(loginActivity, "R.id.huo_sdk_lv_pw"));
                 // LinearLayout.LayoutParams lp=new
                 // LinearLayout.LayoutParams(200,-2 );
                 // lv_pw.setLayoutParams(lp);
@@ -395,12 +455,13 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
         public View getView(final int position, View convertView,
                             ViewGroup parent) {
             if (null == convertView) {
-                View view = LayoutInflater.from(loginActivity).inflate(R.layout.huo_sdk_pop_record_account_list_item, null);
+                View view = LayoutInflater.from(loginActivity).inflate(MResource.getIdByName(loginActivity,
+                        "R.layout.huo_sdk_pop_record_account_list_item"), null);
 
                 convertView = view;
             }
-            TextView tv_username = (TextView) convertView.findViewById(R.id.huo_sdk_tv_username);
-            ImageView iv_delete = (ImageView) convertView.findViewById(R.id.huo_sdk_iv_delete);
+            TextView tv_username = (TextView) convertView.findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_tv_username"));
+            ImageView iv_delete = (ImageView) convertView.findViewById(MResource.getIdByName(loginActivity, "R.id.huo_sdk_iv_delete"));
             iv_delete.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

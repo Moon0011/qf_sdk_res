@@ -3,7 +3,6 @@ package com.etsdk.sdkdemo;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +20,7 @@ import com.game.sdk.listener.OnInitSdkListener;
 import com.game.sdk.listener.OnLoginListener;
 import com.game.sdk.listener.OnLogoutListener;
 import com.game.sdk.listener.OnPaymentListener;
+import com.game.sdk.log.L;
 import com.game.sdk.log.T;
 
 
@@ -60,7 +60,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         sdkManager.initSdk(this, new OnInitSdkListener() {
             @Override
             public void initSuccess(String code, String msg) {
-                Log.e(TAG, "initSdk=" + msg);
+                L.e(TAG, "initSdk=" + msg);
             }
 
             @Override
@@ -72,7 +72,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         sdkManager.addLoginListener(new OnLoginListener() {
             @Override
             public void loginSuccess(LogincallBack logincBack) {
-                Log.e(TAG, "登陆成功 memId=" +
+                L.e(TAG, "登陆成功 memId=" +
                         logincBack.mem_id + "  token=" + logincBack.user_token);
                 T.s(MainActivity.this, "登陆成功");
                 //一般登陆成功后需要显示浮点
@@ -81,13 +81,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void loginError(LoginErrorMsg loginErrorMsg) {
-                Log.e(TAG, " code=" + loginErrorMsg.code + "  msg=" + loginErrorMsg.msg);
+                L.e(TAG, " code=" + loginErrorMsg.code + "  msg=" + loginErrorMsg.msg);
             }
         });
         sdkManager.addLogoutListener(new OnLogoutListener() {
             @Override
             public void logoutSuccess(int type, String code, String msg) {
-                Log.e(TAG, "登出成功，类型type=" + type + " code=" + code + " msg=" + msg);
+                L.e(TAG, "登出成功，类型type=" + type + " code=" + code + " msg=" + msg);
                 if (type == OnLogoutListener.TYPE_NORMAL_LOGOUT) {//正常退出成功
                     Toast.makeText(MainActivity.this, "退出成功", Toast.LENGTH_SHORT).show();
                 }
@@ -104,7 +104,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void logoutError(int type, String code, String msg) {
-                Log.e(TAG, "登出失败，类型type=" + type + " code=" + code + " msg=" + msg);
+                L.e(TAG, "登出失败，类型type=" + type + " code=" + code + " msg=" + msg);
                 if (type == OnLogoutListener.TYPE_NORMAL_LOGOUT) {//正常退出失败
 
                 }

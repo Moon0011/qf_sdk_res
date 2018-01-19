@@ -83,4 +83,18 @@ public class BaseRequestBean {
     public void setPackagename(String packagename) {
         this.packagename = packagename;
     }
+
+    @Override
+    public String toString() {
+        return "BaseRequestBean{" +
+                "app_id='" + app_id + '\'' +
+                ", client_id='" + client_id + '\'' +
+                ", from='" + from + '\'' +
+                ", agentgame='" + agentgame + '\'' +
+                ", user_token='" + user_token + '\'' +
+                ", timestamp=" + timestamp +
+                ", device=" + device +
+                ", packagename='" + packagename + '\'' +
+                '}';
+    }
 }

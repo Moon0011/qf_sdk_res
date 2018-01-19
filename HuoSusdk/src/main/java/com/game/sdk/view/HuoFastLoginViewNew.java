@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.game.sdk.HuosdkInnerManager;
-import com.game.sdk.R;
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
@@ -32,6 +31,7 @@ import com.game.sdk.log.L;
 import com.game.sdk.ui.HuoLoginActivity;
 import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
+import com.game.sdk.util.MResource;
 import com.kymjs.rxvolley.RxVolley;
 import com.umeng.analytics.MobclickAgent;
 
@@ -78,13 +78,13 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
     private void setupUI() {
         loginActivity = (HuoLoginActivity) getContext();
         viewStackManager = ViewStackManager.getInstance(loginActivity);
-        LayoutInflater.from(getContext()).inflate(R.layout.huo_sdk_include_fast_login_new, this);
-        huoIvFastLoading = (ImageView) findViewById(R.id.huo_sdk_iv_fastLoading);
-        huoTvFastUserName = (TextView) findViewById(R.id.huo_sdk_tv_fastUserName);
-        tvloginStatus = (TextView) findViewById(R.id.tv_login_status);
+        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), MResource.LAYOUT, "huo_sdk_include_fast_login_new"), this);
+        huoIvFastLoading = (ImageView) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_iv_fastLoading"));
+        huoTvFastUserName = (TextView) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_tv_fastUserName"));
+        tvloginStatus = (TextView) findViewById(MResource.getIdByName(getContext(), "id", "tv_login_status"));
 //        huoTvFastChangeCount = (TextView) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_tv_fastChangeCount"));
-        btnFastChangeCount = (Button) findViewById(R.id.btn_change_account);
-        huoLlFastLogin = (LinearLayout) findViewById(R.id.huo_sdk_ll_fast_login);
+        btnFastChangeCount = (Button) findViewById(MResource.getIdByName(getContext(), "id", "btn_change_account"));
+        huoLlFastLogin = (LinearLayout) findViewById(MResource.getIdByName(getContext(), "id", "huo_sdk_ll_fast_login"));
         btnFastChangeCount.setOnClickListener(this);
 
         huoIvFastLoading.setAnimation(DialogUtil.rotaAnimation());
@@ -97,7 +97,7 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
         if (getChildCount() > 0) {
             View childAt = getChildAt(0);
             LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-            layoutParams.leftMargin = (int) (getResources().getDimension(R.dimen.huo_sdk_activity_horizontal_margin));
+            layoutParams.leftMargin = MResource.getIdByName(mContext, "R.dimen.huo_sdk_activity_horizontal_margin");
             layoutParams.rightMargin = layoutParams.leftMargin;
         }
     }
