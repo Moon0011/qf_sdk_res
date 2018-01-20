@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/huo_sdk_rl_login"
+    android:layout_width="305dp"
+    android:layout_height="234dp"
+    android:layout_gravity="center"
+    android:layout_marginLeft="@dimen/huo_sdk_activity_horizontal_margin"
+    android:layout_marginRight="@dimen/huo_sdk_activity_horizontal_margin"
+    android:background="@drawable/shape_corner_style4"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="实名认证"
+            android:textColor="#fefefe"
+            android:textSize="16dp" />
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="14dp"
+            android:layout_height="17dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="31dp"
+            android:src="@drawable/close" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="14dp"
+        android:background="#dadada" />
+
+    <LinearLayout
+        android:id="@+id/huo_sdk_iv_uRegisterInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="22dp"
+        android:paddingRight="22dp">
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="根据国家规定，游戏用户需进行实名认证"
+            android:textColor="#fefefe"
+            android:textSize="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp">
+
+            <ImageView
+                android:id="@+id/huo_sdk_img_show_pwd"
+                android:layout_width="13dp"
+                android:layout_height="14dp"
+                android:src="@drawable/head_bg" />
+
+            <EditText
+                android:id="@+id/et_account"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="11dp"
+                android:background="@null"
+                android:hint="请输入真实姓名"
+                android:inputType=""
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textColor="#818181"
+                android:textColorHint="#c5c5c5"
+                android:textSize="13dp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#dadada" />
+
+        <LinearLayout
+            android:id="@+id/huo_sdk_rl_uInvitationCode"
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp">
+
+            <ImageView
+                android:id="@+id/huo_sdk_iv_invitationCode"
+                android:layout_width="20dp"
+                android:layout_height="15dp"
+                android:background="@drawable/id_card" />
+
+            <EditText
+                android:id="@+id/et_idcard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:background="@null"
+                android:hint="请输入身份证号"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textColor="#818181"
+                android:textColorHint="#c5c5c5"
+                android:textSize="13dp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#dadada" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_sure"
+        android:layout_width="261dp"
+        android:layout_height="36dp"
+        android:layout_below="@id/huo_sdk_iv_uRegisterInput"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_corner_style3"
+        android:text="确定"
+        android:textColor="#fefefe"
+        android:textSize="13dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:text="我们承诺将严格保护您的个人信息，不会对外泄露。"
+        android:textColor="#ff6905"
+        android:textSize="8dp" />
+</LinearLayout>

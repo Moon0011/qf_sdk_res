@@ -7,7 +7,7 @@ android {
         applicationId "com.etsdk.sdkdemo"
         minSdkVersion 15
         targetSdkVersion 16
-        versionCode 1
+        versionCode 3
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
