@@ -1,14 +1,14 @@
-package com.game.sdk.view;
+package com.game.sdk.ui;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -17,83 +17,75 @@ import com.game.sdk.SdkConstant;
 import com.game.sdk.domain.BaseRequestBean;
 import com.game.sdk.domain.IndentifyRespBean;
 import com.game.sdk.domain.IndentifySetBean;
+import com.game.sdk.domain.LoginErrorMsg;
 import com.game.sdk.domain.Notice;
 import com.game.sdk.http.HttpCallbackDecode;
 import com.game.sdk.http.HttpParamsBuild;
 import com.game.sdk.http.SdkApi;
-import com.game.sdk.ui.HuoLoginActivity;
+import com.game.sdk.listener.OnLoginListener;
+import com.game.sdk.log.L;
 import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.IDCardUtil;
 import com.game.sdk.util.MResource;
 import com.kymjs.rxvolley.RxVolley;
 
-public class RealNameAuthView extends FrameLayout implements View.OnClickListener {
-    private HuoLoginActivity loginActivity;
+/**
+ * Created by Administrator on 2018/1/22.
+ */
+
+public class RealNameAuthActivity extends BaseActivity implements View.OnClickListener {
+    private final static int CODE_LOGIN_CANCEL = -2;//用户取消登陆
     private EditText etAccount;
     private EditText etIdcard;
     private Button btnSure;
     private ImageView imgClose;
-    private ViewStackManager viewStackManager;
     private Context mContext;
     private String memId;
     private int iSshow;
+    private boolean callBacked;//是否已经回调过了
 
-    public void setMemId(String memid) {
-        this.memId = memid;
-    }
-
-    public void setISshow(int iSshow) {
-        this.iSshow = iSshow;
-    }
-
-    public RealNameAuthView(Context context) {
-        super(context);
-        mContext = context;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(MResource.getIdByName(this, "R.layout.real_name_auth_activity_layout"));
+        mContext = this;
+        if (getIntent() != null) {
+            iSshow = getIntent().getIntExtra("isShow", -1);
+            memId = getIntent().getStringExtra("memId");
+        }
         setupUI();
     }
 
-    public RealNameAuthView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        mContext = context;
-        setupUI();
-    }
-
-    public RealNameAuthView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        mContext = context;
-        setupUI();
-    }
 
     private void setupUI() {
-        loginActivity = (HuoLoginActivity) getContext();
-        viewStackManager = ViewStackManager.getInstance(loginActivity);
-        LayoutInflater.from(getContext()).inflate(MResource.getIdByName(getContext(), MResource.LAYOUT, "real_name_auth_layout"), this);
-        etAccount = (EditText) findViewById(MResource.getIdByName(getContext(), "R.id.et_account"));
-        etIdcard = (EditText) findViewById(MResource.getIdByName(getContext(), "R.id.et_idcard"));
-        btnSure = (Button) findViewById(MResource.getIdByName(getContext(), "R.id.btn_sure"));
-        imgClose = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.img_close"));
+        callBacked = false;
+        LayoutInflater.from(this).inflate(MResource.getIdByName(mContext, MResource.LAYOUT, "real_name_auth_layout"), null);
+        etAccount = (EditText) findViewById(MResource.getIdByName(mContext, "R.id.et_account"));
+        etIdcard = (EditText) findViewById(MResource.getIdByName(mContext, "R.id.et_idcard"));
+        btnSure = (Button) findViewById(MResource.getIdByName(mContext, "R.id.btn_sure"));
+        imgClose = (ImageView) findViewById(MResource.getIdByName(mContext, "R.id.img_close"));
         btnSure.setOnClickListener(this);
         imgClose.setOnClickListener(this);
 
         if (iSshow == 1) {
             imgClose.setVisibility(View.VISIBLE);
-        } else {
+        } else if (iSshow == 0) {
             imgClose.setVisibility(View.GONE);
         }
     }
 
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        //自动设置相应的布局尺寸
-        if (getChildCount() > 0) {
-            View childAt = getChildAt(0);
-            LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-            layoutParams.leftMargin = (int) (getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
-            layoutParams.rightMargin = layoutParams.leftMargin;
-        }
-    }
+//    @Override
+//    protected void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        //自动设置相应的布局尺寸
+//        if (getChildCount() > 0) {
+//            View childAt = getChildAt(0);
+//            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) childAt.getLayoutParams();
+//            layoutParams.leftMargin = (int) (getResources().getDimension(MResource.getIdByName(loginActivity, "R.dimen.huo_sdk_activity_horizontal_margin")));
+//            layoutParams.rightMargin = layoutParams.leftMargin;
+//        }
+//    }
 
     @Override
     public void onClick(View view) {
@@ -112,8 +104,6 @@ public class RealNameAuthView extends FrameLayout implements View.OnClickListene
             indentifySet(memId, account, idcard);
         } else if (view.getId() == imgClose.getId()) {
             getNotice();
-            viewStackManager.removeView(this);
-            loginActivity.callBackFinish();
         }
     }
 
@@ -127,14 +117,12 @@ public class RealNameAuthView extends FrameLayout implements View.OnClickListene
             @Override
             public void onDataSuccess(IndentifyRespBean data) {
                 Toast.makeText(mContext, "鉴权成功!", Toast.LENGTH_SHORT).show();
-                loginActivity.callBackFinish();
                 getNotice();
             }
 
             @Override
             public void onFailure(String code, String msg) {
                 Toast.makeText(mContext, "鉴权失败!", Toast.LENGTH_SHORT).show();
-                loginActivity.callBackFinish();
                 getNotice();
             }
         };
@@ -152,7 +140,7 @@ public class RealNameAuthView extends FrameLayout implements View.OnClickListene
             @Override
             public void onDataSuccess(Notice data) {
                 //登录成功后统一弹出弹框
-                DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), data);
+                DialogUtil.showNoticeDialog(mContext, data);
             }
 
             @Override
@@ -164,4 +152,43 @@ public class RealNameAuthView extends FrameLayout implements View.OnClickListene
         httpCallbackDecode.setShowLoading(false);//对话框继续使用install接口，在startup联网结束后，自动结束等待loading
         RxVolley.post(SdkApi.getNotice(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!callBacked) {//还没有回调过，是用户取消登陆
+            LoginErrorMsg loginErrorMsg = new LoginErrorMsg(CODE_LOGIN_CANCEL, "用户取消登陆");
+            OnLoginListener onLoginListener = HuosdkInnerManager.getInstance().getOnLoginListener();
+            if (onLoginListener != null) {
+                L.e("SdkLogin", "onDestroy  CODE_LOGIN_CANCEL");
+                onLoginListener.loginError(loginErrorMsg);
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(0, 0);
+    }
+
+    public static void start(Context context) {
+        Intent starter = new Intent(context, RealNameAuthActivity.class);
+        starter.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        if (context instanceof Activity) {
+            ((Activity) context).overridePendingTransition(0, 0);
+        }
+        context.startActivity(starter);
+    }
+
+    public void callBackFinish() {
+        this.callBacked = true;
+        finish();
+    }
+
 }

@@ -207,6 +207,7 @@ public class DialogUtil {
                         public void onClick(View v) {
                             if (dialog != null) {
                                 dialog.dismiss();
+                                ((Activity) context).finish();
                             }
                         }
                     });

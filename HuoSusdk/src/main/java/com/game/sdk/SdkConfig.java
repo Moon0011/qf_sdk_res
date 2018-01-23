@@ -10,5 +10,5 @@ public class SdkConfig {
     //是否显示实名认证，0不显示，1显示
     public static String SHOW_INDENTIFY = "1";
 
-    public static int LOGIN_APK_VERSION = 4;//apk插件版本
+    public static int LOGIN_APK_VERSION = 3;//apk插件版本
 }
