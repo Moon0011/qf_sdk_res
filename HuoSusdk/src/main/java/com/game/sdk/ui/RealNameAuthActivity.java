@@ -140,7 +140,7 @@ public class RealNameAuthActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void onDataSuccess(Notice data) {
                 //登录成功后统一弹出弹框
-                DialogUtil.showNoticeDialog(mContext, data);
+                DialogUtil.showNoticeDialog2(mContext, data);
             }
 
             @Override

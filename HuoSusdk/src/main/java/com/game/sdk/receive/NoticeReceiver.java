@@ -109,7 +109,7 @@ public class NoticeReceiver extends BroadcastReceiver {
             public void onDataSuccess(Notice data) {
                 //登录成功后统一弹出弹框
                 L.e("sdkLogin", "data =" + data.toString());
-                DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), data);
+                DialogUtil.showNoticeDialog1(HuosdkInnerManager.getInstance().getContext(), data);
             }
 
             @Override

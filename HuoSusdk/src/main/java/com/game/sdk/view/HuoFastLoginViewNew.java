@@ -25,6 +25,7 @@ import com.game.sdk.domain.LoginRequestBean;
 import com.game.sdk.domain.LoginResultBean;
 import com.game.sdk.domain.LogincallBack;
 import com.game.sdk.domain.Notice;
+import com.game.sdk.domain.RealNameEvent;
 import com.game.sdk.domain.UserInfo;
 import com.game.sdk.http.HttpCallbackDecode;
 import com.game.sdk.http.HttpParamsBuild;
@@ -36,6 +37,8 @@ import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.kymjs.rxvolley.RxVolley;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by liu hong liang on 2016/11/12.
@@ -193,9 +196,10 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
             public void onDataSuccess(IndentifyRespBean data) {
                 if (null != data) {
                     if (data.getType() == 1 && data.getStatus() == 0) {//拉起未鉴权
+                        EventBus.getDefault().post(new RealNameEvent(data.getIs_show()));
+
                         RealNameAuthView realNameAuthView = loginActivity.getRealNameAuthView();
                         realNameAuthView.setMemId(memid);
-                        realNameAuthView.setISshow(data.getIs_show());
                         viewStackManager.addView(realNameAuthView);
                         viewStackManager.removeView(HuoFastLoginViewNew.this);
                     } else if (data.getType() == 1 && data.getStatus() == 1) {//拉起已鉴权
@@ -231,7 +235,7 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
             public void onDataSuccess(Notice data) {
                 L.e(TAG, "content =" + data.getContent() + ", title =" + data.getTitle());
                 //登录成功后统一弹出弹框
-                DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), data);
+                DialogUtil.showNoticeDialog1(HuosdkInnerManager.getInstance().getContext(), data);
             }
 
             @Override

@@ -28,7 +28,8 @@
             android:layout_height="17dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="31dp"
-            android:src="@drawable/close" />
+            android:src="@drawable/close"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <View

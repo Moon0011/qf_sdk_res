@@ -75,12 +75,6 @@ public class RealNameAuthView extends FrameLayout implements View.OnClickListene
         imgClose = (ImageView) findViewById(MResource.getIdByName(getContext(), "R.id.img_close"));
         btnSure.setOnClickListener(this);
         imgClose.setOnClickListener(this);
-
-        if (iSshow == 1) {
-            imgClose.setVisibility(View.VISIBLE);
-        } else {
-            imgClose.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -152,7 +146,7 @@ public class RealNameAuthView extends FrameLayout implements View.OnClickListene
             @Override
             public void onDataSuccess(Notice data) {
                 //登录成功后统一弹出弹框
-                DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), data);
+                DialogUtil.showNoticeDialog1(HuosdkInnerManager.getInstance().getContext(), data);
             }
 
             @Override

@@ -66,6 +66,7 @@ dependencies {
     compile files('libs/okvolly_1.1.5.jar')
     //noinspection GradleCompatible
     compile files('libs/nohttp1.1.0.jar')
+    compile files('libs/eventbus-3.1.1.jar')
 }
 
 
