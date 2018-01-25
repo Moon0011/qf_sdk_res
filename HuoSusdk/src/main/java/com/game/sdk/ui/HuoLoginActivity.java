@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.game.sdk.HuosdkInnerManager;
-import com.game.sdk.R;
 import com.game.sdk.domain.LoginErrorMsg;
 import com.game.sdk.domain.RealNameEvent;
 import com.game.sdk.listener.OnLoginListener;
@@ -106,9 +105,9 @@ public class HuoLoginActivity extends BaseActivity {
     @Subscribe
     public void onMessageEvent(RealNameEvent event) {
         if (event.isShow == 1) {
-            realNameAuthView.findViewById(R.id.img_close).setVisibility(View.VISIBLE);
+            realNameAuthView.findViewById(MResource.getIdByName(getApplication(), "R.id.img_close")).setVisibility(View.VISIBLE);
         }else{
-            realNameAuthView.findViewById(R.id.img_close).setVisibility(View.GONE);
+            realNameAuthView.findViewById(MResource.getIdByName(getApplication(), "R.id.img_close")).setVisibility(View.GONE);
         }
     }
 
