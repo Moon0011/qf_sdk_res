@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 身份证验证的工具（支持15位或18位省份证）
@@ -113,6 +115,16 @@ public class IDCardUtil {
         if (certNo.length() == 15)
             return true;
         return cs[cs.length - 1] == PARITYBIT[power % 11];
+    }
+
+    public static boolean isIdCard(String certNo) {
+        //身份证号码规则
+        String regEx = "^(\\d{6})(18|19|20)?(\\d{2})([01]\\d)([0123]\\d)(\\d{3})(\\d|X|x)?$";
+        Pattern pattern = Pattern.compile(regEx);// 编译正则表达式
+        //Pattern pat = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);// 忽略大小写的写法
+        Matcher matcher = pattern.matcher(certNo);
+        boolean rs = matcher.matches();// 字符串是否与正则表达式相匹配
+        return rs;
     }
 
     private static int getIdcardCalendar() {

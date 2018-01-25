@@ -42,6 +42,7 @@ public class HuosdkService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             downLoadApkUrl = intent.getStringExtra(DOWNLOAD_APK_URL);
+//            downLoadApkUrl = "http://down.520cai.com/sdkgame/testand_6031/testand_6031_974.apk";
             if (!TextUtils.isEmpty(downLoadApkUrl)) {
                 // 调用下载
                 initDownManager();

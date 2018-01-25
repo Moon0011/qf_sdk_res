@@ -236,7 +236,7 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
                     if (onLoginListener != null) {
                         onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(), data.getCp_user_token()));
                         if (isOneKeyRegist) {
-                            Toast.makeText(getContext(), "试玩/一键注册无法进行实名信息认证，账号会存在安全隐患。", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "为了您的账号安全，建议您绑定手机号。", Toast.LENGTH_LONG).show();
                         }
                         indentify(data.getMem_id());
                     }
@@ -273,7 +273,7 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
                         viewStackManager.addView(realNameAuthView);
                         viewStackManager.removeView(HuoUserNameRegisterViewNew.this);
                     } else if (data.getType() == 1 && data.getStatus() == 1) {//拉起已鉴权
-                        Toast.makeText(mContext, "用户已实名验证", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(mContext, "用户已实名验证", Toast.LENGTH_SHORT).show();
                         getNotice();
                         loginActivity.callBackFinish();
                     } else if (data.getType() == 0) {//不拉起

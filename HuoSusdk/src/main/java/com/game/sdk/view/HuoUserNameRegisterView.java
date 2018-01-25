@@ -227,7 +227,7 @@ public class HuoUserNameRegisterView extends FrameLayout implements View.OnClick
                         //登录成功后统一弹出弹框
                         DialogUtil.showNoticeDialog1(HuosdkInnerManager.getInstance().getContext(), HuosdkInnerManager.notice);
                         if (isShiWan) {
-                            Toast.makeText(getContext(), "试玩/一键注册无法进行实名信息认证，账号会存在安全隐患。", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "为了您的账号安全，建议您绑定手机号。", Toast.LENGTH_LONG).show();
                         }
                     }
                     loginActivity.callBackFinish();

@@ -79,7 +79,7 @@ public class NoticeReceiver extends BroadcastReceiver {
                         intentAct.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intentAct);
                     } else if (data.getType() == 1 && data.getStatus() == 1) {//拉起已鉴权
-                        Toast.makeText(context, "用户已实名验证", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "用户已实名验证", Toast.LENGTH_SHORT).show();
                         getNotice(context);
                     } else if (data.getType() == 0) {//不拉起
                         getNotice(context);

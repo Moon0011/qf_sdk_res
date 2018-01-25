@@ -14,7 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
 import com.game.sdk.SdkConstant;
@@ -242,7 +241,7 @@ public class HuoRegisterViewNew extends FrameLayout implements View.OnClickListe
                         viewStackManager.addView(realNameAuthView);
                         viewStackManager.removeView(HuoRegisterViewNew.this);
                     } else if (data.getType() == 1 && data.getStatus() == 1) {//拉起已鉴权
-                        Toast.makeText(mContext, "用户已实名验证", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(mContext, "用户已实名验证", Toast.LENGTH_SHORT).show();
                         getNotice();
                         loginActivity.callBackFinish();
                     } else if (data.getType() == 0) {//不拉起

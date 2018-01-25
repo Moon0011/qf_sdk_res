@@ -97,7 +97,7 @@ public class RealNameAuthActivity extends BaseActivity implements View.OnClickLi
                 Toast.makeText(mContext, "姓名或身份证不能为空!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!IDCardUtil.isIDCard(idcard)) {
+            if (!IDCardUtil.isIdCard(idcard)) {
                 Toast.makeText(mContext, "身份证格式不对!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -191,4 +191,8 @@ public class RealNameAuthActivity extends BaseActivity implements View.OnClickLi
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 }

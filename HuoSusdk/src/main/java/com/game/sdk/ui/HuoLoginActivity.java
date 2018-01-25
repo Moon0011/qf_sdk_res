@@ -78,6 +78,9 @@ public class HuoLoginActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        if (realNameAuthView.getVisibility() == View.VISIBLE) {
+            return;
+        }
         if (viewStackManager.isLastView()) {
             if (huoFastLoginView.getVisibility() == View.VISIBLE) {//当前最后一个view是快速登陆view，不允许返回
                 return;

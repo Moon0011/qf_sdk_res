@@ -413,7 +413,7 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
                         viewStackManager.addView(realNameAuthView);
                         viewStackManager.removeView(HuoLoginViewNew.this);
                     } else if (data.getType() == 1 && data.getStatus() == 1) {//拉起已鉴权
-                        Toast.makeText(mContext, "用户已实名验证", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(mContext, "用户已实名验证", Toast.LENGTH_SHORT).show();
                         getNotice();
                         loginActivity.callBackFinish();
                     } else if (data.getType() == 0) {//不拉起
