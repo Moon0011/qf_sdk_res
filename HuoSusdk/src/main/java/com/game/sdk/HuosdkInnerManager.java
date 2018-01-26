@@ -292,7 +292,7 @@ public class HuosdkInnerManager {
                     SdkConstant.SERVER_TIME_INTERVAL = data.getTimestamp() - System.currentTimeMillis();
                     SdkConstant.thirdLoginInfoList = data.getOauth_info();
                     if ("1".equals(data.getUp_status())) {//版本更新
-                        SdkNative.resetInstall(mContext);//有更新重置install数据
+//                        SdkNative.resetInstall(mContext);//有更新重置install数据
                         if (!TextUtils.isEmpty(data.getUp_url())) {
                             HuosdkService.startServiceByUpdate(mContext, data.getUp_url());
                         }

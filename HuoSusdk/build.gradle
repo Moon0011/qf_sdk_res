@@ -59,6 +59,8 @@ android {
 }
 dependencies {
     provided fileTree(include: ['*.jar'], dir: 'libs')
+    //noinspection GradleCompatible
+    compile 'com.android.support:appcompat-v7:25.0.0'
     compile files('libs/alipaySdk-20170309.jar')
     compile files('libs/gson-2.7.jar')
     compile files('libs/ipaynow_base_v2.0.1.jar')

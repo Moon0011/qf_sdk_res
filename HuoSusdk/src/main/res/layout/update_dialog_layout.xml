@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="305dp"
+    android:layout_height="189dp"
+    android:layout_gravity="center"
+    android:background="@drawable/shape_corner_style4"
+    android:orientation="vertical"
+    android:paddingBottom="27dp"
+    android:paddingLeft="17dp"
+    android:paddingRight="17dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginTop="9dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_login_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@+id/tv_divider"
+            android:text="游戏更新"
+            android:textColor="#fefefe"
+            android:textSize="16dp" />
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="9dp"
+            android:layout_height="11dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="21dp"
+            android:src="@drawable/close" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/huo_sdk_ll_loginLogo"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:background="#7adadada" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="游戏版本有更新，请重新下载最新版本"
+        android:textColor="#ffffff"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/huo_sdk_tv_fastUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:text="温馨提示：您当前处于非WIFI环境下，继续下载将会产生手机流量"
+        android:textColor="#ff6905"
+        android:textSize="12dp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="15dp"
+        android:paddingRight="11dp">
+
+        <Button
+            android:id="@+id/btn_wait"
+            android:layout_width="109dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:background="#868686"
+            android:gravity="center"
+            android:text="稍后再来"
+            android:textColor="#fefefe"
+            android:textSize="13dp" />
+
+        <Button
+            android:id="@+id/btn_update"
+            android:layout_width="109dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="53dp"
+            android:background="#ff6905"
+            android:gravity="center"
+            android:text="下载更新"
+            android:textColor="#fefefe"
+            android:textSize="13dp" />
+
+    </LinearLayout>
+</LinearLayout>

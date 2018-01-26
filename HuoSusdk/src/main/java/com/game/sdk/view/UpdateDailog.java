@@ -1,24 +1,29 @@
-package com.game.sdk;
+package com.game.sdk.view;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
-import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StyleRes;
 import android.support.v4.content.FileProvider;
-import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.game.sdk.view.UpdateDailog;
+import com.game.sdk.R;
+import com.game.sdk.util.MResource;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.client.HttpCallback;
 import com.kymjs.rxvolley.client.ProgressListener;
@@ -27,46 +32,55 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * author janecer 2014年7月22日上午9:46:00 sdk系统核心类
+ * Created by Administrator on 2017/9/19.
  */
-public class HuosdkService extends Service {
 
-    public static final String DOWNLOAD_APK_URL = "downLoadApkUrl";//下载apk的url常量
-    private String downLoadApkUrl;//apk下载地址
+public class UpdateDailog extends Dialog {
+    private Activity mContext;
+    private String downUrl;
     private ProgressDialog pd;
-    private static Context mContext;
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public UpdateDailog(@NonNull Context context) {
+        super(context);
     }
 
-    public static void startService(Context ctx) {
-        Intent intent_service = new Intent(ctx, HuosdkService.class);
-        intent_service.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ctx.startService(intent_service);
+    public UpdateDailog(@NonNull Activity context, @StyleRes int themeResId, String downUrl) {
+        super(context, themeResId);
+        mContext = context;
+        this.downUrl = downUrl;
     }
 
-    public static void startServiceByUpdate(Context ctx, String downLoadApkUrl) {
-        mContext = ctx;
-        Intent intent_service = new Intent(ctx, HuosdkService.class);
-        intent_service.putExtra(DOWNLOAD_APK_URL, downLoadApkUrl);
-        ctx.startService(intent_service);
+    protected UpdateDailog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
+        super(context, cancelable, cancelListener);
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
-            downLoadApkUrl = intent.getStringExtra(DOWNLOAD_APK_URL);
-//            downLoadApkUrl = "http://down.520cai.com/sdkgame/testand_6031/testand_6031_974.apk";
-            if (!TextUtils.isEmpty(downLoadApkUrl)) {
-                // 调用下载
-//                initDownManager();
-                update(downLoadApkUrl);
-                return START_STICKY;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(MResource.getIdByName(mContext, "R.layout.update_dialog_layout"), null);
+        setContentView(view);
+        ImageView imageView = (ImageView) view.findViewById(MResource.getIdByName(mContext, "R.id.img_close"));
+        Button btnWait = (Button) view.findViewById(MResource.getIdByName(mContext, "R.id.btn_wait"));
+        Button btnUpdate = (Button) view.findViewById(MResource.getIdByName(mContext, "R.id.btn_update"));
+        btnWait.setOnClickListener(new clickListener());
+        btnUpdate.setOnClickListener(new clickListener());
+        imageView.setOnClickListener(new clickListener());
+    }
+
+    class clickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            int id = v.getId();
+            if (id == R.id.img_close) {
+                dismiss();
+            } else if (id == R.id.btn_wait) {
+                dismiss();
+            } else if (id == R.id.btn_update) {
+                update(downUrl);
+                UpdateDailog.this.dismiss();
             }
         }
-        return START_STICKY;
     }
 
     private void update(String downLoadApkUrl) {
@@ -76,25 +90,6 @@ public class HuosdkService extends Service {
             fileName = downLoadApkUrl.substring(downLoadApkUrl.lastIndexOf("/"));
             saveFilePath = new StringBuffer(getSDPath() + "/qfgame").append(fileName).toString();
         }
-        if (checkNetworkConnection(mContext) && !isWifi(mContext)) {
-            File file = new File(saveFilePath);
-            if (file.exists()) {
-                install(mContext, file);
-                AlertDialog.Builder normalDialog =
-                        new AlertDialog.Builder(mContext);
-                normalDialog.setCancelable(false);
-                normalDialog.setTitle("更新");
-                normalDialog.setMessage("安装包已下载好,请及时更新版本！");
-                normalDialog.show();
-                return;
-            }
-            UpdateDailog updateDailog = new UpdateDailog((Activity) mContext, R.style.update_dialog_theme, downLoadApkUrl);
-            updateDailog.setCanceledOnTouchOutside(false);
-            updateDailog.setCancelable(true);
-            updateDailog.show();
-            return;
-        }
-
         final String finalSaveFilePath = saveFilePath;
         File file = new File(saveFilePath);
         if (file.exists()) {
@@ -190,27 +185,6 @@ public class HuosdkService extends Service {
                     "application/vnd.android.package-archive");
         }
         context.startActivity(intent);
-    }
-
-    public static boolean checkNetworkConnection(Context context) {
-        final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        final android.net.NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        final android.net.NetworkInfo mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-        if (wifi.isAvailable() || mobile.isAvailable())  //getState()方法是查询是否连接了数据网络
-            return true;
-        else
-            return false;
-    }
-
-    private static boolean isWifi(Context mContext) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeNetInfo != null && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-            return true;
-        }
-        return false;
     }
 
     public String getSDPath() {
