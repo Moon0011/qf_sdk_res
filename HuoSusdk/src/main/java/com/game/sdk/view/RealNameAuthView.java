@@ -128,8 +128,8 @@ public class RealNameAuthView extends FrameLayout implements View.OnClickListene
             @Override
             public void onFailure(String code, String msg) {
                 Toast.makeText(mContext, "鉴权失败!", Toast.LENGTH_SHORT).show();
-                loginActivity.callBackFinish();
-                getNotice();
+//                loginActivity.callBackFinish();
+//                getNotice();
             }
         };
         httpCallbackDecode.setShowTs(false);

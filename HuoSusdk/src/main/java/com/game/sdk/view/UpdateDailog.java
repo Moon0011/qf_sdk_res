@@ -74,8 +74,10 @@ public class UpdateDailog extends Dialog {
             int id = v.getId();
             if (id == R.id.img_close) {
                 dismiss();
+                mContext.finish();
             } else if (id == R.id.btn_wait) {
                 dismiss();
+                mContext.finish();
             } else if (id == R.id.btn_update) {
                 update(downUrl);
                 UpdateDailog.this.dismiss();

@@ -6,8 +6,8 @@
     android:background="@drawable/shape_corner_style4"
     android:orientation="vertical"
     android:paddingBottom="27dp"
-    android:paddingLeft="17dp"
-    android:paddingRight="17dp">
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:layout_toRightOf="@+id/tv_divider"
             android:text="游戏更新"
             android:textColor="#fefefe"
-            android:textSize="16dp" />
+            android:textSize="17dp" />
 
         <ImageView
             android:id="@+id/img_close"
@@ -33,6 +33,7 @@
             android:layout_height="11dp"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
+            android:visibility="gone"
             android:layout_marginRight="21dp"
             android:src="@drawable/close" />
 
@@ -49,22 +50,21 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="16dp"
+        android:layout_gravity="center"
         android:text="游戏版本有更新，请重新下载最新版本"
         android:textColor="#ffffff"
-        android:textSize="16dp" />
+        android:textSize="17dp" />
 
     <TextView
         android:id="@+id/huo_sdk_tv_fastUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:text="温馨提示：您当前处于非WIFI环境下，继续下载将会产生手机流量"
         android:textColor="#ff6905"
-        android:textSize="12dp" />
-
+        android:textSize="11.5dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -281,8 +281,8 @@ public class HuosdkInnerManager {
         StartUpBean startUpBean = new StartUpBean();
         int open_cnt = SdkNative.addInstallOpenCnt(mContext);//增量更新openCnt
         startUpBean.setOpen_cnt(open_cnt + "");
-        startUpBean.setVer_id(String.valueOf(getVersionCode(mContext, getCurrPackName(mContext))));
-        startUpBean.setVer_code(getVersionName(mContext, getCurrPackName(mContext)));
+        startUpBean.setVersion_id(String.valueOf(getVersionCode(mContext, getCurrPackName(mContext))));
+        startUpBean.setVersion_code(getVersionName(mContext, getCurrPackName(mContext)));
         HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(startUpBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<StartupResultBean>(mContext, httpParamsBuild.getAuthkey()) {
             @Override

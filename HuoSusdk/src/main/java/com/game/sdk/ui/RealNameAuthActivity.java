@@ -123,7 +123,7 @@ public class RealNameAuthActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void onFailure(String code, String msg) {
                 Toast.makeText(mContext, "鉴权失败!", Toast.LENGTH_SHORT).show();
-                getNotice();
+//                getNotice();
             }
         };
         httpCallbackDecode.setShowTs(false);
