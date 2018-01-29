@@ -86,6 +86,13 @@ public class SdkApi {
         return getRequestUrl() + "user/logout";
     }
 
+    public static String indentify() {
+        return getRequestUrl() + "user/indentify";
+    }
+
+    public static String indentifyset() {
+        return getRequestUrl() + "user/indentifyset";
+    }
 
     public static String getQueryorder() {
         return getRequestUrl() + "pay/queryorder";

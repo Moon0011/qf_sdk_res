@@ -216,7 +216,7 @@ public class HuoRegisterView extends FrameLayout implements View.OnClickListener
                     if (onLoginListener != null) {
                         onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(), data.getCp_user_token()));
                         //登录成功后统一弹出弹框
-                        DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), HuosdkInnerManager.notice);
+                        DialogUtil.showNoticeDialog1(HuosdkInnerManager.getInstance().getContext(), HuosdkInnerManager.notice);
                     }
                     loginActivity.callBackFinish();
                     //保存账号到数据库

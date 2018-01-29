@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.game.sdk.HuosdkInnerManager;
 import com.game.sdk.domain.LoginErrorMsg;
+import com.game.sdk.domain.RealNameEvent;
 import com.game.sdk.listener.OnLoginListener;
 import com.game.sdk.log.L;
 import com.game.sdk.util.MResource;
@@ -15,9 +16,13 @@ import com.game.sdk.view.HuoFastLoginViewNew;
 import com.game.sdk.view.HuoLoginViewNew;
 import com.game.sdk.view.HuoRegisterViewNew;
 import com.game.sdk.view.HuoUserNameRegisterViewNew;
+import com.game.sdk.view.RealNameAuthView;
 import com.game.sdk.view.SelectAccountView;
 import com.game.sdk.view.ViewStackManager;
 import com.tendcloud.tenddata.TalkingDataGA;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class HuoLoginActivity extends BaseActivity {
     private static final String TAG = HuoLoginActivity.class.getSimpleName();
@@ -28,6 +33,7 @@ public class HuoLoginActivity extends BaseActivity {
     private final static int CODE_LOGIN_CANCEL = -2;//用户取消登陆
     HuoLoginViewNew huoLoginView;
     HuoRegisterViewNew huoRegisterView;
+    RealNameAuthView realNameAuthView;
     private HuoFastLoginViewNew huoFastLoginView;
     private HuoUserNameRegisterViewNew huoUserNameRegisterView;
     private ViewStackManager viewStackManager;
@@ -37,7 +43,7 @@ public class HuoLoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(MResource.getIdByName(this,"R.layout.huo_sdk_activity_huo_login_new"));
+        setContentView(MResource.getIdByName(this, "R.layout.huo_sdk_activity_huo_login_new"));
         setupUI();
     }
 
@@ -50,11 +56,13 @@ public class HuoLoginActivity extends BaseActivity {
         huoRegisterView = (HuoRegisterViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_registerView"));
         huoUserNameRegisterView = (HuoUserNameRegisterViewNew) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_userNameRegisterView"));
         huoSdkSelectAccountView = (SelectAccountView) findViewById(MResource.getIdByName(this, "R.id.huo_sdk_selectAccountView"));
+        realNameAuthView = (RealNameAuthView) findViewById(MResource.getIdByName(this, "R.id.real_name_auth_view"));
         viewStackManager.addBackupView(huoLoginView);
         viewStackManager.addBackupView(huoFastLoginView);
         viewStackManager.addBackupView(huoRegisterView);
         viewStackManager.addBackupView(huoUserNameRegisterView);
         viewStackManager.addBackupView(huoSdkSelectAccountView);
+        viewStackManager.addBackupView(realNameAuthView);
         switchUI(type);
     }
 
@@ -70,6 +78,9 @@ public class HuoLoginActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        if (realNameAuthView.getVisibility() == View.VISIBLE) {
+            return;
+        }
         if (viewStackManager.isLastView()) {
             if (huoFastLoginView.getVisibility() == View.VISIBLE) {//当前最后一个view是快速登陆view，不允许返回
                 return;
@@ -86,6 +97,31 @@ public class HuoLoginActivity extends BaseActivity {
 
     public HuoLoginViewNew getHuoLoginView() {
         return huoLoginView;
+    }
+
+    public RealNameAuthView getRealNameAuthView() {
+        return realNameAuthView;
+    }
+
+    @Subscribe
+    public void onMessageEvent(RealNameEvent event) {
+        if (event.isShow == 1) {
+            realNameAuthView.findViewById(MResource.getIdByName(getApplication(), "R.id.img_close")).setVisibility(View.VISIBLE);
+        }else{
+            realNameAuthView.findViewById(MResource.getIdByName(getApplication(), "R.id.img_close")).setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

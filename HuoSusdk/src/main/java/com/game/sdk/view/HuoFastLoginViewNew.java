@@ -18,10 +18,13 @@ import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
 import com.game.sdk.domain.BaseRequestBean;
+import com.game.sdk.domain.IndentifyBean;
+import com.game.sdk.domain.IndentifyRespBean;
 import com.game.sdk.domain.LoginRequestBean;
 import com.game.sdk.domain.LoginResultBean;
 import com.game.sdk.domain.LogincallBack;
 import com.game.sdk.domain.Notice;
+import com.game.sdk.domain.RealNameEvent;
 import com.game.sdk.domain.UserInfo;
 import com.game.sdk.http.HttpCallbackDecode;
 import com.game.sdk.http.HttpParamsBuild;
@@ -35,6 +38,8 @@ import com.game.sdk.util.MResource;
 import com.kymjs.rxvolley.RxVolley;
 import com.tendcloud.tenddata.TDGAAccount;
 import com.tendcloud.tenddata.TalkingDataGA;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -162,9 +167,9 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
                             if (onLoginListener != null) {
                                 onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(), data.getCp_user_token()));
 //                                //登录成功后统一弹出弹框
-                                getNotice();
+//                                getNotice();
+                                indentify(data.getMem_id());
                             }
-                            loginActivity.callBackFinish();
                             //保存账号到数据库
                             if (!UserLoginInfodao.getInstance(loginActivity).findUserLoginInfoByName(userName)) {
                                 UserLoginInfodao.getInstance(loginActivity).saveUserLoginInfo(userName, password);
@@ -192,6 +197,45 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
         RxVolley.post(SdkApi.getLogin(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
     }
 
+    private void indentify(final String memid) {
+        IndentifyBean indentifyBean = new IndentifyBean();
+        indentifyBean.setMem_id(memid);
+        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(indentifyBean));
+        HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<IndentifyRespBean>(mContext, httpParamsBuild.getAuthkey()) {
+            @Override
+            public void onDataSuccess(IndentifyRespBean data) {
+                if (null != data) {
+                    if (data.getType() == 1 && data.getStatus() == 0) {//拉起未鉴权
+                        EventBus.getDefault().post(new RealNameEvent(data.getIs_show()));
+
+                        RealNameAuthView realNameAuthView = loginActivity.getRealNameAuthView();
+                        realNameAuthView.setMemId(memid);
+                        viewStackManager.addView(realNameAuthView);
+                        viewStackManager.removeView(HuoFastLoginViewNew.this);
+                    } else if (data.getType() == 1 && data.getStatus() == 1) {//拉起已鉴权
+//                        Toast.makeText(mContext, "用户已实名验证", Toast.LENGTH_SHORT).show();
+                        getNotice();
+                        loginActivity.callBackFinish();
+                    } else if (data.getType() == 0) {//不拉起
+                        getNotice();
+                        loginActivity.callBackFinish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                L.e(TAG, "code =" + code + ", msg =" + msg);
+                getNotice();
+                loginActivity.callBackFinish();
+            }
+        };
+        httpCallbackDecode.setShowTs(false);
+        httpCallbackDecode.setLoadingCancel(false);
+        httpCallbackDecode.setShowLoading(false);//对话框继续使用install接口，在startup联网结束后，自动结束等待loading
+        RxVolley.post(SdkApi.indentify(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
+    }
+
     private void getNotice() {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setApp_id(SdkConstant.HS_APPID);
@@ -201,7 +245,7 @@ public class HuoFastLoginViewNew extends FrameLayout implements View.OnClickList
             public void onDataSuccess(Notice data) {
                 L.e(TAG, "content =" + data.getContent() + ", title =" + data.getTitle());
                 //登录成功后统一弹出弹框
-                DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), data);
+                DialogUtil.showNoticeDialog1(HuosdkInnerManager.getInstance().getContext(), data);
             }
 
             @Override

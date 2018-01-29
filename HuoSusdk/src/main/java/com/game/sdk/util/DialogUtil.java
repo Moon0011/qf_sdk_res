@@ -174,7 +174,62 @@ public class DialogUtil {
      *
      * @param notice
      */
-    public static void showNoticeDialog(final Context context, Notice notice) {
+    public static void showNoticeDialog2(final Context context, Notice notice) {
+
+        if (notice == null || TextUtils.isEmpty(notice.getContent())) return;
+
+        L.e("notice", " notice.title:" + notice.getTitle() + " | notice.setContent:" + notice.getContent());
+        if (context instanceof Activity) {
+
+            final Notice finalNotice = notice;
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    final Dialog dialog = new Dialog(context, MResource.getIdByName(context,
+                            "style", "huo_sdk_customDialog"));
+                    View notcieView = LayoutInflater.from(context)
+                            .inflate(MResource.getIdByName(context, "layout", "huo_sdk_dialog_notice"), null);
+                    TextView title = (TextView) notcieView.findViewById(MResource.getIdByName(context,
+                            "id", "huo_sdk_title_text"));
+                    TextView time = (TextView) notcieView.findViewById(MResource.getIdByName(context,
+                            "id", "huo_sdk_time_text"));
+                    AutoSplitTextView content = (AutoSplitTextView) notcieView.findViewById(MResource.getIdByName(context,
+                            "id", "huo_sdk_content_text"));
+                    TextView confirm = (TextView) notcieView.findViewById(MResource.getIdByName(context,
+                            "id", "huo_sdk_confirm_tv"));
+                    title.setText(finalNotice.getTitle());
+                    time.setText(finalNotice.getTime());
+                    content.setText(Html.fromHtml(finalNotice.getContent()));
+                    content.setMovementMethod(LinkMovementMethod.getInstance());
+                    confirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (dialog != null) {
+                                dialog.dismiss();
+                                ((Activity) context).finish();
+                            }
+                        }
+                    });
+
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.setContentView(notcieView);
+
+                    if (!dialog.isShowing()) {
+                        dialog.show();
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * 弹出公告框
+     *
+     * @param notice
+     */
+    public static void showNoticeDialog1(final Context context, Notice notice) {
 
         if (notice == null || TextUtils.isEmpty(notice.getContent())) return;
 
