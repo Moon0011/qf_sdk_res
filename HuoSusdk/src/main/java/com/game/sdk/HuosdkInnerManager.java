@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -198,7 +200,6 @@ public class HuosdkInnerManager {
             return;
         }
         initSetting();
-        HuosdkService.startService(mContext);//游戏更新,暂时没用到
         new ActivityLifecycleManager().startActivityLifecycleManager(mContext);//管理Activity生命周期,控制悬浮球显示
         SdkNative.soInit(context);//初始化设备信息
         SP.init(mContext);//初始化sp
@@ -362,6 +363,8 @@ public class HuosdkInnerManager {
         StartUpBean startUpBean = new StartUpBean();
         int open_cnt = SdkNative.addInstallOpenCnt(mContext);//增量更新openCnt
         startUpBean.setOpen_cnt(open_cnt + "");
+        startUpBean.setVersion_id(String.valueOf(getVersionCode(mContext, getCurrPackName(mContext))));
+        startUpBean.setVersion_code(getVersionName(mContext, getCurrPackName(mContext)));
         HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(startUpBean));
         HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<StartupResultBean>(mContext, httpParamsBuild.getAuthkey()) {
             @Override
@@ -371,7 +374,7 @@ public class HuosdkInnerManager {
                     SdkConstant.SERVER_TIME_INTERVAL = data.getTimestamp() - System.currentTimeMillis();
                     SdkConstant.thirdLoginInfoList = data.getOauth_info();
                     if ("1".equals(data.getUp_status())) {//版本更新
-                        SdkNative.resetInstall(mContext);//有更新重置install数据
+//                        SdkNative.resetInstall(mContext);//有更新重置install数据
                         if (!TextUtils.isEmpty(data.getUp_url())) {
                             HuosdkService.startServiceByUpdate(mContext, data.getUp_url());
                         }
@@ -801,5 +804,38 @@ public class HuosdkInnerManager {
             return false;
         }
         return true;
+    }
+
+    private int getVersionCode(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+            int versionCode = packageInfo.versionCode;
+            return versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private String getVersionName(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+            String versionName = packageInfo.versionName;
+            return versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String getCurrPackName(Context context) {
+        try {
+            String pkName = context.getPackageName();
+            return pkName;
+        } catch (Exception e) {
+        }
+        return null;
     }
 }

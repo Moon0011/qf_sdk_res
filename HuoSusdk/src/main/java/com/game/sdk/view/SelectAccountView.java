@@ -173,7 +173,7 @@ public class SelectAccountView extends FrameLayout {
             @Override
             public void onDataSuccess(Notice data) {
                 //登录成功后统一弹出弹框
-                DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), data);
+                DialogUtil.showNoticeDialog1(HuosdkInnerManager.getInstance().getContext(), data);
             }
 
             @Override

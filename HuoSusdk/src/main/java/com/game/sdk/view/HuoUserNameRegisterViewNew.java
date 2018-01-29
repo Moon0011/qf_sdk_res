@@ -22,7 +22,11 @@ import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
 import com.game.sdk.domain.BaseRequestBean;
+import com.game.sdk.domain.IndentifyBean;
+import com.game.sdk.domain.IndentifyRespBean;
 import com.game.sdk.domain.LogincallBack;
+import com.game.sdk.domain.Notice;
+import com.game.sdk.domain.RealNameEvent;
 import com.game.sdk.domain.RegisterOneResultBean;
 import com.game.sdk.domain.RegisterResultBean;
 import com.game.sdk.domain.UserNameRegisterRequestBean;
@@ -30,14 +34,18 @@ import com.game.sdk.http.HttpCallbackDecode;
 import com.game.sdk.http.HttpParamsBuild;
 import com.game.sdk.http.SdkApi;
 import com.game.sdk.listener.OnLoginListener;
+import com.game.sdk.log.L;
 import com.game.sdk.log.T;
 import com.game.sdk.ui.HuoLoginActivity;
+import com.game.sdk.util.DialogUtil;
 import com.game.sdk.util.GsonUtil;
 import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.game.sdk.util.ScreenShot;
 import com.kymjs.rxvolley.RxVolley;
 import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +55,7 @@ import java.util.Map;
  */
 
 public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnClickListener {
+    private static final String TAG = HuoUserNameRegisterViewNew.class.getSimpleName();
     private HuoLoginActivity loginActivity;
     private ViewStackManager viewStackManager;
     //    private LinearLayout huo_sdk_ll_uRegisterAccount;
@@ -236,10 +245,10 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
                     if (onLoginListener != null) {
                         onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(), data.getCp_user_token()));
                         if (isOneKeyRegist) {
-                            Toast.makeText(getContext(), "试玩/一键注册无法进行实名信息认证，账号会存在安全隐患。", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "为了您的账号安全，建议您绑定手机号。", Toast.LENGTH_LONG).show();
                         }
+                        indentify(data.getMem_id());
                     }
-                    loginActivity.callBackFinish();
                     //保存账号到数据库
                     if (!UserLoginInfodao.getInstance(loginActivity).findUserLoginInfoByName(account)) {
                         UserLoginInfodao.getInstance(loginActivity).saveUserLoginInfo(account, password);
@@ -255,6 +264,68 @@ public class HuoUserNameRegisterViewNew extends FrameLayout implements View.OnCl
         httpCallbackDecode.setShowLoading(true);
         httpCallbackDecode.setLoadMsg("注册中...");
         RxVolley.post(SdkApi.getRegister(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
+    }
+
+    private void indentify(final String memid) {
+        IndentifyBean indentifyBean = new IndentifyBean();
+        indentifyBean.setMem_id(memid);
+        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(indentifyBean));
+        HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<IndentifyRespBean>(mContext, httpParamsBuild.getAuthkey()) {
+            @Override
+            public void onDataSuccess(IndentifyRespBean data) {
+                if (null != data) {
+                    if (data.getType() == 1 && data.getStatus() == 0) {//拉起未鉴权
+                        EventBus.getDefault().post(new RealNameEvent(data.getIs_show()));
+
+                        RealNameAuthView realNameAuthView = loginActivity.getRealNameAuthView();
+                        realNameAuthView.setMemId(memid);
+                        viewStackManager.addView(realNameAuthView);
+                        viewStackManager.removeView(HuoUserNameRegisterViewNew.this);
+                    } else if (data.getType() == 1 && data.getStatus() == 1) {//拉起已鉴权
+//                        Toast.makeText(mContext, "用户已实名验证", Toast.LENGTH_SHORT).show();
+                        getNotice();
+                        loginActivity.callBackFinish();
+                    } else if (data.getType() == 0) {//不拉起
+                        getNotice();
+                        loginActivity.callBackFinish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                L.e(TAG, "code =" + code + ", msg =" + msg);
+                getNotice();
+                loginActivity.callBackFinish();
+            }
+        };
+        httpCallbackDecode.setShowTs(false);
+        httpCallbackDecode.setLoadingCancel(false);
+        httpCallbackDecode.setShowLoading(false);//对话框继续使用install接口，在startup联网结束后，自动结束等待loading
+        RxVolley.post(SdkApi.indentify(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
+    }
+
+    private void getNotice() {
+        BaseRequestBean baseRequestBean = new BaseRequestBean();
+        baseRequestBean.setApp_id(SdkConstant.HS_APPID);
+        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(baseRequestBean));
+        HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<Notice>(mContext, httpParamsBuild.getAuthkey()) {
+            @Override
+            public void onDataSuccess(Notice data) {
+                L.e(TAG, "content =" + data.getContent() + ", title =" + data.getTitle());
+                //登录成功后统一弹出弹框
+                DialogUtil.showNoticeDialog1(HuosdkInnerManager.getInstance().getContext(), data);
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                L.e(TAG, "code =" + code + ", msg =" + msg);
+            }
+        };
+        httpCallbackDecode.setShowTs(false);
+        httpCallbackDecode.setLoadingCancel(false);
+        httpCallbackDecode.setShowLoading(false);//对话框继续使用install接口，在startup联网结束后，自动结束等待loading
+        RxVolley.post(SdkApi.getNotice(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
     }
 
     public void getAccountByNet() {

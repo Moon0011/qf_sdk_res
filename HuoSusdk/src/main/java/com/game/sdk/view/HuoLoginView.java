@@ -306,7 +306,7 @@ public class HuoLoginView extends FrameLayout implements View.OnClickListener {
             public void onDataSuccess(Notice data) {
                 L.e(TAG, "content =" + data.getContent() + ", title =" + data.getTitle());
                 //登录成功后统一弹出弹框
-                DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), data);
+                DialogUtil.showNoticeDialog1(HuosdkInnerManager.getInstance().getContext(), data);
             }
 
             @Override

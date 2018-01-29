@@ -31,14 +31,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.game.sdk.HuosdkInnerManager;
+import com.game.sdk.SdkConfig;
 import com.game.sdk.SdkConstant;
 import com.game.sdk.db.LoginControl;
 import com.game.sdk.db.impl.UserLoginInfodao;
 import com.game.sdk.domain.BaseRequestBean;
+import com.game.sdk.domain.IndentifyBean;
+import com.game.sdk.domain.IndentifyRespBean;
 import com.game.sdk.domain.LoginRequestBean;
 import com.game.sdk.domain.LoginResultBean;
 import com.game.sdk.domain.LogincallBack;
 import com.game.sdk.domain.Notice;
+import com.game.sdk.domain.RealNameEvent;
 import com.game.sdk.domain.UserInfo;
 import com.game.sdk.domain.WebRequestBean;
 import com.game.sdk.http.HttpCallbackDecode;
@@ -55,6 +59,8 @@ import com.game.sdk.util.MResource;
 import com.game.sdk.util.RegExpUtil;
 import com.kymjs.rxvolley.RxVolley;
 import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -188,87 +194,109 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
             }
         } else if (view.getId() == img_login_qq.getId()) {//QQ授权登陆
             L.e("sdkLogin", "启动QQ授权登陆。。");
-            if (copyApkFromAssets(mContext, "sdklogin.apk",
-                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk")
-                    && !isAppInstalled(mContext, "com.qf.sdklogin")) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setDataAndType(Uri.parse("file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk"),
-                        "application/vnd.android.package-archive");
-                mContext.startActivity(intent);
-                Toast.makeText(mContext, "请先安装游戏应用第三方授权登录助手", Toast.LENGTH_SHORT).show();
+            if (isAppInstalled(mContext, "com.qf.sdklogin")) {
+                int localLoginVerCode = SdkConfig.LOGIN_APK_VERSION;//apk插件版本
+                int currLoginVerCode = getVersionCode(mContext, "com.qf.sdklogin");;//sdk版本
+                if (currLoginVerCode <= 0 || localLoginVerCode <= 0) {
+                    installLoginApk(mContext);
+                    return;
+                }
+
+                if (currLoginVerCode < localLoginVerCode) {
+                    installLoginApk(mContext);
+                } else {
+                    DialogUtil.showDialog2(mContext, false, "启动qq登录...");
+                    //使用第三方登陆插件
+                    Intent intent = new Intent("com.qf.sdklogin");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("isLoginQQ", true);
+
+                    intent.putExtra("appid", SdkConstant.HS_APPID);
+                    intent.putExtra("agent", SdkConstant.HS_AGENT);
+                    intent.putExtra("from", SdkConstant.FROM);
+                    intent.putExtra("usertoken", SdkConstant.userToken);
+                    intent.putExtra("packagename", SdkConstant.packageName);
+                    intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
+                    intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
+                    intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
+                    intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
+
+                    intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
+                    intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
+                    intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
+                    intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
+                    intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
+                    intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
+                    intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
+                    intent.putExtra("mac", SdkConstant.deviceBean.getMac());
+                    ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.QQAuthActivity");
+                    intent.setComponent(comp);
+                    mContext.startActivity(intent);
+
+                    Message msg = mHandler.obtainMessage();
+                    mHandler.sendMessageDelayed(msg, 3000);
+                }
             } else {
-                DialogUtil.showDialog2(mContext, false, "启动qq登录...");
-                //使用第三方登陆插件
-                Intent intent = new Intent("com.qf.sdklogin");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("isLoginQQ", true);
-
-                intent.putExtra("appid", SdkConstant.HS_APPID);
-                intent.putExtra("from", SdkConstant.FROM);
-                intent.putExtra("usertoken", SdkConstant.userToken);
-                intent.putExtra("packagename", SdkConstant.packageName);
-                intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
-                intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
-                intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
-                intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
-
-                intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
-                intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
-                intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
-                intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
-                intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
-                intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
-                intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
-                intent.putExtra("mac", SdkConstant.deviceBean.getMac());
-                ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.QQAuthActivity");
-                intent.setComponent(comp);
-                mContext.startActivity(intent);
-
-                Message msg = mHandler.obtainMessage();
-                mHandler.sendMessageDelayed(msg, 3000);
+                installLoginApk(mContext);
             }
         } else if (view.getId() == img_login_wx.getId()) {//微信授权登陆
             L.e("sdkLogin", "启动微信授权登陆。。");
-            if (copyApkFromAssets(mContext, "sdklogin.apk",
-                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk")
-                    && !isAppInstalled(mContext, "com.qf.sdklogin")) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setDataAndType(Uri.parse("file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk"),
-                        "application/vnd.android.package-archive");
-                mContext.startActivity(intent);
-                Toast.makeText(mContext, "请先安装游戏应用第三方授权登录助手", Toast.LENGTH_SHORT).show();
+            if (isAppInstalled(mContext, "com.qf.sdklogin")) {
+                int localLoginVerCode = SdkConfig.LOGIN_APK_VERSION;//apk插件版本
+                int currLoginVerCode = getVersionCode(mContext, "com.qf.sdklogin");;//sdk版本
+                if (currLoginVerCode <= 0 || localLoginVerCode <= 0) {
+                    installLoginApk(mContext);
+                    return;
+                }
+
+                if (currLoginVerCode < localLoginVerCode) {
+                    installLoginApk(mContext);
+                } else {
+                    DialogUtil.showDialog2(mContext, false, "启动微信登录...");
+                    Intent intent = new Intent("com.qf.sdklogin");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("isLoginWX", true);
+
+                    intent.putExtra("appid", SdkConstant.HS_APPID);
+                    intent.putExtra("agent", SdkConstant.HS_AGENT);
+                    intent.putExtra("from", SdkConstant.FROM);
+                    intent.putExtra("usertoken", SdkConstant.userToken);
+                    intent.putExtra("packagename", SdkConstant.packageName);
+                    intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
+                    intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
+                    intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
+                    intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
+
+                    intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
+                    intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
+                    intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
+                    intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
+                    intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
+                    intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
+                    intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
+                    intent.putExtra("mac", SdkConstant.deviceBean.getMac());
+                    ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.wxapi.WXEntryActivity");
+                    intent.setComponent(comp);
+                    mContext.startActivity(intent);
+
+                    Message msg = mHandler.obtainMessage();
+                    mHandler.sendMessageDelayed(msg, 3000);
+                }
             } else {
-                DialogUtil.showDialog2(mContext, false, "启动微信登录...");
-                Intent intent = new Intent("com.qf.sdklogin");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("isLoginWX", true);
-
-                intent.putExtra("appid", SdkConstant.HS_APPID);
-                intent.putExtra("from", SdkConstant.FROM);
-                intent.putExtra("usertoken", SdkConstant.userToken);
-                intent.putExtra("packagename", SdkConstant.packageName);
-                intent.putExtra("rsapublickey", SdkConstant.RSA_PUBLIC_KEY);
-                intent.putExtra("clientid", SdkConstant.HS_CLIENTID);
-                intent.putExtra("clientkey", SdkConstant.HS_CLIENTKEY);
-                intent.putExtra("servertimeinterval", SdkConstant.SERVER_TIME_INTERVAL);
-
-                intent.putExtra("device_id", SdkConstant.deviceBean.getDevice_id());
-                intent.putExtra("userua", SdkConstant.deviceBean.getUserua());
-                intent.putExtra("ipaddrid", SdkConstant.deviceBean.getIpaddrid());
-                intent.putExtra("deviceinfo", SdkConstant.deviceBean.getDeviceinfo());
-                intent.putExtra("idfv", SdkConstant.deviceBean.getIdfv());
-                intent.putExtra("idfa", SdkConstant.deviceBean.getIdfa());
-                intent.putExtra("local_ip", SdkConstant.deviceBean.getLocal_ip());
-                intent.putExtra("mac", SdkConstant.deviceBean.getMac());
-                ComponentName comp = new ComponentName("com.qf.sdklogin", "com.qf.sdklogin.wxapi.WXEntryActivity");
-                intent.setComponent(comp);
-                mContext.startActivity(intent);
-
-                Message msg = mHandler.obtainMessage();
-                mHandler.sendMessageDelayed(msg, 3000);
+                installLoginApk(mContext);
             }
+        }
+    }
+
+    private void installLoginApk(Context context) {
+        if (copyApkFromAssets(context, "sdklogin.apk",
+                Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setDataAndType(Uri.parse("file://" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdklogin.apk"),
+                    "application/vnd.android.package-archive");
+            context.startActivity(intent);
+            Toast.makeText(context, "请先安装游戏应用第三方授权登录助手", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -306,6 +334,27 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
         return pName.contains(packageName);
     }
 
+    private int getVersionCode(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+            int versionCode = packageInfo.versionCode;
+            return versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static String getCurrPackName(Context context) {
+        try {
+            String pkName = context.getPackageName();
+            return pkName;
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
     private void submitLogin() {
         final String account = huo_et_loginAccount.getText().toString().trim();
         final String password = huo_et_loginPwd.getText().toString().trim();
@@ -336,9 +385,9 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
                     if (onLoginListener != null) {
                         onLoginListener.loginSuccess(new LogincallBack(data.getMem_id(), data.getCp_user_token()));
                         //登录成功后统一弹出弹框
-                        getNotice();
+//                        getNotice();
+                        indentify(data.getMem_id());
                     }
-                    loginActivity.callBackFinish();
                     //保存账号到数据库
                     if (!UserLoginInfodao.getInstance(loginActivity).findUserLoginInfoByName(account)) {
                         UserLoginInfodao.getInstance(loginActivity).saveUserLoginInfo(account, password);
@@ -356,6 +405,45 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
         RxVolley.post(SdkApi.getLogin(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
     }
 
+    private void indentify(final String memid) {
+        IndentifyBean indentifyBean = new IndentifyBean();
+        indentifyBean.setMem_id(memid);
+        HttpParamsBuild httpParamsBuild = new HttpParamsBuild(GsonUtil.getGson().toJson(indentifyBean));
+        HttpCallbackDecode httpCallbackDecode = new HttpCallbackDecode<IndentifyRespBean>(mContext, httpParamsBuild.getAuthkey()) {
+            @Override
+            public void onDataSuccess(IndentifyRespBean data) {
+                if (null != data) {
+                    if (data.getType() == 1 && data.getStatus() == 0) {//拉起未鉴权
+                        EventBus.getDefault().post(new RealNameEvent(data.getIs_show()));
+
+                        RealNameAuthView realNameAuthView = loginActivity.getRealNameAuthView();
+                        realNameAuthView.setMemId(memid);
+                        viewStackManager.addView(realNameAuthView);
+                        viewStackManager.removeView(HuoLoginViewNew.this);
+                    } else if (data.getType() == 1 && data.getStatus() == 1) {//拉起已鉴权
+//                        Toast.makeText(mContext, "用户已实名验证", Toast.LENGTH_SHORT).show();
+                        getNotice();
+                        loginActivity.callBackFinish();
+                    } else if (data.getType() == 0) {//不拉起
+                        getNotice();
+                        loginActivity.callBackFinish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                L.e(TAG, "code =" + code + ", msg =" + msg);
+                getNotice();
+                loginActivity.callBackFinish();
+            }
+        };
+        httpCallbackDecode.setShowTs(false);
+        httpCallbackDecode.setLoadingCancel(false);
+        httpCallbackDecode.setShowLoading(false);//对话框继续使用install接口，在startup联网结束后，自动结束等待loading
+        RxVolley.post(SdkApi.indentify(), httpParamsBuild.getHttpParams(), httpCallbackDecode);
+    }
+
     private void getNotice() {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setApp_id(SdkConstant.HS_APPID);
@@ -365,7 +453,7 @@ public class HuoLoginViewNew extends FrameLayout implements View.OnClickListener
             public void onDataSuccess(Notice data) {
                 L.e(TAG, "content =" + data.getContent() + ", title =" + data.getTitle());
                 //登录成功后统一弹出弹框
-                DialogUtil.showNoticeDialog(HuosdkInnerManager.getInstance().getContext(), data);
+                DialogUtil.showNoticeDialog1(HuosdkInnerManager.getInstance().getContext(), data);
             }
 
             @Override
